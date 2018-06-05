@@ -102,6 +102,24 @@ defineTest(add_dependent_manager){
     return (1)
 }
 
+#从自定义路径加载add_library_<libname>.pri
+#第二个参数为空，则从调用处添加。
+defineTest(add_custom_dependent_manager){
+    libname = $$1
+    isEmpty(libname):return(0)
+    pripath = $$2
+    isEmpty(pripath):pripath = .
+
+    !equals(TARGET_NAME, $${libname}):
+        exists($${pripath}/add_library_$${libname}.pri){
+        include ($${pripath}/add_library_$${libname}.pri)
+        contains(TEMPLATE, app):add_dependent_library_$${libname}()
+        else:contains(TEMPLATE, lib):add_link_library_$${libname}()
+        else:add_link_library_$${libname}()
+    }
+    return (1)
+}
+
 #开启app工程
 defineTest(add_app_project) {
     #add base manager对App的处理很少，App通过函数基本上能解决所有的事情
