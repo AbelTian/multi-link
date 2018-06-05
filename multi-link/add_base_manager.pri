@@ -73,6 +73,15 @@ include ($${PWD}/add_language.pri)
 #################################################################
 #定义外部函数
 #################################################################
+#基本的，添加依赖
+defineTest(add_dependent_library) {
+    libname = $$1
+    isEmpty(libname): return (0)
+    contains(TEMPLATE, app):add_dependent_library_$${libname}()
+    else:contains(TEMPLATE, lib):add_link_library_$${libname}()
+    else:add_link_library_$${libname}()
+    return (1)
+}
 
 #################################################################
 #这是一个强大的函数
