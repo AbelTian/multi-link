@@ -18,11 +18,17 @@ contains(QSYS_PRIVATE, Embedded) {
 } else:contains(QSYS_PRIVATE, Linux) {
     DEFINES += __LINUX__
 } else:contains(QSYS_PRIVATE, Linux64) {
+    DEFINES += __LINUX__
     DEFINES += __LINUX64__
 } else:contains(QSYS_PRIVATE, Win32|Windows) {
+    DEFINES += __WIN__
     DEFINES += __WIN32__
 } else:contains(QSYS_PRIVATE, Win64) {
+    DEFINES += __WIN__
     DEFINES += __WIN64__
+} else:contains(QSYS_PRIVATE, WinRT) {
+    DEFINES += __WIN__
+    DEFINES += __WINRT__
 } else:contains(QSYS_PRIVATE, macOS) {
     DEFINES += __DARWIN__
 } else:contains(QSYS_PRIVATE, iOS) {
@@ -42,6 +48,7 @@ CONFIG(debug, debug|profile|release):BUILD=Debug
 CONFIG(profile, debug|profile|release):BUILD=Profile
 CONFIG(release, debug|profile|release):BUILD=Release
 
+#在新的改进里，准备废弃这个路径。至少和编译路径脱开关系。
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}/$${BUILD}
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}
 QSYS_STD_DIR = $${QSYS_PRIVATE}

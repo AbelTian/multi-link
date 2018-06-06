@@ -4,7 +4,7 @@ TEMPLATE = app
 HEADERS += 
 SOURCES += 
 
-include (multi-link/add_base_manager.pri)
+include (../multi-link/add_base_manager.pri)
 add_deploy()
 add_version()
 add_language(...)
@@ -12,3 +12,5 @@ add_deploy_config(...)
 
 add_dependent_manager(QQtBase)
 add_custom_dependent_manager(LibDemo)
+add_dependent_manager(Template)
+add_dependent_manager(SDL2)

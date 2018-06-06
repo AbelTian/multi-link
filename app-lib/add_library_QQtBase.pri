@@ -430,12 +430,19 @@ defineTest(add_defines_QQtBase){
 #把QQtBase SDK头文件路径加入进来 为搜索头文件而添加
 #其实过去做的自动添加QQtBase头文件就是这个功能
 #用户包含QQtBase头文件，就不必加相对路径了，方便了很多
+#修改
 defineTest(add_include_QQtBase){
+    #不为空，肯定是源码里的路径。 用于导出头文件
     header_path = $$1
-    isEmpty(1)|!isEmpty(2) : error("add_include_QQtBase(header_path) requires one arguments.")
+    #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
+    #此处_bundle代表 mac下头文件在bundle里。 留意
+    isEmpty(header_path)header_path=$$get_add_include_bundle(QQtBase)
 
+    command =
     #basic
     command += $${header_path}
+    #这里添加$${path}下的子文件夹
+    #...
     command += $${header_path}/core
     command += $${header_path}/gui
     command += $${header_path}/widgets
@@ -494,10 +501,8 @@ defineTest(add_include_QQtBase){
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
-    
     return (1)
 }
-
 
 
 defineTest(add_library_QQtBase){
@@ -505,23 +510,6 @@ defineTest(add_library_QQtBase){
     add_library_bundle(QQt, QQtBase)
 }
 
-#######################################################################################
-#定义外部函数
-#######################################################################################
-#链接QQtBase
-#用户只需要调用这个函数，一个，就能开启链接QQtBase 包含QQtBase 跟随App发布QQtBase三个步骤的App生产线工位。
-defineTest(add_link_library_QQtBase){
-    #细心的用户会发现，QQtBase的头文件包含了两次，一个在源代码目录里，一个在SDK目录里，两个并不冲突。系统只要搜索到一个目录里的就可以使用了。
-    #当然，我们确信，SDK目录里的头文件服从于源代码目录里的头文件。
-    #包含QQtBase的头文件
-    header_path = $$get_add_include_bundle(QQt, QQtBase)
-    add_include_QQtBase($$header_path)
-    #包含QQtBase的宏定义
-    add_defines_QQtBase()
-    #链接（lib)
-    add_library_QQtBase()
-    return (1)
-}
 
 #以上代码只完成了链接libQQtBase 包含libQQtBase头文件 包含libQQtBase宏文件(在宏文件控制下Library的头文件才有精确的意义)
 #没有发布libQQtBase
@@ -533,23 +521,3 @@ defineTest(add_deploy_library_QQtBase){
     return (1)
 }
 
-defineTest(add_dependent_library_QQtBase){
-    add_link_library_QQtBase()
-    add_deploy_library_QQtBase()
-    return (1)
-}
-
-#######################################################################################
-#定义额外函数
-#######################################################################################
-#留意
-#这个给Library导出include和defines用，和链接这个Library无关，一般在Library生产线使用。
-defineTest(add_export_library_QQtBase){
-    header_path = $$1
-    isEmpty(header_path):return(0)
-    #添加头文件 （如果头文件目录扩展了，就改这个函数）
-    add_include_QQtBase($$header_path)
-    #添加宏定义
-    add_defines_QQtBase()
-    return (1)
-}

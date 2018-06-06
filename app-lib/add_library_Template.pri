@@ -12,17 +12,21 @@
 LIBRARYVER =
 
 #######################################################################################
-#定义内部函数
+#定义函数
 #######################################################################################
 #修改
 defineTest(add_include_Template){
-    isEmpty(1)|!isEmpty(2) : error("add_include_Template(path) requires one arguments.")
-    path = $$1
+    #不为空，肯定是源码里的路径。 用于导出头文件
+    header_path = $$1
+    #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
+    #此处_bundle代表 mac下头文件在bundle里。 留意
+    isEmpty(header_path)header_path=$$get_add_include_bundle(Template)
 
     command =
     #basic
-    command += $${path}
+    command += $${header_path}
     #这里添加$${path}下的子文件夹
+    #...
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
@@ -38,7 +42,7 @@ defineTest(add_defines_Template){
 }
 
 #修改
-#这个地方add_library_bundle代表包括macOS下，lib在bundle里。
+#这个地方add_library_bundle代表 macOS下，lib在bundle里。
 defineTest(add_library_Template){
     #添加这个SDK里的library
     add_library_bundle(Template, Template$${LIBRARYVER})
@@ -46,35 +50,12 @@ defineTest(add_library_Template){
     return (1)
 }
 
-#######################################################################################
-#定义外部函数
-#######################################################################################
-#链接Template的WorkFlow
-#留意
-defineTest(add_link_library_Template){
-    #添加宏定义
-    add_defines_Template()
-    #添加头文件 （如果头文件目录扩展了，就改这个函数）
-    #这里，add_include_bundle代表macOS下，Library的头文件在bundle里
-    header_path = $$get_add_include_bundle(Template)
-    add_include_Template($$header_path)
-
-    #链接Library
-    add_library_Template()
-    return (1)
-}
 
 #发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
+#修改
 defineTest(add_deploy_library_Template) {
     add_deploy_library(Template, Template$${LIBRARYVER})
     #add_deploy_libraryes(Template)
     return (1)
 }
-
-defineTest(add_dependent_library_Template) {
-    add_link_library_Template()
-    add_deploy_library_Template()
-    return (1)
-}
-
