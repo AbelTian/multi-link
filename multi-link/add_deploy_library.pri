@@ -498,6 +498,7 @@ defineTest(add_deploy_library_bundle) {
     return (1)
 }
 
+#这个函数，现在只有第一个参数有意义，别的参数没有意义。
 defineTest(add_deploy_libraryes) {
     isEmpty(1): error("add_deploy_library(libgroupname, libname, librealname) requires at least one argument")
     !isEmpty(4): error("add_deploy_library(libgroupname, libname, librealname) requires at most three argument")

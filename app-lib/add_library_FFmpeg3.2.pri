@@ -79,14 +79,7 @@ defineTest(add_link_library_FFmpeg3.2) {
 #发布依赖library的函数
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
 defineTest(add_deploy_library_FFmpeg3.2) {
-    add_deploy_library(FFmpeg3.2, avcodec)
-    add_deploy_library(FFmpeg3.2, avdevice)
-    add_deploy_library(FFmpeg3.2, avfilter)
-    add_deploy_library(FFmpeg3.2, avformat)
-    add_deploy_library(FFmpeg3.2, avutil)
-    add_deploy_library(FFmpeg3.2, postproc)
-    add_deploy_library(FFmpeg3.2, swresample)
-    add_deploy_library(FFmpeg3.2, swscale)
+    add_deploy_libraryes(FFmpeg3.2)
     return (1)
 }
 
