@@ -198,7 +198,7 @@ defineTest(add_deploy) {
         APP_DEPLOY_PWD~=s,/,\\,g
     }
 
-    message($${TARGET} is builded from $${APP_BUILD_PWD})
+    message($${TARGET} is builded at $${APP_BUILD_PWD})
     message($${TARGET} is deployed to $$APP_DEPLOY_PWD)
 
     #如果 配置文件里 没有配置 APP_DEPLOY_ROOT 那么返回，不拷贝发布任何应用

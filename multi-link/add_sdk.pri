@@ -444,7 +444,7 @@ defineTest(add_sdk){
         LIB_SDK_PWD~=s,/,\\,g
     }
 
-    message($${TARGET} is builded from $${LIB_BUILD_PWD})
+    message($${TARGET} is builded at $${LIB_BUILD_PWD})
     message($${TARGET} add sdk to $${LIB_SDK_PWD})
 
     command += $$get_add_sdk_private($${libname}, $${librealname})
@@ -515,7 +515,7 @@ defineTest(add_sdk_to_Qt){
 
     LIB_BUILD_PWD=$${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
-    message($${TARGET} is builded from $${LIB_BUILD_PWD})
+    message($${TARGET} is builded at $${LIB_BUILD_PWD})
 
     #发布位置
     LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}

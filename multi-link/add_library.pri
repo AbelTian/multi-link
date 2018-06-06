@@ -77,7 +77,7 @@ defineReplace(get_add_library_bundle) {
         LINK += -l$${librealname}
     }
 
-    message(link $${libname} from $$CUR_LIB_PWD)
+    message(link $${librealname} from $$CUR_LIB_PWD)
     return ($${LINK})
 }
 
@@ -106,7 +106,7 @@ defineReplace(get_add_library) {
     #win can't with the blank! error: -l QQt
     LINK += -l$${librealname}
 
-    message(link $${libname} from $$CUR_LIB_PWD)
+    message(link $${librealname} from $$CUR_LIB_PWD)
 
     return ($${LINK})
 }
