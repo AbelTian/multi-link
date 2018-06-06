@@ -422,14 +422,12 @@ defineTest(add_sdk){
 
     LIB_BUILD_PWD=$${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
-    message($${TARGET} is builded from $${LIB_BUILD_PWD})
 
     #发布位置
     LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
 
     #sdk path
     LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
-    message($${TARGET} add sdk to $${LIB_SDK_PWD})
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
@@ -445,6 +443,9 @@ defineTest(add_sdk){
         LIB_BUILD_PWD~=s,/,\\,g
         LIB_SDK_PWD~=s,/,\\,g
     }
+
+    message($${TARGET} is builded from $${LIB_BUILD_PWD})
+    message($${TARGET} add sdk to $${LIB_SDK_PWD})
 
     command += $$get_add_sdk_private($${libname}, $${librealname})
     #message($$command)
@@ -662,6 +663,8 @@ defineTest(add_sdk_header){
         HEADER_FILE~=s,/,\\,g
     }
 
+    message($${TARGET} add header $${headername} to $${HEADER_FILE})
+
     command =
     command += $$CD $${LIB_SDK_PWD} $$CMD_SEP
     command += $$CD $${LIB_INC_DIR} $$CMD_SEP
@@ -676,7 +679,6 @@ defineTest(add_sdk_header){
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
     QMAKE_POST_LINK += $$command
     export(QMAKE_POST_LINK)
-    message($${TARGET} add header $${headername} to $${HEADER_FILE})
 
     return(1)
 }
