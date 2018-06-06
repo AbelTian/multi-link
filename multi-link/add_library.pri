@@ -268,7 +268,7 @@ defineTest(add_link_library) {
     return (1)
 }
 
-defineTest(add_link_library_bundle) {
+defineTest(add_link_standard_library_bundle) {
     isEmpty(1): error("add_link_library_bundle(libgroupname, libname) requires at least one argument")
     !isEmpty(3): error("add_link_library_bundle(libgroupname, libname) requires at most two argument")
 

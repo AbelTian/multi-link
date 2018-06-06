@@ -13,26 +13,22 @@ LIBRARYVER =
 #######################################################################################
 #定义内部函数
 #######################################################################################
-defineReplace(get_add_include_VLC){
+defineTest(add_include_VLC){
+    isEmpty(1)|!isEmpty(2) : error("add_include_VLC(path) requires one arguments.")
     path = $$1
-    isEmpty(1)|!isEmpty(2) : error("get_add_include_VLC(path) requires one arguments.")
 
     command =
     #basic
     command += $${path}
+    #这里添加$${path}下的子文件夹
     command += $${path}/VLCQtCore
     command += $${path}/VLCQtWidgets
 
-    return ($$command)
-}
-
-defineTest(add_include_VLC){
-    #包含VLC头文件的过程
-    header_path = $$get_add_include(VLC)
-    INCLUDEPATH += $$get_add_include_VLC($$header_path)
+    INCLUDEPATH += $$command
     export(INCLUDEPATH)
     return (1)
 }
+
 
 defineTest(add_library_VLC) {
     #链接Library
@@ -50,7 +46,8 @@ defineTest(add_link_library_VLC) {
     add_library_VLC()
 
     #添加头文件 （如果头文件目录扩展了，就改这个函数）
-    add_include_VLC()
+    header_path = $$get_add_include(VLC)
+    add_include_VLC($$header_path)
     #这样包含也很好，简洁明了
     #add_include(VLC, VLCQtCore)
     #add_include(VLC, VLCQtWidgets)
@@ -71,5 +68,20 @@ defineTest(add_deploy_library_VLC) {
 defineTest(add_dependent_library_VLC) {
     add_link_library_VLC()
     add_deploy_library_VLC()
+    return (1)
+}
+
+#######################################################################################
+#定义额外函数
+#######################################################################################
+#留意
+#这个给Library导出include和defines用，和链接这个Library无关，一般在Library生产线使用。
+defineTest(add_export_library_VLC){
+    header_path = $$1
+    isEmpty(header_path):return(0)
+    #添加头文件 （如果头文件目录扩展了，就改这个函数）
+    add_include_VLC($$header_path)
+    #添加宏定义
+    add_defines_VLC()
     return (1)
 }

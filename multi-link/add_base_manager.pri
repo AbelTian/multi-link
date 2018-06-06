@@ -73,6 +73,21 @@ include ($${PWD}/add_language.pri)
 #################################################################
 #定义外部函数
 #################################################################
+#lib生产线用于导出
+defineTest(add_export_library){
+    libname = $$1
+    isEmpty(libname):return (0)
+    header_path = $$2
+    isEmpty(header_path):header_path=$$PWD
+    
+    #添加头文件 （如果头文件目录扩展了，就改这个函数）
+    add_include_$${libname}($$header_path)
+    #添加宏定义
+    add_defines_$${libname}()
+    return (1)
+}
+
+#app生产线和lib生产线用于添加依赖
 #基本的，添加依赖
 defineTest(add_dependent_library) {
     libname = $$1

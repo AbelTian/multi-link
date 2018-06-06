@@ -58,7 +58,7 @@ defineTest(add_link_library_Template){
     #这里，add_include_bundle代表macOS下，Library的头文件在bundle里
     header_path = $$get_add_include_bundle(Template)
     add_include_Template($$header_path)
-    return (1)
+
     #链接Library
     add_library_Template()
     return (1)
@@ -78,17 +78,3 @@ defineTest(add_dependent_library_Template) {
     return (1)
 }
 
-#######################################################################################
-#定义额外函数
-#######################################################################################
-#留意
-#这个给Library导出include和defines用，和链接这个Library无关，一般在Library生产线使用。
-defineTest(add_export_library_Template){
-    header_path = $$1
-    isEmpty(header_path):return(0)
-    #添加头文件 （如果头文件目录扩展了，就改这个函数）
-    add_include_Template($$header_path)
-    #添加宏定义
-    add_defines_Template()
-    return (1)
-}
