@@ -33,7 +33,6 @@
 
 ################################################
 #add_sdk
-#add_sdk_from_subdirs
 #add_sdk_to_Qt
 #add_sdk_header
 #del_sdk
@@ -421,19 +420,16 @@ defineTest(add_sdk){
     LIB_DST_DIR=$${APP_BUILD_DESTDIR}
     isEmpty(LIB_DST_DIR):LIB_DST_DIR = $$DESTDIR
 
-    libprojname=$$APP_PROJECT_NAME
-    isEmpty(libprojname):libprojname=$$libname
-
-    #message(lib project name $$libprojname)
-    LIB_BUILD_PWD=$${APP_BUILD_ROOT}/$${libprojname}/$${QSYS_STD_DIR}
+    LIB_BUILD_PWD=$${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
+    message($${TARGET} is builded from $${LIB_BUILD_PWD})
 
-    #LIB std dir is not same to app std dir
+    #发布位置
     LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
 
     #sdk path
     LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
-    #message($${TARGET_NAME} sdk install here:$${LIB_SDK_PWD})
+    message($${TARGET} add sdk to $${LIB_SDK_PWD})
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
@@ -461,123 +457,8 @@ defineTest(add_sdk){
     return (1)
 }
 
-#依赖 libname libsrcdir libdstdir
-#添加一个参数 subdirs列表 包含subdirs层 子文件夹层 说的是build路径比较深的情况
-#libgroupname 一般为不修饰的target 可以为空
-#PWD
-#DESTDIR
-#sub层列表 从头到尾 如果为空，则等于add_sdk()
-#librealname 建议用户不要设置
-#支持Qt5，不支持Qt4. Qt4 qmake比较落后。
-defineTest(add_sdk_from_subdirs){
-    #isEmpty(1): error("add_sdk_from_subdirs(libgroupname, libname, librealname) requires at least one argument")
-    !isEmpty(4): error("add_sdk_from_subdirs(libgroupname, libname, librealname) requires at most three argument")
 
-    #LIB_SDK_ROOT下
-
-    #主目录名
-    libgroupname = $$TARGET_NAME
-    !isEmpty(1):libgroupname=$$1
-
-    #这个设置是强力的，直接改变了发布的lib的名字，编译处的目标名字也改变了。强大。
-    #如果用户对TARGET名不满意，用这个参数改变，
-    #关系：
-    #用户最初设置TARGET 完全用户的思想
-    #base manager改为修饰的TARGET。
-    #这里，允许用户重新定义TARGET，完全用户的思想
-    #自动对名字修饰。
-    #不依赖libgroupname
-    libname = $$TARGET_NAME
-    !isEmpty(2): libname = $$2
-    !isEmpty(2) {
-        #libname决定target名字，并且直接把TARGET改为_debug/d修饰名。
-        TARGET = $$libname
-        add_decorate_target()
-        #这个位置，需不需要export，存在分歧
-        export(TARGET)
-    }
-
-    #建议使用默认值
-    #这个会影响lib名的后缀，_debug d或者用户定的_xxx
-    #如果用户对_debug d等修饰名不满意，那么用这个参数改变。
-    #如果用户对自动修饰的名字不满意，那么用这个参数设定经过修饰的名字，自定义的
-    #通过这个参数，可以强制不修饰目标名 非标准 这样会影响链接时候的名字，用户链接的时候需要注意链接名
-    #依赖libname
-    librealname = $$add_decorate_target_name($$libname)
-    !isEmpty(3): librealname = $$3
-    !isEmpty(3){
-        TARGET = $$librealname
-        export(TARGET)
-    }
-
-    #liblowername依赖librealname
-    liblowername = $$lower($${librealname})
-
-    #create platform sdk need this
-    #源代码目录
-    LIB_SRC_PWD=$${APP_SOURCE_PWD}
-    isEmpty(LIB_SRC_PWD):LIB_SRC_PWD=$$PWD
-
-    #编译目标位置
-    LIB_DST_DIR=$${APP_BUILD_DESTDIR}
-    isEmpty(LIB_DST_DIR):LIB_DST_DIR = $$DESTDIR
-
-    libprojname=$$APP_PROJECT_NAME
-    isEmpty(libprojname):libprojname=$$libname
-
-    #编译目录的完全位置
-    LIB_BUILD_PWD=
-    isEmpty(4){
-        #add sdk level
-    LIB_BUILD_PWD=$${APP_BUILD_ROOT}/$${libprojname}/$${QSYS_STD_DIR}
-    !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
-    } else {
-        #sub dir level
-        LIB_SUBDIR_LIST=$$4
-        first_value = $$first(LIB_SUBDIR_LIST)
-        LIB_BUILD_PWD=$${APP_BUILD_ROOT}/$${first_value}/$${QSYS_STD_DIR}
-        LIB_SUBDIR_LIST -= $$first_value
-        for(dir, LIB_SUBDIR_LIST) {
-            LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${dir}
-        }
-        LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${TARGET}
-        !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
-    }
-
-    #LIB std dir is not same to app std dir
-    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
-
-    #sdk path
-    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
-    #message($${TARGET} sdk install here:$${LIB_SDK_PWD})
-
-    #这里不仅仅目标为windows的时候，才会转换，
-    #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows||Win64) {
-    equals(QMAKE_HOST.os, Windows) {
-        APP_BUILD_ROOT~=s,/,\\,g
-        LIB_SDK_ROOT~=s,/,\\,g
-        APP_DEPLOY_ROOT~=s,/,\\,g
-
-        QSYS_STD_DIR~=s,/,\\,g
-        LIB_STD_DIR~=s,/,\\,g
-        LIB_DST_DIR~=s,/,\\,g
-        LIB_BUILD_PWD~=s,/,\\,g
-        LIB_SDK_PWD~=s,/,\\,g
-    }
-
-    command += $$get_add_sdk_private($${libname}, $${librealname})
-    #message($$command)
-
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
-    QMAKE_POST_LINK += $$command
-
-    export(QMAKE_POST_LINK)
-
-    return (1)
-}
-
-#if you want to use QQt with QT += QQt please open this feature
+#if you want to use QQt with QT += qqt please open this feature
 defineTest(add_sdk_to_Qt){
     #isEmpty(1): error("add_sdk_to_Qt(libgroupname, libname, librealname) requires at least one argument")
     !isEmpty(4): error("add_sdk_to_Qt(libgroupname, libname, librealname) requires at most three argument")
@@ -631,19 +512,16 @@ defineTest(add_sdk_to_Qt){
     LIB_DST_DIR=$${APP_BUILD_DESTDIR}
     isEmpty(LIB_DST_DIR):LIB_DST_DIR = $$DESTDIR
 
-    libprojname=$$APP_PROJECT_NAME
-    isEmpty(libprojname):libprojname=$$libname
-
-    #need use qqt subdir proj
-    LIB_BUILD_PWD=$${APP_BUILD_ROOT}/$${libprojname}/$${QSYS_STD_DIR}
+    LIB_BUILD_PWD=$${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
+    message($${TARGET} is builded from $${LIB_BUILD_PWD})
 
-    #在发布到Qt里没用了。。
+    #发布位置
     LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
 
     #sdk path
-    LIB_SDK_PWD = $$[QT_INSTALL_DATA]
-    #message(QQt sdk install here:$${LIB_SDK_PWD})
+    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
+    message($${TARGET} add sdk to $${LIB_SDK_PWD})
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
@@ -798,6 +676,7 @@ defineTest(add_sdk_header){
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
     QMAKE_POST_LINK += $$command
     export(QMAKE_POST_LINK)
+    message($${TARGET} add header $${headername} to $${HEADER_FILE})
 
     return(1)
 }

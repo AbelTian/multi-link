@@ -123,18 +123,79 @@ defineReplace(get_add_deploy_on_android) {
 ################################################################################
 #外部用函数
 ################################################################################
+#发布app用
 defineTest(add_deploy) {
-    #起始位置 编译位置 中间目标位置
-    APP_BUILD_PWD=$${DESTDIR}
-    isEmpty(APP_BUILD_PWD):APP_BUILD_PWD=.
+    #isEmpty(1): error("add_deploy(appgroupname, appname, apprealname) requires at least one argument")
+    !isEmpty(4): error("add_deploy(appgroupname, appname, apprealname) requires at most three argument")
+
+    #LIB_SDK_ROOT下
+
+    #主目录名
+    appgroupname = $$TARGET_NAME
+    !isEmpty(1):appgroupname=$$1
+
+    #这个设置是强力的，直接改变了发布的lib的名字，编译处的目标名字也改变了。强大。
+    #如果用户对TARGET名不满意，用这个参数改变，
+    #关系：
+    #用户最初设置TARGET 完全用户的思想
+    #base manager改为修饰的TARGET。
+    #这里，允许用户重新定义TARGET，完全用户的思想
+    #自动对名字修饰。
+    #不依赖appgroupname
+    appname = $$TARGET_NAME
+    !isEmpty(2): appname = $$2
+    !isEmpty(2) {
+        #appname决定target名字，并且直接把TARGET改为_debug/d修饰名。
+        TARGET = $$appname
+        add_decorate_target()
+        #这个位置，需不需要export，存在分歧
+        export(TARGET)
+    }
+
+    #建议使用默认值
+    #这个会影响lib名的后缀，_debug d或者用户定的_xxx
+    #如果用户对_debug d等修饰名不满意，那么用这个参数改变。
+    #如果用户对自动修饰的名字不满意，那么用这个参数设定经过修饰的名字，自定义的
+    #通过这个参数，可以强制不修饰目标名 非标准 这样会影响链接时候的名字，用户链接的时候需要注意链接名
+    #依赖appname
+    apprealname = $$add_decorate_target_name($$appname)
+    !isEmpty(3): apprealname = $$3
+    !isEmpty(3){
+        TARGET = $$apprealname
+        export(TARGET)
+    }
+
+    #applowername依赖apprealname
+    applowername = $$lower($${apprealname})
+
+    #源代码目录
+    APP_SRC_PWD=$${APP_SOURCE_PWD}
+    isEmpty(APP_SRC_PWD):APP_SRC_PWD=$$PWD
+
+    #编译目标位置
+    APP_DST_DIR=$${APP_BUILD_DESTDIR}
+    isEmpty(APP_DST_DIR):APP_DST_DIR = $$DESTDIR
+
+    APP_BUILD_PWD=$${OUT_PWD}
+    !isEmpty(APP_DST_DIR):APP_BUILD_PWD=$${APP_BUILD_PWD}/$${APP_DST_DIR}
+    message($${TARGET} is builded from $${APP_BUILD_PWD})
+
+    #发布位置
+    APP_STD_DIR = $${appgroupname}/$${QSYS_STD_DIR}
 
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QSYS_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {
     equals(QMAKE_HOST.os, Windows) {
+        APP_SRC_PWD~=s,/,\\,g
+
+        APP_DST_DIR~=s,/,\\,g
+        APP_BUILD_PWD~=s,/,\\,g
+
+        APP_STD_DIR~=s,/,\\,g
         APP_DEPLOY_PWD~=s,/,\\,g
     }
     message($${TARGET} is deployed to $$APP_DEPLOY_PWD)

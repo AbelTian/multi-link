@@ -341,8 +341,9 @@ APP_BUILD_DESTDIR =
 APP_PROJECT_NAME =
 #这个值为什么初始化是空的呢？
 QMAKE_PROJECT_NAME = $$TARGET
+
 #这个目录用于读取sdk头文件进行发布
-#这个目录必须设置
+#这个目录可选设置
 #如果调用这个函数的文件所在不是在源代码目录下，比如$${PWD}/../src，可以通过这里修正
 defineTest(add_source_dir){
     APP_SOURCE_PWD = $$1
@@ -351,23 +352,32 @@ defineTest(add_source_dir){
 }
 
 #这个目录用于读取sdk库文件进行发布
-#这个目录可选设置。
-#destdir所在的位置，如果不是准确的工程编译根目录，用这个修正一下。src/$${DESTDIR}等
+#这个目录可选设置
+#如果用户更改了编译目录DEST_DIR_TARGET，比如src/$$DEST_DIR，可以通过这里改变，当然这种设置不科学，内部依赖DEST_DIR，为什么还要用DESTDIR_TARGET。
 defineTest(add_build_dir){
     APP_BUILD_DESTDIR = $$1
     export(APP_BUILD_DESTDIR)
     return (1)
 }
 
-#如果工程名字和目标名字不一样，需要修正。
-#比如：TARGET = ABC 工程名 = EFG[.pro] 就要调用这个函数设置工程名为EFG。
-#默认为未修饰的TARGET名，也就是初始TARGET名
+#如果工程名字和目标名字不一样，可以修正。
+#比如：TARGET = ABC 工程名 = EFG[.pro] 就要调用这个函数设置工程名为ABC，Creator工程树上的工程名字就会改变。
+#这是一个装饰函数。
 defineTest(add_project_name){
     APP_PROJECT_NAME = $$1
     export(APP_PROJECT_NAME)
     QMAKE_PROJECT_NAME = $$1
     export(QMAKE_PROJECT_NAME)
     return (1)
+}
+
+#把路径转换为平台上接受的路径。
+defineReplace(add_host_path){
+    path = $$1
+    equals(QMAKE_HOST.os, Windows) {
+        path~=s,/,\\,g
+    }
+    return ($$path)
 }
 
 #################################################################
