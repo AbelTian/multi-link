@@ -12,4 +12,4 @@ add_build_dir($$DESTDIR)
 add_version()
 add_sdk()
 
-add_dependent_manager(QQt)
+add_dependent_manager(QQtBase)

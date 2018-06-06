@@ -1,6 +1,6 @@
 ################################################################
-##add_library_QQt.pri
-##link QQt
+##add_library_QQtBase.pri
+##link QQtBase
 ################################################################
 #简介
 #add link library 链接过程 用于源代码编写的时候。包括头文件和添加库
@@ -24,7 +24,7 @@ LIBRARYVER =
 ##################################################################
 ##defines and configures
 ##################################################################
-defineTest(add_defines_QQt){
+defineTest(add_defines_QQtBase){
     ##Qt version
     QT += core sql network gui xml
     greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -35,7 +35,7 @@ defineTest(add_defines_QQt){
         DEFINES -= QT_NO_DEBUG_OUTPUT
     }
 
-    #compatible old version QQt (deperated)
+    #compatible old version QQtBase (deperated)
     greaterThan(QT_MAJOR_VERSION, 4): DEFINES += __QT5__
 
     #defined in qqtcore.h
@@ -86,8 +86,8 @@ defineTest(add_defines_QQt){
     ##*nix platform:
     ##build and link qqt dll or lib + ~~
     ##-----------------------------------------------
-    #link QQt static library in some occation on windows
-    #when link QQt    static library, if no this macro, headers can't be linked on windows.
+    #link QQtBase static library in some occation on windows
+    #when link QQtBase    static library, if no this macro, headers can't be linked on windows.
     #Qt is static by mingw32 building ?
     ios{
         #on my computer, Qt library are all static library?
@@ -106,12 +106,12 @@ defineTest(add_defines_QQt){
     }
 
     ################################################################
-    ##QQt Functions Macro
+    ##QQtBase Functions Macro
     ################################################################
     #You need switch these more macro according to your needs when you build this library
-    #You can tailor QQt  with these macro.
+    #You can tailor QQtBase  with these macro.
     #Default: macroes is configed, some open, some close, compatibled to special accotation.
-    ##App希望裁剪LibQQt，开关这个文件里的组件宏，用户有必要读懂这个头文件。up to so.
+    ##App希望裁剪LibQQtBase，开关这个文件里的组件宏，用户有必要读懂这个头文件。up to so.
 
     ##################C++11 Module###############################
     #if you use C++11, open this annotation. suggest: ignore
@@ -130,8 +130,8 @@ defineTest(add_defines_QQt){
         #CONFIG += c++11
 
         #compile period
-        #LibQQt need c++11 support. Please ensure your compiler version.
-        #LibQQt used override identifier
+        #LibQQtBase need c++11 support. Please ensure your compiler version.
+        #LibQQtBase used override identifier
         #lambda also need c++11
     }
 
@@ -174,29 +174,35 @@ defineTest(add_defines_QQt){
     }
 
     ##################Charts Module###############################
-    #if you use QQtCharts, open this annotation
+    #if you use QQtBaseCharts, open this annotation
     DEFINES += __QQTCHARTS__
-    lessThan(QT_MAJOR_VERSION, 5):DEFINES-=__QQTCHARTS__
-    contains(QSYS_PRIVATE, Arm32||Mips32||Embedded):DEFINES-=__QQTCHARTS__
-    #based on QtCharts, need charts module
     contains(DEFINES, __QQTCHARTS__) {
-        QT += charts
+        #默认打开Qt Charts
+        DEFINES += __QT_CHARTS__
+        #Qt小于5.7没有charts模块
+        #Qt Embedded，没有charts模块
+        #对于这两种情况，默认删除去。如果用户自己编译了Charts，手动添加charts模块。
+        lessThan(QT_VERSION, 5.7):DEFINES-=__QT_CHARTS__
+        contains(QSYS_PRIVATE, Arm32||Mips32||Embedded):DEFINES-=__QT_CHARTS__
+        #based on QtCharts, need charts module
+        contains(DEFINES, __QT_CHARTS__ ): QT += charts
 
         #if you use qcustomplot, open this annotation
         #qcustomplot use QPrinter to export pdf file, QChart haven't use it, I fix it, now compiler ok.
         #in ios qcustomplot can't call savePdf now, no result but a log no printer error.
+        #默认打开customplot
         DEFINES += __CUSTOMPLOT__
     }
 
-    ##################QQtLogSystem Module###############################
+    ##################QQtBaseLogSystem Module###############################
     DEFINES += __QQTLOGSYSTEMSUPPORT__
 
     ###########################################################################
-    ###QQtSocketClient多组功能组件。
+    ###QQtBaseSocketClient多组功能组件。
     ############
-    ##################QQt Network Module##################################
+    ##################QQtBase Network Module##################################
     #包括SerialPort Bluetooth TcpUdp
-    #包括HttpFtp 多路的HttpFtp，QQtAccessManager WebService WebSocket Gumbo
+    #包括HttpFtp 多路的HttpFtp，QQtBaseAccessManager WebService WebSocket Gumbo
     #包括WebKit WebEngine
     DEFINES += __NETWORKSUPPORT__
     contains (DEFINES, __NETWORKSUPPORT__) {
@@ -421,119 +427,129 @@ defineTest(add_defines_QQt){
 ##################################################################
 ##include directories
 ##################################################################
-defineReplace(get_add_include_QQt){
-    path = $$1
-    !isEmpty(2) : error("get_add_include_QQt(path) requires one arguments.")
-    isEmpty(1) : error("get_add_include_QQt(path) requires one arguments.")
+#把QQtBase SDK头文件路径加入进来 为搜索头文件而添加
+#其实过去做的自动添加QQtBase头文件就是这个功能
+#用户包含QQtBase头文件，就不必加相对路径了，方便了很多
+defineTest(add_include_QQtBase){
+    header_path = $$1
+    isEmpty(1)|!isEmpty(2) : error("add_include_QQtBase(header_path) requires one arguments.")
 
     #basic
-    command += $${path}
-    command += $${path}/core
-    command += $${path}/gui
-    command += $${path}/widgets
-    command += $${path}/multimedia
-    command += $${path}/sql
-    command += $${path}/frame
-    command += $${path}/printsupport
+    command += $${header_path}
+    command += $${header_path}/core
+    command += $${header_path}/gui
+    command += $${header_path}/widgets
+    command += $${header_path}/multimedia
+    command += $${header_path}/sql
+    command += $${header_path}/frame
+    command += $${header_path}/printsupport
 
     #charts
-    command += $${path}/charts
-    command += $${path}/charts/qcustomplot
+    command += $${header_path}/charts
+    command += $${header_path}/charts/qcustomplot
 
     #network
-    command += $${path}/network
-    command += $${path}/network/qextserialport
+    command += $${header_path}/network
+    command += $${header_path}/network/qextserialport
 
     ##soap (web service)
-    command += $${path}/network/soap
+    command += $${header_path}/network/soap
 
     ##gumbo library
-    command += $${path}/network/gumbo/query/src
-    command += $${path}/network/gumbo/parser/src
+    command += $${header_path}/network/gumbo/query/src
+    command += $${header_path}/network/gumbo/parser/src
     win32{
-        command += $${path}/network/gumbo/parser/visualc/include
+        command += $${header_path}/network/gumbo/parser/visualc/include
     }
 
     #plugin support
-    command += $${path}/pluginsupport
-    command += $${path}/pluginsupport/devicewatcher
+    command += $${header_path}/pluginsupport
+    command += $${header_path}/pluginsupport/devicewatcher
 
     #exquisite widgets
-    command += $${path}/exquisite
-    command += $${path}/exquisite/clicksoundwidgets
-    command += $${path}/exquisite/clickwidgets
-    command += $${path}/exquisite/svgwidgets
-    command += $${path}/exquisite/gifwidgets
-    command += $${path}/exquisite/openglwidgets
-    command += $${path}/exquisite/colorwidgets
-    command += $${path}/exquisite/mathml
-    command += $${path}/exquisite/dmmu
+    command += $${header_path}/exquisite
+    command += $${header_path}/exquisite/clicksoundwidgets
+    command += $${header_path}/exquisite/clickwidgets
+    command += $${header_path}/exquisite/svgwidgets
+    command += $${header_path}/exquisite/gifwidgets
+    command += $${header_path}/exquisite/openglwidgets
+    command += $${header_path}/exquisite/colorwidgets
+    command += $${header_path}/exquisite/mathml
+    command += $${header_path}/exquisite/dmmu
 
     ##qr code library
-    command += $${path}/exquisite/qrcode/qrencode
-    command += $${path}/exquisite/qrcode/qrdecode
-    command += $${path}/exquisite/qrcode/qrdecode/zxing
+    command += $${header_path}/exquisite/qrcode/qrencode
+    command += $${header_path}/exquisite/qrcode/qrdecode
+    command += $${header_path}/exquisite/qrcode/qrdecode/zxing
     win32-g++{
-        command += $${path}/exquisite/qrcode/qrdecode/zxing/win32/zxing
+        command += $${header_path}/exquisite/qrcode/qrdecode/zxing/win32/zxing
     }
     win32-msvc*{
-        command += $${path}/exquisite/qrcode/qrdecode/zxing/win32/zxing \
-                    $${path}/exquisite/qrcode/qrdecode/zxing/win32/zxing/msvc
+        command += $${header_path}/exquisite/qrcode/qrdecode/zxing/win32/zxing \
+                    $${header_path}/exquisite/qrcode/qrdecode/zxing/win32/zxing/msvc
     }
 
     #highgrade module
-    command += $${path}/highgrade
+    command += $${header_path}/highgrade
 
-    return ($$command)
-}
-
-#把QQt SDK头文件路径加入进来 为搜索头文件而添加
-#其实过去做的自动添加QQt头文件就是这个功能
-#用户包含QQt头文件，就不必加相对路径了，方便了很多
-defineTest(add_include_QQt){
-    #包含QQt头文件的过程
-    header_path = $$1
-    isEmpty(header_path):header_path = $$get_add_include_bundle(QQt)
-    INCLUDEPATH += $$get_add_include_QQt($$header_path)
+    INCLUDEPATH += $$command
     export(INCLUDEPATH)
+    
     return (1)
 }
 
 
-defineTest(add_library_QQt){
-    #链接QQt
-    add_library_bundle(QQt)
+
+defineTest(add_library_QQtBase){
+    #链接QQtBase
+    add_library_bundle(QQt, QQtBase)
 }
 
 #######################################################################################
 #定义外部函数
 #######################################################################################
-#链接QQt
-#用户只需要调用这个函数，一个，就能开启链接QQt 包含QQt 跟随App发布QQt三个步骤的App生产线工位。
-defineTest(add_link_library_QQt){
-    #细心的用户会发现，QQt的头文件包含了两次，一个在源代码目录里，一个在SDK目录里，两个并不冲突。系统只要搜索到一个目录里的就可以使用了。
+#链接QQtBase
+#用户只需要调用这个函数，一个，就能开启链接QQtBase 包含QQtBase 跟随App发布QQtBase三个步骤的App生产线工位。
+defineTest(add_link_library_QQtBase){
+    #细心的用户会发现，QQtBase的头文件包含了两次，一个在源代码目录里，一个在SDK目录里，两个并不冲突。系统只要搜索到一个目录里的就可以使用了。
     #当然，我们确信，SDK目录里的头文件服从于源代码目录里的头文件。
-    #包含QQt的头文件
-    add_include_QQt()
-    #包含QQt的宏定义
-    add_defines_QQt()
+    #包含QQtBase的头文件
+    header_path = $$get_add_include_bundle(QQt, QQtBase)
+    add_include_QQtBase($$header_path)
+    #包含QQtBase的宏定义
+    add_defines_QQtBase()
     #链接（lib)
-    add_library_QQt()
+    add_library_QQtBase()
     return (1)
 }
 
-#以上代码只完成了链接libQQt 包含libQQt头文件 包含libQQt宏文件(在宏文件控制下Library的头文件才有精确的意义)
-#没有发布libQQt
-#App在开发中，调用发布App以后 必然需要调用add_deploy_library(QQt)发布QQt到运行时。强大的：从sdk发布到build和deploy位置。
+#以上代码只完成了链接libQQtBase 包含libQQtBase头文件 包含libQQtBase宏文件(在宏文件控制下Library的头文件才有精确的意义)
+#没有发布libQQtBase
+#App在开发中，调用发布App以后 必然需要调用add_deploy_library(QQtBase)发布QQtBase到运行时。强大的：从sdk发布到build和deploy位置。
 #调试，正常；发布运行，正常。
 #:) 方便函数
-defineTest(add_deploy_library_QQt){
-    add_deploy_library_bundle(QQt)
+defineTest(add_deploy_library_QQtBase){
+    add_deploy_library_bundle(QQt, QQtBase)
     return (1)
 }
 
-defineTest(add_dependent_library_QQt){
-    add_link_library_QQt()
-    add_deploy_library_QQt()
+defineTest(add_dependent_library_QQtBase){
+    add_link_library_QQtBase()
+    add_deploy_library_QQtBase()
+    return (1)
+}
+
+#######################################################################################
+#定义额外函数
+#######################################################################################
+#留意
+#这个给Library导出include和defines用，和链接这个Library无关，一般在Library生产线使用。
+defineTest(add_export_library_QQtBase){
+    header_path = $$1
+    isEmpty(header_path):return(0)
+    #添加头文件 （如果头文件目录扩展了，就改这个函数）
+    add_include_QQtBase($$header_path)
+    #添加宏定义
+    add_defines_QQtBase()
     return (1)
 }

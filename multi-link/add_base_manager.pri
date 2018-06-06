@@ -77,6 +77,7 @@ include ($${PWD}/add_language.pri)
 defineTest(add_dependent_library) {
     libname = $$1
     isEmpty(libname): return (0)
+
     contains(TEMPLATE, app):add_dependent_library_$${libname}()
     else:contains(TEMPLATE, lib):add_link_library_$${libname}()
     else:add_link_library_$${libname}()
@@ -87,17 +88,25 @@ defineTest(add_dependent_library) {
 #这是一个强大的函数
 #调用这一个函数就可以调用add_library_XXX.pri里实现的函数
 #################################################################
+#这个函数，如果为app工程，则包含deploy过程，如果是lib工程则不包括。
 defineTest(add_dependent_manager){
     libname = $$1
     #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
     isEmpty(libname):return(0)
 
-    !equals(TARGET_NAME, $${libname}):
-        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri){
-        include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri)
-        contains(TEMPLATE, app):add_dependent_library_$${libname}()
-        else:contains(TEMPLATE, lib):add_link_library_$${libname}()
-        else:add_link_library_$${libname}()
+    !equals(TARGET_NAME, $${libname}){
+        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri) {
+            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri)
+            contains(TEMPLATE, app):add_dependent_library_$${libname}()
+            else:contains(TEMPLATE, lib):add_link_library_$${libname}()
+            else:add_link_library_$${libname}()
+        } else {
+            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
+            return (0)
+        }
+    } else {
+        message(please check your target name $$TARGET_NAME and lib name $$libname)
+        return (0)
     }
     return (1)
 }
@@ -110,12 +119,52 @@ defineTest(add_custom_dependent_manager){
     pripath = $$2
     isEmpty(pripath):pripath = $${PWD}
 
-    !equals(TARGET_NAME, $${libname}):
-        exists($${pripath}/add_library_$${libname}.pri){
-        include ($${pripath}/add_library_$${libname}.pri)
-        contains(TEMPLATE, app):add_dependent_library_$${libname}()
-        else:contains(TEMPLATE, lib):add_link_library_$${libname}()
-        else:add_link_library_$${libname}()
+    !equals(TARGET_NAME, $${libname}){
+        exists($${pripath}/add_library_$${libname}.pri) {
+            include ($${pripath}/add_library_$${libname}.pri)
+            contains(TEMPLATE, app):add_dependent_library_$${libname}()
+            else:contains(TEMPLATE, lib):add_link_library_$${libname}()
+            else:add_link_library_$${libname}()
+        } else {
+            message(please check is $${pripath}/add_library_$${libname}.pri existed?)
+            return (0)
+        }
+    } else {
+        message(please check your target name $$TARGET_NAME and lib name $$libname)
+        return (0)
+    }
+    return (1)
+}
+
+#用于为multi-link制作add_library_$$libname.pri
+#导出include和defines
+#方便链接者跟随最新的library变动，摆脱复杂的配置，方便编辑者不必重复操作include和defines代码。
+defineTest(add_export_manager){
+    libname = $$1
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libname):return(0)
+
+    libheaderdir = $$2
+    #默认位置 调用处目录
+    isEmpty(libheaderdir):libheaderdir=$$PWD
+
+    equals(TARGET_NAME, $${libname}) {
+        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri) {
+            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri)
+            contains(TEMPLATE, lib) {
+                add_include_$${libname}($${libheaderdir})
+                add_defines_$${libname}()
+            } else {
+                message(please use add export in lib project.)
+                return (0)
+            }
+        } else {
+            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
+            return (0)
+        }
+    } else {
+        message(please check your target name $$TARGET_NAME and lib name $$libname)
+        return (0)
     }
     return (1)
 }
