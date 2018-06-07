@@ -328,6 +328,7 @@ defineTest(add_lib_project) {
             CONFIG += dll
             DEFINES += LIB_LIBRARY
             #mingw编译为静态有原因：动态库可以编译成功，但是无法链接成功。
+            #终于查清楚原因了，mingw编译app工程，某个原因，不改动调用源代码，工程链接就会提示失败，即便链接上了。可能mingw的bug，也可能是操作系统的bug。
             message(Build $${TARGET} LIB_LIBRARY is defined. build)
         } else {
             #create dynamic lib (important, only occured at builder pro)
