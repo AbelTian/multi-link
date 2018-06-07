@@ -549,6 +549,7 @@ defineTest(add_sdk_to_Qt){
     return (1)
 }
 
+#未实现。
 defineTest(clean_sdk){
     #isEmpty(1): error("clean_sdk(libgroupname, libname, librealname) requires at least one argument")
     !isEmpty(4): error("clean_sdk(libgroupname, libname, librealname) requires at most three argument")
@@ -577,8 +578,11 @@ defineTest(clean_sdk){
     LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
     #message(QQt sdk install here:$${LIB_SDK_PWD})
 
-    LIB_SDK_ALL = $${LIB_SDK_PWD}/*$${libname}.*
-    LIB_SDK_ALL2 = $${LIB_SDK_PWD}/*$${librealname}.*
+    LIB_SDK_ALL1 = $${LIB_SDK_PWD}/lib/*$${libname}.*
+    LIB_SDK_ALL2 = $${LIB_SDK_PWD}/lib/*$${librealname}.*
+    LIB_SDK_ALL3 = $${LIB_SDK_PWD}/bin/*$${libname}.*
+    LIB_SDK_ALL4 = $${LIB_SDK_PWD}/bin/*$${librealname}.*
+    LIB_SDK_ALL5 = $${LIB_SDK_PWD}/include/$${libname}/*
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
@@ -590,18 +594,24 @@ defineTest(clean_sdk){
         LIB_STD_DIR~=s,/,\\,g
         LIB_SDK_PWD~=s,/,\\,g
 
-        LIB_SDK_ALL~=s,/,\\,g
+        LIB_SDK_ALL1~=s,/,\\,g
         LIB_SDK_ALL2~=s,/,\\,g
+        LIB_SDK_ALL3~=s,/,\\,g
+        LIB_SDK_ALL4~=s,/,\\,g
+        LIB_SDK_ALL5~=s,/,\\,g
     }
 
-    command += $$RM_DIR $${LIB_SDK_ALL} $$CMD_SEP
-    command += $$RM_DIR $${LIB_SDK_ALL2}
+    command += $$RM_DIR $${LIB_SDK_ALL1} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL2} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL3} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL4} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL5}
     #message($$command)
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
-    QMAKE_POST_LINK += $$command
+    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK += $$CMD_SEP
+    QMAKE_PRE_LINK += $$command
 
-    export(QMAKE_POST_LINK)
+    export(QMAKE_PRE_LINK)
 
     return (1)
 }
