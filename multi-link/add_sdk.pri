@@ -35,7 +35,7 @@
 #add_sdk
 #add_sdk_to_Qt
 #add_sdk_header
-#del_sdk
+#clean_sdk
 
 ADD_SDK_PRI_PWD = $${PWD}
 
@@ -513,7 +513,6 @@ defineTest(add_sdk_to_Qt){
 
     LIB_BUILD_PWD=$${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
-    message($${TARGET} is builded at $${LIB_BUILD_PWD})
 
     #发布位置
     LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
@@ -537,6 +536,8 @@ defineTest(add_sdk_to_Qt){
         LIB_SDK_PWD~=s,/,\\,g
     }
 
+    message($${TARGET} is builded at $${LIB_BUILD_PWD})
+
     command += $$get_add_sdk_private($${libname}, $${librealname})
     #message($$command)
 
@@ -548,9 +549,9 @@ defineTest(add_sdk_to_Qt){
     return (1)
 }
 
-defineTest(del_sdk){
-    #isEmpty(1): error("del_sdk(libgroupname, libname, librealname) requires at least one argument")
-    !isEmpty(4): error("del_sdk(libgroupname, libname, librealname) requires at most three argument")
+defineTest(clean_sdk){
+    #isEmpty(1): error("clean_sdk(libgroupname, libname, librealname) requires at least one argument")
+    !isEmpty(4): error("clean_sdk(libgroupname, libname, librealname) requires at most three argument")
 
     #LIB_SDK_ROOT下
 
