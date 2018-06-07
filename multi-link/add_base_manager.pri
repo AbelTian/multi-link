@@ -361,6 +361,16 @@ defineTest(add_pre_link){
     return (1)
 }
 
+defineTest(add_include_path) {
+    header_path = $$1
+    isEmpty(header_path):header_path=$$PWD
+
+    INCLUDEPATH += $$header_path
+    export(INCLUDEPATH)
+
+    return (1)
+}
+
 #内部默认 $$PWD
 APP_SOURCE_PWD =
 #内部默认 $$DESTDIR

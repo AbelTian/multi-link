@@ -8,6 +8,7 @@
 #add_library_bundle
 #add_link_library
 #add_link_library_bundle
+#add_library_path
 
 #固定SDK结构！请参照add_sdk.pri
 
@@ -222,7 +223,7 @@ defineTest(add_include) {
 #提供方便
 #添加链接库路径 Only 路径
 defineReplace(get_add_library_path) {
-    isEmpty(1)|!isEmpty(3): error("get_add_library_path(libgroupname) requires one argument")
+    isEmpty(1)|!isEmpty(2): error("get_add_library_path(libgroupname) requires one argument")
 
     libgroupname = $$1
     CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/lib
@@ -242,7 +243,7 @@ defineReplace(get_add_library_path) {
 }
 
 defineTest(add_library_path) {
-    isEmpty(1)|!isEmpty(3): error("add_library_path(libgroupname) requires one argument")
+    isEmpty(1)|!isEmpty(2): error("add_library_path(libgroupname) requires one argument")
 
     libgroupname = $$1
     command = $$get_add_library_path($${libgroupname})
