@@ -13,43 +13,50 @@ LIBRARYVER =
 #######################################################################################
 #定义内部函数
 #######################################################################################
-defineReplace(get_add_include_OpenSceneGraph){
-    path = $$1
-    isEmpty(1)|!isEmpty(2) : error("get_add_include_OpenSceneGraph(path) requires one arguments.")
+#修改
+defineTest(add_include_OpenSceneGraph){
+    #不为空，肯定是源码里的路径。 用于导出头文件
+    header_path = $$1
+    #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
+    #此处_bundle代表 mac下头文件在bundle里。 留意
+    isEmpty(header_path)header_path=$$get_add_include(OpenSceneGraph)
 
     command =
     #basic
-    command += $${path}
-    command += $${path}/OpenThreads
-    command += $${path}/osg
-    command += $${path}/osgAnimation
-    command += $${path}/osgDB
-    command += $${path}/osgFX
-    command += $${path}/osgGA
-    command += $${path}/osgManipulator
-    command += $${path}/osgParticle
-    command += $${path}/osgPresentation
-    command += $${path}/osgQt
-    command += $${path}/osgShadow
-    command += $${path}/osgSim
-    command += $${path}/osgTerrain
-    command += $${path}/osgText
-    command += $${path}/osgUI
-    command += $${path}/osgUtil
-    command += $${path}/osgViewer
-    command += $${path}/osgVolume
-    command += $${path}/osgWidget
+    command += $${header_path}
+    command += $${header_path}/OpenThreads
+    command += $${header_path}/osg
+    command += $${header_path}/osgAnimation
+    command += $${header_path}/osgDB
+    command += $${header_path}/osgFX
+    command += $${header_path}/osgGA
+    command += $${header_path}/osgManipulator
+    command += $${header_path}/osgParticle
+    command += $${header_path}/osgPresentation
+    command += $${header_path}/osgQt
+    command += $${header_path}/osgShadow
+    command += $${header_path}/osgSim
+    command += $${header_path}/osgTerrain
+    command += $${header_path}/osgText
+    command += $${header_path}/osgUI
+    command += $${header_path}/osgUtil
+    command += $${header_path}/osgViewer
+    command += $${header_path}/osgVolume
+    command += $${header_path}/osgWidget
 
-    return ($$command)
-}
-
-defineTest(add_include_OpenSceneGraph){
-    #包含OpenSceneGraph头文件的过程
-    header_path = $$get_add_include(OpenSceneGraph)
-    INCLUDEPATH += $$get_add_include_OpenSceneGraph($$header_path)
+    INCLUDEPATH += $$command
     export(INCLUDEPATH)
     return (1)
 }
+
+#修改
+defineTest(add_defines_OpenSceneGraph){
+    #添加这个SDK里的defines
+    #add_defines()
+
+    return (1)
+}
+
 
 defineTest(add_library_OpenSceneGraph) {
     #链接Library
@@ -75,35 +82,9 @@ defineTest(add_library_OpenSceneGraph) {
     return (1)
 }
 
-#######################################################################################
-#定义外部函数
-#######################################################################################
-#链接OpenSceneGraph的WorkFlow
-defineTest(add_link_library_OpenSceneGraph) {
-    #链接Library
-    add_library_OpenSceneGraph()
-
-    #添加头文件 （如果头文件目录扩展了，就改这个函数）
-    add_include_OpenSceneGraph()
-    #这样包含也很好，简洁明了
-    #add_include(OpenSceneGraph, OpenSceneGraphQtCore)
-    #add_include(OpenSceneGraph, OpenSceneGraphQtWidgets)
-    #...
-
-    #添加宏定义
-    #add_defines(xx)
-    return (1)
-}
-
 #发布依赖library的函数
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
 defineTest(add_deploy_library_OpenSceneGraph) {
     add_deploy_libraryes(OpenSceneGraph)
-    return (1)
-}
-
-defineTest(add_dependent_library_OpenSceneGraph) {
-    add_link_library_OpenSceneGraph()
-    add_deploy_library_OpenSceneGraph()
     return (1)
 }

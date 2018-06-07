@@ -27,7 +27,7 @@ defineTest(add_include_SDL2){
     command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    command += $${path}/..
+    command += $${header_path}/..
     #额外的方法
     #这个是有点分歧，其实mac下SDL2 framwrok里的Headers就够用了，可是某些程序当中喜欢把头文件带SDL2字样，bundle里面没有，所以出现了下边这个inc和上边这个inc并存的情况。
     add_include_bundle(SDL2, SDL2)

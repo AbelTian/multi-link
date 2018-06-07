@@ -10,35 +10,33 @@
 #1.0.0
 LIBRARYVER = .5
 
-
 #######################################################################################
 #定义内部函数
 #######################################################################################
-defineReplace(get_add_include_log4cpp){
-    path = $$1
-    isEmpty(1)|!isEmpty(2) : error("get_add_include_log4cpp(path) requires one arguments.")
+#修改
+defineTest(add_include_log4cpp){
+    #不为空，肯定是源码里的路径。 用于导出头文件
+    header_path = $$1
+    #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
+    #此处_bundle代表 mac下头文件在bundle里。 留意
+    isEmpty(header_path)header_path=$$get_add_include(log4cpp)
 
     command =
     #basic
-    command += $${path}
+    command += $${header_path}
     #这里添加$${path}下的子文件夹
-    command += $${path}/..
-    command += $${path}/threading
+    command += $${header_path}/..
+    command += $${header_path}/threading
 
-    return ($$command)
+    INCLUDEPATH += $$command
+    export(INCLUDEPATH)
+    return (1)
 }
 
-defineTest(add_include_log4cpp){
-    #包含log4cpp头文件的过程
-    header_path = $$get_add_include(log4cpp)
-    INCLUDEPATH += $$get_add_include_log4cpp($$header_path)
-    export(INCLUDEPATH)
-    
-    #不用上边这种，这样包含也很好，简洁明了
-    #add_include(log4cpp)
-    #add_include(log4cpp, log4cpp)
-    #add_include(log4cpp, log4cpp/core)
-    #...
+#修改
+defineTest(add_defines_log4cpp){
+    #添加这个SDK里的defines
+    #add_defines()
 
     return (1)
 }
@@ -49,30 +47,9 @@ defineTest(add_library_log4cpp){
     return (1)
 }
 
-#######################################################################################
-#定义外部函数
-#######################################################################################
-#链接log4cpp的WorkFlow
-defineTest(add_link_library_log4cpp){
-    #链接Library
-    add_library_log4cpp()
-    #添加头文件 （如果头文件目录扩展了，就改这个函数）
-    add_include_log4cpp()
-
-    #添加宏定义
-    #add_defines(xx)
-    return (1)
-}
-
 #发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
 defineTest(add_deploy_library_log4cpp) {
     add_deploy_library(log4cpp, log4cpp$${LIBRARYVER})
-    return (1)
-}
-
-defineTest(add_dependent_library_log4cpp) {
-    add_link_library_log4cpp()
-    add_deploy_library_log4cpp()
     return (1)
 }
