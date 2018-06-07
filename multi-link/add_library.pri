@@ -6,8 +6,8 @@
 #add_include_bundle
 #add_library
 #add_library_bundle
-#add_standard_library
-#add_standard_library_bundle
+#add_link_library
+#add_link_library_bundle
 
 #固定SDK结构！请参照add_sdk.pri
 
@@ -253,9 +253,9 @@ defineTest(add_include) {
 
 #提供方便
 #链接标准SDK
-defineTest(add_standard_library) {
-    isEmpty(1): error("add_standard_library(libgroupname, libname) requires at least one argument")
-    !isEmpty(3): error("add_standard_library(libgroupname, libname) requires at most two argument")
+defineTest(add_link_library) {
+    isEmpty(1): error("add_link_library(libgroupname, libname) requires at least one argument")
+    !isEmpty(3): error("add_link_library(libgroupname, libname) requires at most two argument")
 
     libgroupname = $$1
     libname = $$2
@@ -268,9 +268,9 @@ defineTest(add_standard_library) {
     return (1)
 }
 
-defineTest(add_standard_library_bundle) {
-    isEmpty(1): error("add_standard_library_bundle(libgroupname, libname) requires at least one argument")
-    !isEmpty(3): error("add_standard_library_bundle(libgroupname, libname) requires at most two argument")
+defineTest(add_link_library_bundle) {
+    isEmpty(1): error("add_link_library_bundle(libgroupname, libname) requires at least one argument")
+    !isEmpty(3): error("add_link_library_bundle(libgroupname, libname) requires at most two argument")
 
     libgroupname = $$1
     libname = $$2

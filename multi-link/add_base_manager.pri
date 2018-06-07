@@ -66,193 +66,42 @@ include ($${PWD}/add_language.pri)
 ####################################################################################
 #工程层级介绍：
 #add_library在基本的链接层
-#add_sdk add_link_library add_link_manager 出现在library层
-#add_dependent_library add_dependent_manager 才出现在app层。当然也可以使用link层，如果用户喜欢，在library层，一般不会用dependent，只用link。
+#add_sdk 出现在library层
+#add_dependent_library add_dependent_manager 出现在app层。在这Multi-link里，用dependent函数，统筹实现。
 #工程管理层级上是递进关系。在二进制上他们是互相兼容的，平行关系。
 
 #################################################################
 #定义外部函数
 #################################################################
-#lib生产线用于导出头文件和定义
-defineTest(add_export_library){
-    libname = $$1
-    isEmpty(libname):return (0)
-    header_path = $$2
-    isEmpty(header_path):header_path=$$PWD
-    
-    #添加头文件 参数不为空，为源码里的路径 （如果头文件目录扩展了，就改这个函数）
-    add_include_$${libname}($$header_path)
-    #添加宏定义
-    add_defines_$${libname}()
-    return (1)
-}
-
-#library生产线加载依赖项
-defineTest(add_link_library) {
-    libname = $$1
-    isEmpty(libname): return (0)
-    !contains(TEMPLATE, lib):return(0)
-
-    #添加头文件 参数为空，为SDK里的路径。
-    add_include_$${libname}()
-    #添加宏定义
-    add_defines_$${libname}()
-    #链接Library
-    add_library_$${libname}()
-
-    return (1)
-}
-
-#app生产线用于添加依赖
-#基本的，添加依赖，直接添加。这个函数要求，保存函数的pri已经被用户包含。
-defineTest(add_dependent_library) {
-    libname = $$1
-    isEmpty(libname): return (0)
-    !contains(TEMPLATE, app):return(0)
-
-    #添加头文件 参数为空，为SDK里的路径。
-    add_include_$${libname}()
-    #添加宏定义
-    add_defines_$${libname}()
-    #链接Library
-    add_library_$${libname}()
-    #发布Library
-    add_deploy_library_$${libname}()
-
-    return (1)
-}
 
 #################################################################
 #这是一个强大的函数
 #调用这一个函数就可以调用add_library_XXX.pri里实现的函数
 #################################################################
-#用于为multi-link制作add_library_$$libname.pri
-#导出include和defines
-#方便链接者跟随最新的library变动，摆脱复杂的配置，方便编辑者不必重复操作include和defines代码。
-defineTest(add_export_manager){
-    libname = $$1
-    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
-    isEmpty(libname):return(0)
-
-    libheaderdir = $$2
-    #默认位置 调用处目录
-    isEmpty(libheaderdir):libheaderdir=$$PWD
-
-    equals(TARGET_NAME, $${libname}) {
-        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri) {
-            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri)
-            contains(TEMPLATE, lib) {
-                add_include_$${libname}($${libheaderdir})
-                add_defines_$${libname}()
-            } else {
-                message(please use add export in lib project.)
-                return (0)
-            }
-        } else {
-            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
-            return (0)
-        }
-    } else {
-        message(please check your target name $$TARGET_NAME and lib name $$libname)
-        return (0)
-    }
-    return (1)
-}
-
-defineTest(add_custom_export_manager){
-    libname = $$1
-    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
-    isEmpty(libname):return(0)
-
-    pripath = $$2
-    isEmpty(pripath):pripath = $${PWD}
-
-    libheaderdir = $$3
-    #默认位置 调用处目录
-    isEmpty(libheaderdir):libheaderdir=$$PWD
-
-    equals(TARGET_NAME, $${libname}) {
-        exists($${pripath}/add_library_$${libname}.pri) {
-            include ($${pripath}/add_library_$${libname}.pri)
-            contains(TEMPLATE, lib) {
-                add_include_$${libname}($${libheaderdir})
-                add_defines_$${libname}()
-            } else {
-                message(please use add export in lib project.)
-                return (0)
-            }
-        } else {
-            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
-            return (0)
-        }
-    } else {
-        message(please check your target name $$TARGET_NAME and lib name $$libname)
-        return (0)
-    }
-    return (1)
-}
-
-defineTest(add_link_manager){
-    libname = $$1
-    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
-    isEmpty(libname):return(0)
-
-    !equals(TARGET_NAME, $${libname}){
-        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri) {
-            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri)
-            contains(TEMPLATE, app):add_dependent_library($${libname})
-            else:contains(TEMPLATE, lib):add_link_library($${libname})
-            else:add_link_library($${libname})
-        } else {
-            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
-            return (0)
-        }
-    } else {
-        message(please check your target name $$TARGET_NAME and lib name $$libname)
-        return (0)
-    }
-    return (1)
-}
-
-defineTest(add_link_manager){
-    libname = $$1
-    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
-    isEmpty(libname):return(0)
-
-    pripath = $$2
-    isEmpty(pripath):pripath = $${PWD}
-
-    !equals(TARGET_NAME, $${libname}){
-        exists($${pripath}/add_library_$${libname}.pri) {
-            include ($${pripath}/add_library_$${libname}.pri)
-            contains(TEMPLATE, app):add_dependent_library($${libname})
-            else:contains(TEMPLATE, lib):add_link_library($${libname})
-            else:add_link_library($${libname})
-        } else {
-            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
-            return (0)
-        }
-    } else {
-        message(please check your target name $$TARGET_NAME and lib name $$libname)
-        return (0)
-    }
-    return (1)
-}
-
 #这个函数，如果为app工程，则包含deploy过程，如果是lib工程则不包括。
+#函数不可缺席，否则会影响整个工程管理的正常运行。
 defineTest(add_dependent_manager){
-    libname = $$1
+    libgroupname = $$1
+    libname = $$2
     #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
-    isEmpty(libname):return(0)
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
 
     !equals(TARGET_NAME, $${libname}){
-        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri) {
-            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri)
-            contains(TEMPLATE, app):add_dependent_library($${libname})
-            else:contains(TEMPLATE, lib):add_link_library($${libname})
-            else:add_link_library($${libname})
+        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri) {
+            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri)
+            #添加头文件 参数为空，为SDK里的路径。
+            add_include_$${libname}()
+            #添加宏定义
+            add_defines_$${libname}()
+            #链接Library
+            add_library_$${libname}()
+            contains(TEMPLATE, app) {
+                #发布Library
+                add_deploy_library_$${libname}()
+            }
         } else {
-            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libname}.pri existed?)
+            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri existed?)
             return (0)
         }
     } else {
@@ -265,19 +114,29 @@ defineTest(add_dependent_manager){
 #从自定义路径加载add_library_<libname>.pri
 #第二个参数为空，则从调用处添加。
 defineTest(add_custom_dependent_manager){
-    libname = $$1
-    isEmpty(libname):return(0)
-    pripath = $$2
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
     isEmpty(pripath):pripath = $${PWD}
 
     !equals(TARGET_NAME, $${libname}){
-        exists($${pripath}/add_library_$${libname}.pri) {
-            include ($${pripath}/add_library_$${libname}.pri)
-            contains(TEMPLATE, app):add_dependent_library($${libname})
-            else:contains(TEMPLATE, lib):add_link_library($${libname})
-            else:add_link_library($${libname})
+        exists($${pripath}/add_library_$${libgroupname}.pri) {
+            include ($${pripath}/add_library_$${libgroupname}.pri)
+            #添加头文件 参数为空，为SDK里的路径。
+            add_include_$${libname}()
+            #添加宏定义
+            add_defines_$${libname}()
+            #链接Library
+            add_library_$${libname}()
+            contains(TEMPLATE, app) {
+                #发布Library
+                add_deploy_library_$${libname}()
+            }
         } else {
-            message(please check is $${pripath}/add_library_$${libname}.pri existed?)
+            message(please check is $${pripath}/add_library_$${libgroupname}.pri existed?)
             return (0)
         }
     } else {
@@ -286,7 +145,6 @@ defineTest(add_custom_dependent_manager){
     }
     return (1)
 }
-
 
 #开启app工程
 defineTest(add_app_project) {

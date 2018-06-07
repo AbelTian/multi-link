@@ -365,8 +365,6 @@ defineReplace(get_add_sdk_private){
 #libgroupname<主目录名>
 #libname 这里 libname是内定的 就是用户设置的TARGET 没有修饰的那个 如果想发布成随意的样子就改变这个。这个很重要，建议不要随便改动。
 #librealname 用户自定义名称，一般省略 = 修饰名是没有问题的。
-#libsrcdir PWD
-#libdstdir DESTDIR 这两个参数一般不设置，除非你的pri pro所在位置不是准确的源代码目录，除非你的编译中间目标所在在子目录里，如果subdirs工程，用下边那个add_sdk函数
 defineTest(add_sdk){
     #isEmpty(1): error("add_sdk(libgroupname, libname, librealname) requires at least one argument")
     !isEmpty(4): error("add_sdk(libgroupname, libname, librealname) requires at most three argument")
@@ -683,3 +681,13 @@ defineTest(add_sdk_header){
     return(1)
 }
 
+#add_sdk
+defineTest(add_export){
+    libgroupname = $$1
+    libname = $$2
+    librealname = $$3
+    ret =
+    add_sdk($$libgroupname, $$libname, $$librealname):ret =1
+    else : ret = 0
+    return ($$ret)
+}

@@ -10,7 +10,7 @@ add_version()
 add_language(...)
 add_deploy_config(...)
 
-add_dependent_manager(QQtBase)
+add_dependent_manager(QQt)
 add_custom_dependent_manager(LibDemo)
 add_dependent_manager(Template)
 add_dependent_manager(SDL2)
