@@ -29,6 +29,7 @@ Multi-link技术使用众多的pri进行函数定义，提供给用户丰富的A
 3. 仿照demo里的pri配置自己的工程。  
 4. 如果希望添加自定义模块，那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录。仿照demo里的样子写自定义的add_library_XXX.pri. 
 
+[详细使用说明](usage.md)  
 
 #### 参与贡献
 
