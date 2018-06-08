@@ -36,6 +36,7 @@
 #add_sdk_to_Qt
 #add_sdk_header
 #clean_sdk
+#add_export (= add_sdk)
 
 ADD_SDK_PRI_PWD = $${PWD}
 
