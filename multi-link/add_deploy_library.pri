@@ -427,6 +427,7 @@ defineTest(add_deploy_library) {
         QMAKE_POST_LINK += $$get_add_deploy_library_on_mac($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         ANDROID_EXTRA_LIBS += $$get_add_deploy_library_on_android($${libgroupname}, $${libname}, $${librealname})
+        export(ANDROID_EXTRA_LIBS)
     } else {
         ##发布linux、e-linux，这个是一样的。GG
         QMAKE_POST_LINK += $$get_add_deploy_library_on_linux($${libgroupname}, $${libname}, $${librealname})
@@ -487,6 +488,7 @@ defineTest(add_deploy_library_bundle) {
         QMAKE_POST_LINK += $$get_add_deploy_library_bundle_on_mac($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         ANDROID_EXTRA_LIBS += $$get_add_deploy_library_on_android($${libgroupname}, $${libname}, $${librealname})
+        export(ANDROID_EXTRA_LIBS)
     } else {
         ##发布linux、e-linux，这个是一样的。GG
         QMAKE_POST_LINK += $$get_add_deploy_library_on_linux($${libgroupname}, $${libname}, $${librealname})
@@ -548,6 +550,7 @@ defineTest(add_deploy_libraryes) {
         QMAKE_POST_LINK += $$get_add_deploy_libraryes_on_mac($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         ANDROID_EXTRA_LIBS += $$get_add_deploy_libraryes_on_android($${libgroupname}, $${libname}, $${librealname})
+        export(ANDROID_EXTRA_LIBS)
     } else {
         ##发布linux、e-linux，这个是一样的。GG
         QMAKE_POST_LINK += $$get_add_deploy_libraryes_on_linux($${libgroupname}, $${libname}, $${librealname})
