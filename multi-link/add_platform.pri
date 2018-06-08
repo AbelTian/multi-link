@@ -3,38 +3,8 @@
 #这个pri决定编译目标平台
 #-----------------------------------------------------------------------------
 #从环境变量读取QSYS保存为qmake变量QSYS_PRIVATE
-
-#在Multi-link 2.0以后，采用QKIT和QSYS配合的方式指定编译目标，依然在工程编译的配置里环境变量区域进行配置。
-#其含义在于指定目标操作系统和目标CPU平台。
-
-#以下给出QKIT与QSYS建议值。QKIT代表目标操作系统（非开发机操作系统），QSYS代表目标系统运行在CPU架构（CPU指令集、或说CPU平台）。
-#QKIT Windows
-#QSYS Windows(默认，这是是说32位) Win32(intelx86!=amdx86) Win64(amd64也可以) WinRT Winx86_64
-
-#QKIT macOS
-#QSYS macOS(默认，amd64也可以)
-
-#QKIT iOS
-#QSYS iOS（默认） iOSSimulator
-
-#QKIT Linux
-#QSYS Linux Linux32 Linux64（默认） arm32 arm64 mips32 embedded
-
-#QKIT Android
-#QSYS Android(默认，特指armeabi-v7a) armeabi armeabi-v7a armeabi-v8 armeabi64
-
-#这样做的好处在于，对于不同操作系统下的不同的CPU平台都能做到良好的Library适配。为了SDK而产生这样的结构。
-#像Android系统，对多种native c++ SDK的支持就很好用了。
-
-#系统上SDK的位置 SDKROOT/xxxSDK/Windows/Win32/bin
-#                                          /lib
-#                                          /include
-#Multi-link会从SDK的相应位置加载相应的SDK。
-#如果用户不设置QSYS，Multi-link会设置相应的默认值，也是建议值。
-
-QKIT_PRIVATE = $$(QKIT)
 QSYS_PRIVATE = $$(QSYS)
-
+#由于主流开发目标为一种操作系统配一种硬件指令集架构系统，一配一的模式，所以我把操作系统和CPU指令集，糅合在一种变量里，名称为QSYS。
 contains(QSYS_PRIVATE, Embedded) {
     #embedded common macro
     DEFINES += __EMBEDDED_LINUX__
@@ -68,18 +38,22 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __IOS__
     #TODO:no qcustomplot word printer process
 } else:contains(QSYS_PRIVATE, Android) {
+    #Android系统对应主要CPU指令集架构为armeabi-v7a
     DEFINES += __ANDROID__
 } else:contains(QSYS_PRIVATE, AndroidX86) {
     DEFINES += __ANDROID__
-    DEFINES += __ANDROIDX86__ #可能废弃
+    DEFINES += __ANDROIDX86__
 }
 
 BUILD=
 CONFIG(debug, debug|profile|release):BUILD=Debug
-CONFIG(profile, debug|profile|release):BUILD=Profile
 CONFIG(release, debug|profile|release):BUILD=Release
+CONFIG(profile, debug|profile|release):BUILD=Profile
 
 #在新的改进里，准备废弃这个路径。至少和编译路径脱开关系。
+#编译和这个路径已经脱开关系了。也就是说，用户不设置Qt Creator也可以使用Multi-link技术。
+#SDK生产、链接使用这个路径。
+#App生产使用这个路径。
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}/$${BUILD}
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}
 QSYS_STD_DIR = $${QSYS_PRIVATE}
