@@ -27,7 +27,9 @@ defineTest(add_include_Qwt){
     #basic
     command += $${header_path}
 
-    return ($$command)
+    INCLUDEPATH += $$command
+    export(INCLUDEPATH)
+    return (1)
 }
 
 #修改
