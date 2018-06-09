@@ -45,4 +45,12 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 利用Multi-link技术的添加Library模板很容易的。 
 ![Multi-link技术的能力](screenshot/13.png "这是Multi-link技术的能力")  
 
+
+####多链接技术使用注意  
+1. Multi-link 2.0已经不强调 build的编译路径设置。
+2. 也不强调对Qt Creator FileSystemName的设置。也就是不要求用户按照过去的要求设置Creator的默认编译路径。
+3. Multi-link可以独立于任何Library App工程使用，建议作为submodule使用，能够可靠保证移植性。
+4. 但是QSYS_STD_DIR还是有用的，输出SDK和DeployAPP的时候使用。  
+
+
 [返回](.)  
