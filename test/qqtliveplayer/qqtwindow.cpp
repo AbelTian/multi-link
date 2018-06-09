@@ -17,7 +17,7 @@
 #include "qqtsqltreemodel.h"
 
 QQTWindow::QQTWindow ( QWidget* parent ) :
-    QStackedWidget ( parent ),
+    QWidget ( parent ),
     ui ( new Ui::QQTWindow )
 {
     ui->setupUi ( this );
@@ -34,7 +34,7 @@ QQTWindow::QQTWindow ( QWidget* parent ) :
      */
     setAttribute ( Qt::WA_TranslucentBackground, true );
 #endif
-    setFixedSize ( 1024, 600 );
+    //setFixedSize ( 1024, 600 );
     moveCenter ( this );
     setAcceptDrops ( true );
 

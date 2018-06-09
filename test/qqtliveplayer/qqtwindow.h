@@ -1,7 +1,7 @@
 #ifndef QQTWINDOW_H
 #define QQTWINDOW_H
 
-#include <QStackedWidget>
+#include <QWidget>
 
 namespace Ui {
 class QQTWindow;
@@ -15,27 +15,27 @@ class VlcMediaPlayer;
  * 窗口切换有绿屏 ，启动时的绿屏，解决。
  * 窗口跳转不再经过信号和槽，而是通过这个注册的主窗的函数
  */
-class QQTWindow : public QStackedWidget
+class QQTWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit QQTWindow(QWidget *parent = 0);
+    explicit QQTWindow ( QWidget* parent = 0 );
     ~QQTWindow();
 
 public slots:
-    void doubleClicked(const QModelIndex& index);
+    void doubleClicked ( const QModelIndex& index );
 private:
-    VlcInstance *_instance;
-    VlcMediaPlayer *_player;
-    VlcMedia *_media;
+    VlcInstance* _instance;
+    VlcMediaPlayer* _player;
+    VlcMedia* _media;
 private:
-    Ui::QQTWindow *ui;
+    Ui::QQTWindow* ui;
 
     // QWidget interface
 protected:
-    void dragEnterEvent(QDragEnterEvent *) override;
-    void dropEvent(QDropEvent *) override;
+    void dragEnterEvent ( QDragEnterEvent* ) override;
+    void dropEvent ( QDropEvent* ) override;
 };
 
 #endif // QQTWINDOW_H

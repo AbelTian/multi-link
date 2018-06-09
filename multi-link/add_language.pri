@@ -16,7 +16,7 @@ defineReplace(get_lupdate_language){
     isEmpty(1): error("get_lupdate_language(propath) requires one argument")
     command =
     command = lupdate $${propath}
-    #message($${command})
+    message($${command})
     return ($${command})
 }
 
@@ -27,7 +27,7 @@ defineReplace(get_lrelease_language){
     isEmpty(2): error("get_lrelease_language(filepath, filename) requires two argument")
     command =
     command = lrelease $${filepath}/$${filename}.ts -qm $${filepath}/$${filename}.qm
-    #message($${command})
+    message($${command})
     return ($${command})
 }
 
@@ -47,7 +47,7 @@ defineTest(lupdate_language){
     QMAKE_PRE_LINK += $${command}
     export(QMAKE_PRE_LINK)
 
-    return (true)
+    return (1)
 }
 
 #输入.ts的 路径 和 文件名(不带后缀)
@@ -64,7 +64,7 @@ defineTest(lrelease_language){
     QMAKE_PRE_LINK += $${command}
     export(QMAKE_PRE_LINK)
 
-    return (true)
+    return (1)
 }
 
 #输入pro全路径 .ts路径 .ts文件名(不带后缀，相当于需要添加的语言类型)
@@ -203,8 +203,8 @@ defineTest(qmake_lupdate_language){
     !isEmpty(2): error("qmake_lupdate_language(propath) requires one argument")
     isEmpty(1): error("qmake_lupdate_language(propath) requires one argument")
     command = $$get_lupdate_language($${propath})
-    system_errcode($${command}): return (true)
-    return (false)
+    system_errcode($${command}): return (1)
+    return (0)
 }
 
 #输入.ts的 路径 和 文件名(不带后缀)
@@ -214,8 +214,8 @@ defineTest(qmake_lrelease_language){
     !isEmpty(3): error("qmake_lrelease_language(filepath, filename) requires two argument")
     isEmpty(2): error("qmake_lrelease_language(filepath, filename) requires two argument")
     command = $$get_lrelease_language($${filepath}, $${filename})
-    system_errcode($${command}): return (true)
-    return (false)
+    system_errcode($${command}): return (1)
+    return (0)
 }
 
 defineTest(add_qmake_language){

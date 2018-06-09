@@ -4,12 +4,13 @@
 #include "qqtcore.h"
 #include "qqtgui.h"
 #include "qqtwindow.h"
+#include "mainwindow.h"
 
-int main(int argc, char* argv[])
+int main ( int argc, char* argv[] )
 {
-    QQTApp a(argc, argv);
+    QQTApp a ( argc, argv );
 
-    QQTWindow w;
+    MainWindow w;
     w.show();
 
     return a.exec();

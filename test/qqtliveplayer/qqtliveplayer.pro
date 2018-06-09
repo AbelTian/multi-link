@@ -15,18 +15,23 @@ INCLUDEPATH +=  .
 CONFIG += c++11
 
 SOURCES += $$PWD/main.cpp $$PWD/qqtapp.cpp $$PWD/qqtwindow.cpp \
-    animationmanager.cpp
+    animationmanager.cpp \
+    mainwindow.cpp
 
 HEADERS  += $$PWD/qqtapp.h $$PWD/qqtwindow.h \
-    animationmanager.h
+    animationmanager.h \
+    mainwindow.h
 
-FORMS    += $$PWD/qqtwindow.ui
+
+FORMS    += $$PWD/qqtwindow.ui \
+    mainwindow.ui
+
 
 ############################################
 #添加所有提供函数的pri 很有美感
 ############################################
 include(../../multi-link/add_base_manager.pri)
-
+system(touch main.cpp)
 ############################################
 #对产品线的控制结构Multi-link下命令 开启产品线
 ############################################
@@ -42,3 +47,7 @@ add_dependent_manager(QQt)
 #添加其他library
 #libVLCQt从sdk到build和deploy
 add_dependent_manager(VLC)
+
+add_language($$PWD/qqtliveplayer.pro, $$PWD/AppRoot/lang, zh_CN)
+add_deploy_config($$PWD/AppRoot)
+DISTFILES += AppRoot/lang/zh_CN.ts
