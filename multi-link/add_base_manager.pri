@@ -371,6 +371,23 @@ defineTest(add_include_path) {
     return (1)
 }
 
+#获取App的发布路径
+defineReplace(get_app_deploy_path) {
+    appgroupname = $$TARGET_NAME
+    !isEmpty(1):appgroupname=$$1
+
+    #发布位置
+    APP_STD_DIR = $${appgroupname}/$${QAPP_STD_DIR}
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
+
+    APP_DEPLOY_PWD = $$add_host_path($$APP_DEPLOY_PWD)
+
+    return ($$APP_DEPLOY_PWD)
+}
+
 #内部默认 $$PWD
 APP_SOURCE_PWD =
 #内部默认 $$DESTDIR

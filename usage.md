@@ -50,7 +50,7 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 1. Multi-link 2.0已经不强调 build的编译路径设置。
 2. 也不强调对Qt Creator FileSystemName的设置。也就是不要求用户按照过去的要求设置Creator的默认编译路径。
 3. Multi-link可以独立于任何Library App工程使用，建议作为submodule使用，能够可靠保证移植性。
-4. 但是QSYS_STD_DIR还是有用的，输出SDK和DeployAPP的时候使用。  
+4. 但是QSYS_STD_DIR还是有用的，输出SDK和DeployAPP的时候使用。并且，QAPP_STD_DIR和这个SDK的路径还不一样，App发布用的有个Debug和Release的区分，SDK的没有（区分），在一起。
 
 
 [返回](.)  

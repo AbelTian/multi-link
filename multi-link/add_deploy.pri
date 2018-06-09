@@ -180,7 +180,7 @@ defineTest(add_deploy) {
     !isEmpty(APP_DST_DIR):APP_BUILD_PWD=$${APP_BUILD_PWD}/$${APP_DST_DIR}
 
     #发布位置
-    APP_STD_DIR = $${appgroupname}/$${QSYS_STD_DIR}
+    APP_STD_DIR = $${appgroupname}/$${QAPP_STD_DIR}
 
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
