@@ -128,6 +128,7 @@ contains(DEFINES, LIB_STATIC_LIBRARY) {
 ##用户注意：这里相当于给编译中间目录加了一个自动校准，属于校正范畴。
 ##这样做保持了App工程和LibLib工程中间目录的一致性，但是并不必要。
 ##升级后的多链接技术，省略了BuildType目录，这个设置有必要了。
+##默认，就分开了，无论Debug/Debug 还是Windows/Debug，就分开了。
 ################################################################
 defineTest(add_build_dir_struct){
     BUILD_DIR =

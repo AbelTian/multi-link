@@ -3,8 +3,9 @@
 #用于发布app的配置文件。只是app工程使用
 
 #这个目录一般在源代码目录里
-#add_deploy_config(<config_path>, <dest_path>)
-#add_deploy_config_bundle(<config_path>, <dest_path>) #这个mac下bundle一定会发布到bundle里面
+#add_deploy_config(<config_path>) #build and deploy path
+#add_deploy_config_to(<config_path>, <target_path>) #target path
+#add_deploy_config_to_group(<config_path>, <groupname>) #group deploy path build path
 #---------------------------------------------------------------------
 
 ################################################################################
@@ -47,8 +48,64 @@ defineReplace(get_add_deploy_config) {
 #外部用函数
 ################################################################################
 defineTest(add_deploy_config) {
-    isEmpty(1): error("add_deploy_config(app_config_pwd, app_target_pwd) requires at least one argument")
-    !isEmpty(3): error("add_deploy_config(app_config_pwd, app_target_pwd) requires at most two argument")
+    isEmpty(1): error("add_deploy_config(app_config_pwd) requires one argument")
+    !isEmpty(2): error("add_deploy_config(app_config_pwd) requires one argument")
+
+    APP_CONFIG_PWD = $$1
+    equals(QMAKE_HOST.os, Windows) {
+        APP_CONFIG_PWD~=s,/,\\,g
+    }
+
+    #起始位置 编译位置 中间目标位置
+    APP_BUILD_PWD=$${DESTDIR}
+    isEmpty(APP_BUILD_PWD):APP_BUILD_PWD=.
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    #lib project会发布配置文件吗？
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QSYS_STD_DIR}
+    #不仅仅发布目标为Windows的时候，才需要改变路径
+    #开发机为Windows就必须改变。
+    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_DEPLOY_PWD~=s,/,\\,g
+    }
+
+    #如果 TARGET 没有配置 APP_CONFIG_PWD 那么返回，不拷贝任何配置
+    #qmake 或逻辑为 | 或者 ||
+    isEmpty(APP_CONFIG_PWD):isEmpty(APP_DEPLOY_PWD) {
+        message("$${TARGET} hasn't deployed any config files")
+        return(0)
+    }
+
+    ##4.8 qmake arm32 return() 函数无效
+    ##qmake 与逻辑为 :
+    !isEmpty(APP_CONFIG_PWD):!isEmpty(APP_DEPLOY_PWD) {
+        message("$${TARGET} has deployed some config files")
+    }
+
+    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
+    contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+        QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*")
+    } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+        #分为Host为Windows和类Unix两种情况。
+        #Android下使用qrc，无法发布配置文件。
+        equals(QMAKE_HOST.os, Windows){
+        } else {
+        }
+    } else {
+        #macOS linux都走这里
+        QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}/*")
+    }
+
+    export(QMAKE_POST_LINK)
+
+    return (1)
+}
+
+defineTest(add_deploy_config_to) {
+    isEmpty(1): error("add_deploy_config_to(app_config_pwd, app_target_pwd) requires at least one argument")
+    !isEmpty(3): error("add_deploy_config_to(app_config_pwd, app_target_pwd) requires at most two argument")
 
     APP_CONFIG_PWD = $$1
     APP_TARGET_PWD = $$2
@@ -98,6 +155,66 @@ defineTest(add_deploy_config) {
     } else {
         #macOS linux都走这里
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}/*", $${APP_TARGET_PWD})
+    }
+
+    export(QMAKE_POST_LINK)
+
+    return (1)
+}
+
+#如果有配置文件交叉使用的情况，那么只有在deploy root里才能看到效果，build目录里看不到效果。
+defineTest(add_deploy_config_to_group) {
+    isEmpty(1): error("add_deploy_config_to(app_config_pwd, app_group_name) requires at least one argument")
+    !isEmpty(3): error("add_deploy_config_to(app_config_pwd, app_group_name) requires at most two argument")
+
+    APP_CONFIG_PWD = $$1
+    equals(QMAKE_HOST.os, Windows) {
+        APP_CONFIG_PWD~=s,/,\\,g
+    }
+
+    APP_GROUP_NAME = $$2
+    isEmpty(APP_GROUP_NAME):APP_GROUP_NAME = $${TARGET_NAME}
+
+    #起始位置 编译位置 中间目标位置
+    APP_BUILD_PWD=$${DESTDIR}
+    isEmpty(APP_BUILD_PWD):APP_BUILD_PWD=.
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    #lib project会发布配置文件吗？
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_GROUP_NAME}/$${QSYS_STD_DIR}
+    #不仅仅发布目标为Windows的时候，才需要改变路径
+    #开发机为Windows就必须改变。
+    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_DEPLOY_PWD~=s,/,\\,g
+    }
+
+    #如果 TARGET 没有配置 APP_CONFIG_PWD 那么返回，不拷贝任何配置
+    #qmake 或逻辑为 | 或者 ||
+    isEmpty(APP_CONFIG_PWD):isEmpty(APP_DEPLOY_PWD) {
+        message("$${TARGET} hasn't deployed any config files")
+        return(0)
+    }
+
+    ##4.8 qmake arm32 return() 函数无效
+    ##qmake 与逻辑为 :
+    !isEmpty(APP_CONFIG_PWD):!isEmpty(APP_DEPLOY_PWD) {
+        message("$${TARGET} has deployed some config files")
+    }
+
+    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
+    contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+        QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*")
+    } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+        #分为Host为Windows和类Unix两种情况。
+        #Android下使用qrc，无法发布配置文件。
+        equals(QMAKE_HOST.os, Windows){
+        } else {
+        }
+    } else {
+        #macOS linux都走这里
+        QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}/*")
     }
 
     export(QMAKE_POST_LINK)

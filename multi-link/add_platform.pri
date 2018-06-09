@@ -4,6 +4,7 @@
 #-----------------------------------------------------------------------------
 #从环境变量读取QSYS保存为qmake变量QSYS_PRIVATE
 QSYS_PRIVATE = $$(QSYS)
+#由于主流开发目标为一种操作系统配一种硬件指令集架构系统，一配一的模式，所以我把操作系统和CPU指令集，糅合在一种变量里，名称为QSYS。
 contains(QSYS_PRIVATE, Embedded) {
     #embedded common macro
     DEFINES += __EMBEDDED_LINUX__
@@ -37,18 +38,22 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __IOS__
     #TODO:no qcustomplot word printer process
 } else:contains(QSYS_PRIVATE, Android) {
+    #Android系统对应主要CPU指令集架构为armeabi-v7a
     DEFINES += __ANDROID__
 } else:contains(QSYS_PRIVATE, AndroidX86) {
     DEFINES += __ANDROID__
-    DEFINES += __ANDROIDX86__ #可能废弃
+    DEFINES += __ANDROIDX86__
 }
 
 BUILD=
 CONFIG(debug, debug|profile|release):BUILD=Debug
-CONFIG(profile, debug|profile|release):BUILD=Profile
 CONFIG(release, debug|profile|release):BUILD=Release
+CONFIG(profile, debug|profile|release):BUILD=Profile
 
 #在新的改进里，准备废弃这个路径。至少和编译路径脱开关系。
+#编译和这个路径已经脱开关系了。也就是说，用户不设置Qt Creator也可以使用Multi-link技术。
+#SDK生产、链接使用这个路径。
+#App生产使用这个路径。
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}/$${BUILD}
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}
 QSYS_STD_DIR = $${QSYS_PRIVATE}

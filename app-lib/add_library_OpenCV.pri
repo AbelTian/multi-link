@@ -39,7 +39,9 @@ defineTest(add_include_OpenCV){
     command += $${header_path}/opencv2/objdetect
     command += $${header_path}/opencv2/video
 
-    return ($$command)
+    INCLUDEPATH += $$command
+    export(INCLUDEPATH)
+    return (1)
 }
 
 #修改

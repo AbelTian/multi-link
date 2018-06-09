@@ -63,3 +63,6 @@ isEmpty(LIB_SDK_ROOT){
     message(LIB_SDK_ROOT = /user/set/path is required, please modify app_configure.pri )
     error(please check $$CONFIG_FILE under add_multi_link_technology.pri)
 }
+
+MULTILINKVER = 2.0
+DEFINES += MULTILINKVER=$${MULTILINKVER}
