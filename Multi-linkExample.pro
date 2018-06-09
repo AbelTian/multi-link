@@ -56,7 +56,7 @@ SUBDIRS =
 
 #macOS下，这两个必须分开工程编译。
 SUBDIRS += examples/CustomLinkLibDemo
-SUBDIRS += examples/CustomLinkApp
+#SUBDIRS += examples/CustomLinkApp
 
 ########################################################################################
 #macOS
