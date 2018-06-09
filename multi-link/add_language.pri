@@ -111,6 +111,87 @@ defineTest(add_zh_CN_en_US){
     return (1)
 }
 
+defineTest(add_zh_CN_ru_RU){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_zh_CN_ru_RU(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/zh_CN.ts $${filepath}/ru_RU.ts
+    export(TRANSLATIONS)
+
+    command =
+    command += $$get_lupdate_language($${propath}) $$CMD_SEP
+    command += $$get_lrelease_language($${filepath}, zh_CN) $$CMD_SEP
+    command += $$get_lrelease_language($${filepath}, ru_RU)
+
+    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK+=$$CMD_SEP
+    QMAKE_PRE_LINK += $${command}
+    export(QMAKE_PRE_LINK)
+
+    return (1)
+}
+
+defineTest(add_zh_CN){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_zh_CN(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/zh_CN.ts
+    export(TRANSLATIONS)
+
+    command =
+    command += $$get_lupdate_language($${propath}) $$CMD_SEP
+    command += $$get_lrelease_language($${filepath}, zh_CN)
+
+    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK+=$$CMD_SEP
+    QMAKE_PRE_LINK += $${command}
+    export(QMAKE_PRE_LINK)
+
+    return (1)
+}
+
+defineTest(add_en_US){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_en_US(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/en_US.ts
+    export(TRANSLATIONS)
+
+    command =
+    command += $$get_lupdate_language($${propath}) $$CMD_SEP
+    command += $$get_lrelease_language($${filepath}, en_US)
+
+    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK+=$$CMD_SEP
+    QMAKE_PRE_LINK += $${command}
+    export(QMAKE_PRE_LINK)
+
+    return (1)
+}
+
+defineTest(add_ru_RU){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_ru_RU(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/ru_RU.ts
+    export(TRANSLATIONS)
+
+    command =
+    command += $$get_lupdate_language($${propath}) $$CMD_SEP
+    command += $$get_lrelease_language($${filepath}, ru_RU)
+
+    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK+=$$CMD_SEP
+    QMAKE_PRE_LINK += $${command}
+    export(QMAKE_PRE_LINK)
+
+    return (1)
+}
+
 ############################################################################################################################################################
 #以下翻译过程qmake的时候执行
 #以下函数设计思路正常，但是qmake执行堵死，请勿使用，无奈。
@@ -166,6 +247,67 @@ defineTest(add_qmake_zh_CN_en_US){
     qmake_lupdate_language($${propath})
     qmake_lrelease_language($${filepath}, zh_CN)
     qmake_lrelease_language($${filepath}, en_US)
+
+    return (1)
+}
+
+defineTest(add_qmake_zh_CN_ru_RU){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_qmake_zh_CN_ru_RU(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/zh_CN.ts $${filepath}/ru_RU.ts
+    export(TRANSLATIONS)
+
+    qmake_lupdate_language($${propath})
+    qmake_lrelease_language($${filepath}, zh_CN)
+    qmake_lrelease_language($${filepath}, ru_RU)
+
+    return (1)
+}
+
+defineTest(add_qmake_zh_CN){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_qmake_zh_CN(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/zh_CN.ts
+    export(TRANSLATIONS)
+
+    qmake_lupdate_language($${propath})
+    qmake_lrelease_language($${filepath}, zh_CN)
+
+    return (1)
+}
+
+defineTest(add_qmake_en_US){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_qmake_en_US(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/en_US.ts
+    export(TRANSLATIONS)
+
+    qmake_lupdate_language($${propath})
+    qmake_lrelease_language($${filepath}, en_US)
+
+    return (1)
+}
+
+defineTest(add_qmake_ru_RU){
+    propath = $$1
+    filepath = $$2
+    isEmpty(2)|!isEmpty(3): error("add_qmake_ru_RU(propath, filepath) requires two argument")
+
+    #翻译语言起效
+    TRANSLATIONS += $${filepath}/ru_RU.ts
+    export(TRANSLATIONS)
+
+    qmake_lupdate_language($${propath})
+    qmake_lrelease_language($${filepath}, ru_RU)
 
     return (1)
 }
