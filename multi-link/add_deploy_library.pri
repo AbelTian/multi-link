@@ -234,6 +234,7 @@ defineReplace(get_add_deploy_library_on_windows) {
 
     #经过调试发现，如果DLL引用了Qt库，App却没有引用，windeployqt不会发布那些库，在这里发布。
     command += windeployqt $${APP_DEPLOY_PWD}\\$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
+    command += windeployqt $${APP_DEPLOY_PWD}\\lib$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
 
     command += echo . #app deploy library $$librealname progressed.
 
@@ -397,7 +398,7 @@ defineTest(add_deploy_library) {
 
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QSYS_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {
@@ -458,7 +459,7 @@ defineTest(add_deploy_library_bundle) {
 
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QSYS_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {
@@ -520,7 +521,7 @@ defineTest(add_deploy_libraryes) {
 
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QSYS_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {

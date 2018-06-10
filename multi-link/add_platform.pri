@@ -52,11 +52,14 @@ CONFIG(profile, debug|profile|release):BUILD=Profile
 
 #在新的改进里，准备废弃这个路径。至少和编译路径脱开关系。
 #编译和这个路径已经脱开关系了。也就是说，用户不设置Qt Creator也可以使用Multi-link技术。
-#SDK生产、链接使用这个路径。
-#App生产使用这个路径。
+
+#过去曾经思考使用的路径。
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}/$${BUILD}
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}
+#SDK生产、链接使用这个路径。SDK debug版和release版放在一起，当自动发布全部library的时候，无法分辨调试版和非调试版。
 QSYS_STD_DIR = $${QSYS_PRIVATE}
+#App生产使用这个路径。App的debug版和release版合在一个文件夹里是不合理的。
+QAPP_STD_DIR = $${QSYS_PRIVATE}
 
 message(add_platform.pri)
 message(Build $${TARGET} to $${QSYS_PRIVATE} \(QSYS=$${QSYS_PRIVATE} is configed in project build page.\) )
