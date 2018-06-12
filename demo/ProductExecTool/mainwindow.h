@@ -19,6 +19,9 @@ public:
 
     void calculate();
 
+signals:
+    void clickBtn();
+
 private slots:
     void on_pushButton_clicked();
     void processProg();

@@ -45,6 +45,30 @@ MainWindow::MainWindow ( QWidget* parent ) :
     }
 
     ui->lineEdit->setText ( deployroot );
+
+#if 0
+    if ( STR ( Q_BUILD_TYPE ) == "Debug" )
+        return;
+
+    QFile::link ( QString ( "%1/ProductExecTool/%1/ProductExecTool.exe" ).arg ( deployroot ).arg ( STR ( Q_SYS_NAME ) ),
+                  QStandardPaths::writableLocation (
+                      QStandardPaths::DesktopLocation ).append ( "/" ).append ( "App产品列表.lnk" ) );
+
+    pline() <<  QString ( "%1\\ProductExecTool\\%2\\ProductExecTool.exe" ).arg ( deployroot ).arg ( STR ( Q_SYS_NAME ) );
+    pline() << QStandardPaths::writableLocation (
+                QStandardPaths::DesktopLocation ).append ( "/" ).append ( "App产品列表.lnk" ) ;
+#endif
+
+    if ( STR ( Q_BUILD_TYPE ) == "Debug" )
+        setWindowTitle ( "App Product Exectuable - Debug" );
+    else
+        setWindowTitle ( "App Product Exectuable" );
+
+    setMinimumSize ( 1024, 600 );
+
+    connect ( this, SIGNAL ( clickBtn() ), this, SLOT ( on_pushButton_clicked() ), Qt::QueuedConnection );
+
+    emit clickBtn();
 }
 
 MainWindow::~MainWindow()
