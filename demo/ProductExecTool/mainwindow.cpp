@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qqtcore.h"
 #include "qqtframe.h"
@@ -104,10 +104,10 @@ void MainWindow::calculate()
             if ( "Debug" == STR ( Q_BUILD_TYPE ) )
                 postfix = "d";
             program += mfi.baseName() + postfix + ".exe";
-#elif Q_OS_DARWIN
+#elif defined Q_OS_DARWIN
             if ( "Debug" == STR ( Q_BUILD_TYPE ) )
                 postfix = "_debug";
-            program += mfi.baseName() + postfix + ".app";
+            program += mfi.baseName() + postfix + ".app" + "/Contents/MacOS/" + mfi.baseName() + postfix;
 #else
             program += mfi.baseName();
 #endif
@@ -117,7 +117,8 @@ void MainWindow::calculate()
             //"path"
             QQtDictionary node;
             node["name"] = mfi.baseName();
-            node["path"] = program;
+            node["path"] = path;
+            node["program"] = program;
             progList.appendChild ( node );
             progMap[mfi.baseName()]["program"] = program;
             progMap[mfi.baseName()]["name"] = mfi.baseName();
