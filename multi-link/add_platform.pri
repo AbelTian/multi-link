@@ -86,3 +86,7 @@ lessThan(QT_VERSION, 4.8.0) {
     message(B. suggest Qt version >= 4.8.0)
     #error(  error occured!)
 }
+
+#把这两个变量传递给源代码。
+DEFINES += Q_SYS_NAME=$${QSYS_PRIVATE}
+DEFINES += Q_BUILD_TYPE=$${BUILD}
