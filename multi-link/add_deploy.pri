@@ -214,7 +214,7 @@ defineTest(add_deploy) {
     }
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
-    contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
         QMAKE_POST_LINK += $$get_add_deploy_on_windows()
     } else: contains(QSYS_PRIVATE, macOS) {
