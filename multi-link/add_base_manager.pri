@@ -175,7 +175,7 @@ defineTest(add_lib_project) {
     ##only deal dynamic is ok, static all in headers dealing.
     ##define macro before header.
     #专门为lib工程设置
-    contains(QSYS_PRIVATE, Win32|Windows|Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #Qt is static by mingw32 building
         mingw {
             #on my computer , Qt library are all static library?
@@ -443,7 +443,7 @@ defineReplace(add_host_name){
 
 #获取目标平台的名称
 defineReplace(add_xplatform_name){
-    #Windows Win32 Win64 macOS iOS iOSSimulator Android AndroidX86 Linux Linux64 Arm32 Mips32 Embedded
+    #MSVC MSVC32 MSVC64 Windows Win32 Win64 macOS iOS iOSSimulator Android AndroidX86 Linux Linux64 Arm32 Mips32 Embedded
     return ($${QSYS_PRIVATE})
 }
 

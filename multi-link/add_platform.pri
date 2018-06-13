@@ -2,9 +2,13 @@
 #app_platform.pri
 #这个pri决定编译目标平台
 #-----------------------------------------------------------------------------
+#注释：在这里系统的支持平台的类型
+#注释：放弃使用mkspecs。
+
 #从环境变量读取QSYS保存为qmake变量QSYS_PRIVATE
 QSYS_PRIVATE = $$(QSYS)
 #由于主流开发目标为一种操作系统配一种硬件指令集架构系统，一配一的模式，所以我把操作系统和CPU指令集，糅合在一种变量里，名称为QSYS。
+#e-linux linux
 contains(QSYS_PRIVATE, Embedded) {
     #embedded common macro
     DEFINES += __EMBEDDED_LINUX__
@@ -21,6 +25,8 @@ contains(QSYS_PRIVATE, Embedded) {
 } else:contains(QSYS_PRIVATE, Linux64) {
     DEFINES += __LINUX__
     DEFINES += __LINUX64__
+
+#windows msvc
 } else:contains(QSYS_PRIVATE, Win32|Windows) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
@@ -30,6 +36,18 @@ contains(QSYS_PRIVATE, Embedded) {
 } else:contains(QSYS_PRIVATE, WinRT) {
     DEFINES += __WIN__
     DEFINES += __WINRT__
+} else:contains(QSYS_PRIVATE, MSVC32|MSVC) {
+    DEFINES += __WIN__
+    DEFINES += __WIN32__
+    DEFINES += __MSVC__
+    DEFINES += __MSVC32__
+} else:contains(QSYS_PRIVATE, MSVC64) {
+    DEFINES += __WIN__
+    DEFINES += __WIN64__
+    DEFINES += __MSVC__
+    DEFINES += __MSVC64__
+
+#ios mac
 } else:contains(QSYS_PRIVATE, macOS) {
     DEFINES += __DARWIN__
 } else:contains(QSYS_PRIVATE, iOS) {
@@ -37,6 +55,8 @@ contains(QSYS_PRIVATE, Embedded) {
 } else:contains(QSYS_PRIVATE, iOSSimulator) {
     DEFINES += __IOS__
     #TODO:no qcustomplot word printer process
+
+#android
 } else:contains(QSYS_PRIVATE, Android) {
     #Android系统对应主要CPU指令集架构为armeabi-v7a
     DEFINES += __ANDROID__

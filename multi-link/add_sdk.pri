@@ -210,14 +210,14 @@ defineReplace(get_add_Qt_lib_pri){
     command += echo "QT.$${liblowername}.VERSION = $${APP_VERSION}" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.name = $${libname}"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.module = $${libname}"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
-    contains(QSYS_PRIVATE, Win32|Windows|Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         command += echo "QT.$${liblowername}.libs = \$$QT_MODULE_LIB_BASE"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.bins = \$$QT_MODULE_BIN_BASE"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     } else {
         command += echo "QT.$${liblowername}.libs = '\$$QT_MODULE_LIB_BASE'"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.bins = '\$$QT_MODULE_BIN_BASE'"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     }
-    contains(QSYS_PRIVATE, Win32|Windows|Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         command += echo "QT.$${liblowername}.includes = \$$QT_MODULE_INCLUDE_BASE \$$QT_MODULE_INCLUDE_BASE/$${libname}" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.frameworks = " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.module_config = v2 " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
@@ -273,7 +273,7 @@ defineReplace(get_add_sdk_work_flow){
 
     #这里不是目标为Windows才拷贝，而是开发机是Windows就得这么拷贝。
     #Windows下，Win目标、Android目标都走这里。
-    #contains(QSYS_PRIVATE, Win32|Windows|Win64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     equals(QMAKE_HOST.os, Windows) {
         #message(create lib windows struct library)
         command += $$get_add_windows_sdk() $$CMD_SEP
@@ -328,7 +328,7 @@ defineReplace(get_add_sdk_private){
 
     #不仅仅发布目标为Windows的时候需要改变，
     #开发Host是Windows的时候都要改变。路径问题是两种操作系统固有的痛。
-    #contains(QSYS_PRIVATE, Win32|Windows|Win64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     equals(QMAKE_HOST.os, Windows) {
         #on windows every path must use \ sep.
         LIB_SRC_PWD~=s,/,\\,g
@@ -430,7 +430,7 @@ defineTest(add_sdk){
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_BUILD_ROOT~=s,/,\\,g
         LIB_SDK_ROOT~=s,/,\\,g
@@ -524,7 +524,7 @@ defineTest(add_sdk_to_Qt){
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_BUILD_ROOT~=s,/,\\,g
         LIB_SDK_ROOT~=s,/,\\,g
@@ -587,7 +587,7 @@ defineTest(clean_sdk){
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     equals(QMAKE_HOST.os, Windows) {
         LIB_SDK_ROOT~=s,/,\\,g
 
@@ -657,7 +657,7 @@ defineTest(add_sdk_header){
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_BUILD_ROOT~=s,/,\\,g
         LIB_SDK_ROOT~=s,/,\\,g

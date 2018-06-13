@@ -420,7 +420,7 @@ defineTest(add_deploy_library) {
     }
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
-    contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
         QMAKE_POST_LINK += $$get_add_deploy_library_on_windows($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, macOS) {
@@ -481,7 +481,7 @@ defineTest(add_deploy_library_bundle) {
     }
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
-    contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
         QMAKE_POST_LINK += $$get_add_deploy_library_on_windows($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, macOS) {
@@ -543,7 +543,7 @@ defineTest(add_deploy_libraryes) {
     }
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
-    contains(QSYS_PRIVATE, Win32|Windows||Win64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
         QMAKE_POST_LINK += $$get_add_deploy_libraryes_on_windows($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, macOS) {
