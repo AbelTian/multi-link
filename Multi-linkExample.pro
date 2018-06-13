@@ -72,5 +72,4 @@ SUBDIRS =
 
 ########################################################################################
 #macOS Windows linux
-
 SUBDIRS += demo/ProductExecTool
