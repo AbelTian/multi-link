@@ -147,6 +147,32 @@ defineTest(add_custom_dependent_manager){
     return (1)
 }
 
+defineTest(add_create_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    equals(libgroupname, Template):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
+
+    !exists($${pripath}/add_library_$${libgroupname}.pri) {
+        srcFile = $${pripath}/add_library_Template.pri
+        dstFile = $${pripath}/add_library_$${libgroupname}.pri
+        contains(QMAKE_HOST.os, Windows) {
+            srcFile = $$add_host_path($$srcFile)
+            dstFile = $$add_host_path($$dstFile)
+        }
+
+        system_errcode($$COPY $${srcFile} $${dstFile}){
+            message(create $$dstFile success.)
+        }
+    }
+
+    add_custom_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
 #开启app工程
 defineTest(add_app_project) {
     #add base manager对App的处理很少，App通过函数基本上能解决所有的事情

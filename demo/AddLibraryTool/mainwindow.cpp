@@ -129,6 +129,8 @@ void MainWindow::on_pushButton_clicked()
     if ( ui->lineEdit_2->text().isEmpty() )
         return;
 
+    ui->statusBar->showMessage ( "processing...." );
+
     ui->textBrowser->clear();
     ui->textBrowser_2->clear();
     ui->textBrowser_3->clear();
@@ -194,7 +196,7 @@ void MainWindow::on_pushButton_clicked()
         {
             if ( mfi.suffix().contains ( "dll" ) )
             {
-                use_suffix = 3;
+                use_suffix = 4;
             }
         }
     }
@@ -331,58 +333,9 @@ void MainWindow::on_pushButton_clicked()
         }
     }
 
+    ui->statusBar->showMessage ( "Successed." );
+
     return;
-
-#if 0
-    QDir d2 ( lib );
-    foreach ( QFileInfo mfi, d2.entryInfoList() )
-    {
-        if ( mfi.isFile() )
-        {
-            //qDebug() << "File :" << mfi.fileName();
-        }
-        else
-        {
-            if ( mfi.fileName() == "." || mfi.fileName() == ".." )
-                continue;
-
-            //qDebug() << "Entry Dir" << mfi.absoluteFilePath();
-
-            QString path = mfi.absoluteFilePath() + "/" + STR ( Q_SYS_NAME );
-            QString program = path + "/";
-            QString postfix;
-#ifdef Q_OS_WIN
-            if ( "Debug" == STR ( Q_BUILD_TYPE ) )
-                postfix = "d";
-            program += mfi.baseName() + postfix + ".exe";
-#elif defined Q_OS_DARWIN
-            if ( "Debug" == STR ( Q_BUILD_TYPE ) )
-                postfix = "_debug";
-            program += mfi.baseName() + postfix + ".app" + "/Contents/MacOS/" + mfi.baseName() + postfix;
-#else
-            program += mfi.baseName();
-#endif
-            pline() << program;
-
-            //"name"
-            //"path"
-            QQtDictionary node;
-            node["name"] = mfi.baseName();
-            node["path"] = path;
-            node["program"] = program;
-            progList.appendChild ( node );
-            progMap[mfi.baseName()]["program"] = program;
-            progMap[mfi.baseName()]["name"] = mfi.baseName();
-            progMap[mfi.baseName()]["path"] = path;
-#ifdef Q_OS_DARWIN
-            progMap[mfi.baseName()]["workpath"] = path + "/" + mfi.baseName() + postfix + ".app" + "/Contents/MacOS";
-#else
-            progMap[mfi.baseName()]["workpath"] = path;
-#endif
-
-        }
-    }
-#endif
 }
 
 
@@ -410,8 +363,17 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
             break;
             case Qt::Key_Left:
             {
-                static int i = ui->tabWidget->currentIndex();
-                i = qAbs ( i - 1 ) % ui->tabWidget->count();
+                pline() << e->modifiers();
+                pline() <<  ( e->modifiers() | Qt::ControlModifier );
+                pline() << ( e->modifiers() & Qt::ControlModifier );
+
+                if ( ( e->modifiers() & Qt::ControlModifier ) != Qt::ControlModifier )
+                    break;
+
+                int i = ui->tabWidget->currentIndex();
+                if ( i == 0 )
+                    i = ui->tabWidget->count();
+                i = ( i - 1 ) % ui->tabWidget->count();
                 ui->tabWidget->setCurrentIndex ( i );
                 e->accept();
                 return true;
@@ -419,8 +381,11 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
             break;
             case Qt::Key_Right:
             {
-                static int i = ui->tabWidget->currentIndex();
-                i = qAbs ( i + 1 ) % ui->tabWidget->count();
+                if ( ( e->modifiers() & Qt::ControlModifier ) != Qt::ControlModifier )
+                    break;
+
+                int i = ui->tabWidget->currentIndex();
+                i = ( i + 1 ) % ui->tabWidget->count();
                 ui->tabWidget->setCurrentIndex ( i );
                 e->accept();
                 return true;
@@ -428,8 +393,10 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
             break;
             case Qt::Key_Up:
             {
-                static int i = ui->comboBox->currentIndex();
-                i = qAbs ( i - 1 ) % ui->comboBox->count();
+                int i = ui->comboBox->currentIndex();
+                if ( i == 0 )
+                    i = ui->comboBox->count();
+                i = ( i - 1 ) % ui->comboBox->count();
                 ui->comboBox->setCurrentIndex ( i );
                 e->accept();
                 return true;
@@ -437,8 +404,8 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
             break;
             case Qt::Key_Down:
             {
-                static int i = ui->comboBox->currentIndex();
-                i = qAbs ( i + 1 ) % ui->comboBox->count();
+                int i = ui->comboBox->currentIndex();
+                i = ( i + 1 ) % ui->comboBox->count();
                 ui->comboBox->setCurrentIndex ( i );
                 e->accept();
                 return true;
@@ -454,16 +421,18 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
         QWheelEvent* e = ( QWheelEvent* ) event;
         if ( e->delta() > 0 )
         {
-            static int i = ui->comboBox->currentIndex();
-            i = qAbs ( i - 1 ) % ui->comboBox->count();
+            int i = ui->comboBox->currentIndex();
+            if ( i == 0 )
+                i = ui->comboBox->count();
+            i = ( i - 1 ) % ui->comboBox->count();
             ui->comboBox->setCurrentIndex ( i );
             e->accept();
             return true;
         }
         else
         {
-            static int i = ui->comboBox->currentIndex();
-            i = qAbs ( i + 1 ) % ui->comboBox->count();
+            int i = ui->comboBox->currentIndex();
+            i = ( i + 1 ) % ui->comboBox->count();
             ui->comboBox->setCurrentIndex ( i );
             e->accept();
             return true;
