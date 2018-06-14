@@ -38,3 +38,4 @@ include(../../multi-link/add_base_manager.pri)
 add_version(1,0,0,0)
 add_deploy()
 add_dependent_manager(QQt)
+
