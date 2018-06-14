@@ -119,7 +119,7 @@ void MainWindow::calculate()
             node["name"] = mfi.baseName();
             node["path"] = path;
             node["program"] = program;
-            progList.appendChild ( node );
+            progList.addChild ( node );
             progMap[mfi.baseName()]["program"] = program;
             progMap[mfi.baseName()]["name"] = mfi.baseName();
             progMap[mfi.baseName()]["path"] = path;

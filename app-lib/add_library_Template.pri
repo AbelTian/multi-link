@@ -8,8 +8,7 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-#1
-LIBRARYVER =
+
 
 #######################################################################################
 #定义函数
@@ -45,7 +44,7 @@ defineTest(add_defines_Template){
 defineTest(add_library_Template){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    add_library(Template, Template$${LIBRARYVER})
+    add_library(Template, Template)
 
     return (1)
 }
@@ -56,7 +55,7 @@ defineTest(add_library_Template){
 #修改
 defineTest(add_deploy_library_Template) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
-    add_deploy_library(Template, Template$${LIBRARYVER})
+    add_deploy_library(Template, Template)
     #add_deploy_libraryes(Template)
     return (1)
 }

@@ -73,5 +73,4 @@ SUBDIRS =
 ########################################################################################
 #macOS Windows linux
 SUBDIRS += demo/ProductExecTool
-
 SUBDIRS += demo/AddLibraryTool

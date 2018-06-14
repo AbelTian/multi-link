@@ -297,6 +297,10 @@ defineReplace(get_add_sdk_work_flow){
         }
     }
 
+    #fix bug: 从sdk的头文件目录里移除multi-link目录。 Multi-link 2.0
+    #用户把multi-link作为submodule的时候，请保证multi-link文件夹的名字为multi-link。
+    command += $$RM_DIR $${LIB_INC_DIR}/multi-link $$CMD_SEP
+
     command += $$get_add_Qt_lib_pri()
     #$$CMD_SEP
     #command += echo $$libname create sdk success.

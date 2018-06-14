@@ -66,14 +66,14 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __ANDROIDX86__
 }
 
+#注意：Multi-link对于CONFIG+=build_all是在默认编译路径下同时编译两种lib，Debug和Release文件夹下，qmake默认就是这么做的，Multi-link也会这么做，请注意。
 BUILD=
 CONFIG(debug, debug|profile|release):BUILD=Debug
 CONFIG(release, debug|profile|release):BUILD=Release
 CONFIG(profile, debug|profile|release):BUILD=Profile
 
 #在新的改进里，准备废弃这个路径。至少和编译路径脱开关系。
-#编译和这个路径已经脱开关系了。也就是说，用户不设置Qt Creator也可以使用Multi-link技术。
-
+#编译和这个路径已经脱开关系了。也就是说，用户不设置Qt Creator的默认编译路径，也可以使用Multi-link技术。就是用默认的好了，或者使用Multi-link 1.0的路径。
 #过去曾经思考使用的路径。
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}/$${BUILD}
 QSYS_STD_DIR = $${QSYS_PRIVATE}/$${QT_VERSION}
@@ -89,19 +89,19 @@ message(Build $${TARGET} on $${QMAKE_HOST.os} \(Operating System=$${QMAKE_HOST.o
 isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name is decided by env variable QSYS. Please set it. )
 
 isEmpty(QSYS_PRIVATE) {
-    message(1. you should change qt default build directory to your-pc-build-station/%{CurrentProject:Name}/%{CurrentKit:FileSystemName})
-    message(2. env variable QSYS is required! pleace check app_platform.pri)
+    message(1. env variable QSYS is required! pleace check add_platform.pri)
     error(error occured! please check build output panel.)
 }
 
 isEmpty(QSYS_PRIVATE) {
     message(env variable QSYS is required!)
-    message(pleace check app_platform.pri)
+    message(pleace check add_platform.pri)
     error("error occured, please check build output panel.")
 }
 
 
 #in theory, this should not be limited to 4.8.0, no limit is good.
+#c++ 11是可选的，有example用。
 lessThan(QT_VERSION, 4.8.0) {
     message(A. ensure your compiler support c++11 feature)
     message(B. suggest Qt version >= 4.8.0)
