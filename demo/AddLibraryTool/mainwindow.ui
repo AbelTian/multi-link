@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
-    <height>492</height>
+    <width>606</width>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -60,6 +60,16 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Add Deploy Library</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QTextBrowser" name="textBrowser_3"/>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
         <string>Read Me</string>
@@ -68,7 +78,7 @@
         <item>
          <widget class="QPlainTextEdit" name="plainTextEdit">
           <property name="plainText">
-           <string>LIB SDK ROOT说的是安放SDK的根目录ROOT，下面有很多SDK目录，比如SDL、FFmpeg、QQt，
+           <string>Lib Sdk Root说的是安放SDK的根目录ROOT，下面有很多SDK目录，比如SDL、FFmpeg、QQt，
 
 LibGroupName是根目录下SDK的主目录名，
 
@@ -99,7 +109,7 @@ add_deploy_library()和add_library()是一样的。
     <item row="0" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>LIB SDK ROOT:</string>
+       <string>Lib Sdk Root:</string>
       </property>
      </widget>
     </item>
@@ -117,8 +127,8 @@ add_deploy_library()和add_library()是一样的。
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>773</width>
-     <height>22</height>
+     <width>606</width>
+     <height>17</height>
     </rect>
    </property>
   </widget>

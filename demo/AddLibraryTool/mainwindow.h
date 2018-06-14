@@ -19,6 +19,9 @@ public:
     void calculate ( QQtDictionary& dict, QString path );
     //void calculateLib ( QQtDictionary& dict, QString path );
 
+signals:
+    void clickBtn();
+
 private:
 
 private slots:
@@ -26,6 +29,10 @@ private slots:
 
 private:
     Ui::MainWindow* ui;
+
+    // QObject interface
+public:
+    virtual bool eventFilter ( QObject* watched, QEvent* event ) override;
 };
 
 #endif // MAINWINDOW_H

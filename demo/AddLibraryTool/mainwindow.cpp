@@ -66,6 +66,12 @@ MainWindow::MainWindow ( QWidget* parent ) :
     //suggest
     ui->comboBox->setCurrentIndex ( 0 );
 
+    setMinimumSize ( 1024, 600 );
+
+    ui->lineEdit_2->installEventFilter ( this );
+
+    connect ( this, SIGNAL ( clickBtn() ), this, SLOT ( on_pushButton_clicked() ), Qt::QueuedConnection );
+
 }
 
 MainWindow::~MainWindow()
@@ -125,6 +131,7 @@ void MainWindow::on_pushButton_clicked()
 
     ui->textBrowser->clear();
     ui->textBrowser_2->clear();
+    ui->textBrowser_3->clear();
 
     QString header = ui->lineEdit->text() + "/" + ui->lineEdit_2->text() + "/" + ui->comboBox->currentText() + "/include";
     QString lib = ui->lineEdit->text() + "/" + ui->lineEdit_2->text() + "/" + ui->comboBox->currentText() + "/lib";
@@ -174,8 +181,7 @@ void MainWindow::on_pushButton_clicked()
                 QString header_path = QString ( "command += $${header_path}/%1" ).arg ( path );
                 ui->textBrowser->append ( header_path );
             }
-            ui->textBrowser->append ( "" );
-
+            //ui->textBrowser->append ( "" );
         }
     }
 
@@ -226,13 +232,14 @@ void MainWindow::on_pushButton_clicked()
         }
     }
 
+    QList<QString> libList;
+
     foreach ( QFileInfo mfi, d2.entryInfoList() )
     {
         if ( mfi.isFile() )
         {
             //qDebug() << "File :" << mfi.fileName();
             pline() << mfi.baseName() << mfi.fileName() << mfi.filePath();
-
             libDict[mfi.baseName()]["basename"] = mfi.baseName();
             libDict[mfi.baseName()]["absolutename"] = mfi.absoluteFilePath();
             libDict[mfi.baseName()]["absolutepath"] = mfi.absolutePath();
@@ -266,9 +273,24 @@ void MainWindow::on_pushButton_clicked()
 
             //if ( ui->textBrowser_2->toPlainText().contains ( name ) )
             //    continue;
+            if ( libList.contains ( name ) )
+                continue;
+            QString tempname = name;
+            if ( tempname.endsWith ( "d" ) )
+                tempname.remove ( tempname.size() - 1, 1 );
+            if ( tempname.endsWith ( "_debug" ) )
+                tempname.remove ( tempname.size() - 6, 6 );
+
+            if ( libList.contains ( tempname ) )
+                continue;
+
+            libList.push_back ( name );
 
             QString lib_path = QString ( "add_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( name );
             ui->textBrowser_2->append ( lib_path );
+
+            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( name );
+            ui->textBrowser_3->append ( lib_deploy_path );
         }
         else
         {
@@ -361,4 +383,92 @@ void MainWindow::on_pushButton_clicked()
         }
     }
 #endif
+}
+
+
+bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
+{
+    if ( event->type() == QEvent::Paint )
+        return QMainWindow::eventFilter ( watched, event );
+
+    if ( watched != ui->lineEdit_2 )
+        return QMainWindow::eventFilter ( watched, event );
+
+    if ( event->type() == QEvent::KeyRelease )
+    {
+        QKeyEvent* e = ( QKeyEvent* ) event;
+
+        switch ( e->key() )
+        {
+            case Qt::Key_Enter:
+            case Qt::Key_Return:
+            {
+                emit clickBtn();
+                e->accept();
+                return true;
+            }
+            break;
+            case Qt::Key_Left:
+            {
+                static int i = ui->tabWidget->currentIndex();
+                i = qAbs ( i - 1 ) % ui->tabWidget->count();
+                ui->tabWidget->setCurrentIndex ( i );
+                e->accept();
+                return true;
+            }
+            break;
+            case Qt::Key_Right:
+            {
+                static int i = ui->tabWidget->currentIndex();
+                i = qAbs ( i + 1 ) % ui->tabWidget->count();
+                ui->tabWidget->setCurrentIndex ( i );
+                e->accept();
+                return true;
+            }
+            break;
+            case Qt::Key_Up:
+            {
+                static int i = ui->comboBox->currentIndex();
+                i = qAbs ( i - 1 ) % ui->comboBox->count();
+                ui->comboBox->setCurrentIndex ( i );
+                e->accept();
+                return true;
+            }
+            break;
+            case Qt::Key_Down:
+            {
+                static int i = ui->comboBox->currentIndex();
+                i = qAbs ( i + 1 ) % ui->comboBox->count();
+                ui->comboBox->setCurrentIndex ( i );
+                e->accept();
+                return true;
+            }
+            break;
+            default:
+                break;
+        }
+    }
+
+    if ( event->type() == QEvent::Wheel )
+    {
+        QWheelEvent* e = ( QWheelEvent* ) event;
+        if ( e->delta() > 0 )
+        {
+            static int i = ui->comboBox->currentIndex();
+            i = qAbs ( i - 1 ) % ui->comboBox->count();
+            ui->comboBox->setCurrentIndex ( i );
+            e->accept();
+            return true;
+        }
+        else
+        {
+            static int i = ui->comboBox->currentIndex();
+            i = qAbs ( i + 1 ) % ui->comboBox->count();
+            ui->comboBox->setCurrentIndex ( i );
+            e->accept();
+            return true;
+        }
+    }
+
+    return QMainWindow::eventFilter ( watched, event );
 }

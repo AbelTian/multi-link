@@ -22,6 +22,16 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit"/>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0" colspan="3">
      <widget class="QScrollArea" name="scrollArea">
       <property name="widgetResizable">
@@ -33,34 +43,11 @@
          <x>0</x>
          <y>0</y>
          <width>421</width>
-         <height>193</height>
+         <height>220</height>
         </rect>
        </property>
       </widget>
      </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Refresh</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>278</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="0" column="1" colspan="2">
-     <widget class="QLineEdit" name="lineEdit"/>
     </item>
    </layout>
   </widget>
