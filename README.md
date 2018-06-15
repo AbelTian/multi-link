@@ -25,7 +25,7 @@ Multi-link技术使用众多的pri进行函数定义，提供给用户丰富的A
 1. 一个可以拷贝multi-link到自己工程目录，
     - 一个可以clone multi-link到公共位置
     - 一个可以clone multi-link到工程目录作为submodule。这个是推荐方式。
-2. include (multi-link/multi-link/add_base_manager.pri)
+2. include (.../multi-link/add_base_manager.pri)
 3. 仿照demo里的pri配置自己的工程。  
 4. 如果希望添加自定义模块，那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录。仿照demo里的样子写自定义的add_library_XXX.pri. 
 

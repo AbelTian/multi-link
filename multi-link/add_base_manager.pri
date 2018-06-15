@@ -3,7 +3,7 @@
 #应用程序和Library的基础管理器，统一使用这个管理器。
 #base header包揽所有的app和lib的通用设置
 #base manager包揽所有app和lib启动的函数
-#V2.0
+#V2.1
 #和同目录下pri组一同拷贝使用，不拷贝可以使用。建议不拷贝使用，可以跟进技术更新。
 #设计难度：控制难度，丰富接口。
 #在Multi-PC、Multi-plat开发的时候，能够体现优势。
