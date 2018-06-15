@@ -52,5 +52,9 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 3. Multi-link可以独立于任何Library App工程使用，建议作为submodule使用，能够可靠保证移植性。
 4. 但是QSYS_STD_DIR还是有用的，输出SDK和DeployAPP的时候使用。并且，QAPP_STD_DIR和这个SDK的路径还不一样，App发布用的有个Debug和Release的区分，SDK的没有（区分），在一起。
 
+####多链接技术已经支持的Library  
+并且多链接技术已经提供了产品运行器和SDK链接文件编写辅助工具。  
+![Multi-link技术支持](screenshot/14.png "这是Multi-link技术支持")  
+
 
 [返回](.)  

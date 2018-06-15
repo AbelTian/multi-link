@@ -72,6 +72,12 @@ MainWindow::MainWindow ( QWidget* parent ) :
 
     connect ( this, SIGNAL ( clickBtn() ), this, SLOT ( on_pushButton_clicked() ), Qt::QueuedConnection );
 
+    connect ( ui->lineEdit_2, SIGNAL ( textChanged ( QString ) ), this, SLOT ( textChanged ( QString ) ) );
+
+    QFile f ( "add_library_Template.pri" );
+    f.open ( QFile::ReadOnly );
+    fileBytes = f.readAll();
+    f.close();
 }
 
 MainWindow::~MainWindow()
@@ -119,6 +125,11 @@ void MainWindow::calculate ( QQtDictionary& dict, QString path )
             calculate ( dict, mfi.absoluteFilePath() );
         }
     }
+}
+
+void MainWindow::textChanged ( QString str )
+{
+    ui->tabWidget->setTabText ( 3, QString ( "add_library_%1.pri" ).arg ( str ) );
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -179,6 +190,7 @@ void MainWindow::on_pushButton_clicked()
             ui->textBrowser->append ( QString ( "isEmpty(header_path)header_path=$$get_add_include_bundle(%1, %2)" )
                                       .arg ( ui->lineEdit_2->text() )
                                       .arg ( mfi.baseName() ) );
+            ui->textBrowser->append ( "command += $${header_path}" );
             QQtDictionaryListIterator itor ( headerDict[mfi.baseName()]["childen"].getList() );
             while ( itor.hasNext() )
             {
@@ -336,6 +348,75 @@ void MainWindow::on_pushButton_clicked()
 
         }
     }
+
+    ui->textBrowser_4->clear();
+
+    QByteArray fBytes = fileBytes;
+    fBytes.replace ( "Template", ui->lineEdit_2->text().toLocal8Bit() );
+
+    QString addIncStr = ui->textBrowser->toPlainText();
+    QString addLibStr = ui->textBrowser_2->toPlainText();
+    QString addDeployLibStr = ui->textBrowser_3->toPlainText();
+
+    QStringList addIncList = addIncStr.split ( '\n' );
+    QStringList addLibList = addLibStr.split ( '\n' );
+    QStringList addDeployLibList = addDeployLibStr.split ( '\n' );
+
+    pline() << addIncList.size() << addLibList.size() << addDeployLibList.size();
+
+    QString sep1 = "#...";
+    QString sep2 = QString ( "add_library(%1, %1)" ).arg ( ui->lineEdit_2->text() );
+    QString sep3 = QString ( "#add_deploy_libraryes(%1)" ).arg ( ui->lineEdit_2->text() );
+
+    QBuffer buf ( &fBytes );
+    buf.open ( QBuffer::ReadOnly );
+
+    while ( !buf.atEnd() )
+    {
+        QByteArray line = buf.readLine();
+        if ( line.endsWith ( '\n' ) )
+            line.remove ( line.size() - 1, 1 );
+        if ( line.endsWith ( '\r' ) )
+        {
+            pline() << "这个会不会发生？";
+            line.remove ( line.size() - 1, 1 );
+        }
+
+        ui->textBrowser_4->append ( line );
+
+        if ( line.contains ( sep1.toLocal8Bit() ) )
+        {
+            //include
+            QStringListIterator itor ( addIncList );
+            while ( itor.hasNext() )
+            {
+                QString str = itor.next();
+                ui->textBrowser_4->append ( "    " + str );
+            }
+        }
+        else if ( line.contains ( sep2.toLocal8Bit() ) )
+        {
+            //library
+            QStringListIterator itor ( addLibList );
+            while ( itor.hasNext() )
+            {
+                QString str = itor.next();
+                ui->textBrowser_4->append ( "    " + str );
+            }
+        }
+        else if ( line.contains ( sep3.toLocal8Bit() ) )
+        {
+            //deploy library
+            QStringListIterator itor ( addDeployLibList );
+            while ( itor.hasNext() )
+            {
+                QString str = itor.next();
+                ui->textBrowser_4->append ( "    " + str );
+            }
+        }
+    }
+
+    buf.close();
 
     ui->statusBar->showMessage ( "Successed." );
 

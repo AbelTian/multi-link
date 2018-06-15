@@ -22,7 +22,11 @@ public:
 signals:
     void clickBtn();
 
+protected slots:
+    void textChanged ( QString );
+
 private:
+    QByteArray fileBytes;
 
 private slots:
     void on_pushButton_clicked();

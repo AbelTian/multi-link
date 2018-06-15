@@ -70,6 +70,16 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>add_library_xxx.pri</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QTextBrowser" name="textBrowser_4"/>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
         <string>Read Me</string>
@@ -128,7 +138,7 @@ add_deploy_library()和add_library()是一样的。
      <x>0</x>
      <y>0</y>
      <width>606</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
