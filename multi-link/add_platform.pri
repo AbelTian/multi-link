@@ -89,7 +89,7 @@ message(Build $${TARGET} on $${QMAKE_HOST.os} \(Operating System=$${QMAKE_HOST.o
 isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name is decided by env variable QSYS. Please set it. )
 
 isEmpty(QSYS_PRIVATE) {
-    message(1. env variable QSYS is required! pleace check add_platform.pri)
+    message(env variable QSYS is required! pleace check add_platform.pri)
     error(error occured! please check build output panel.)
 }
 

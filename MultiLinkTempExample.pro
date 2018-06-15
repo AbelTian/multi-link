@@ -72,5 +72,10 @@ SUBDIRS =
 
 ########################################################################################
 #macOS Windows linux
-SUBDIRS += demo/ProductExecTool
-SUBDIRS += demo/AddLibraryTool
+#SUBDIRS += demo/ProductExecTool
+#SUBDIRS += demo/AddLibraryTool
+
+########################################################################################
+#test project
+SUBDIRS += test/nonQtProjTest
+SUBDIRS += test/AddLibPriTest
