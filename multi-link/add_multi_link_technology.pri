@@ -36,7 +36,7 @@ include ($${CONFIG_FILE})
 isEmpty(APP_BUILD_ROOT)|isEmpty(LIB_SDK_ROOT)|isEmpty(APP_DEPLOY_ROOT){
     message($${TARGET} multiple linking config file: $${CONFIG_FILE})
     message("APP_BUILD_ROOT = is required, please modify $${CONFIG_FILE}")
-    message("APP_DEPLOY_ROOT = is required [optional]")
+    message("APP_DEPLOY_ROOT = is required")
     message("LIB_SDK_ROOT = is required")
     message("[linux platform, ]this pri is under multi_link_technology.pri")
     error("please check $$CONFIG_FILE")

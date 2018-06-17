@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-#app_platform.pri
+#add_platform.pri
 #这个pri决定编译目标平台
 #-----------------------------------------------------------------------------
 #注释：在这里系统的支持平台的类型
@@ -23,6 +23,7 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __MIPS_LINUX__
 } else:contains(QSYS_PRIVATE, Linux) {
     DEFINES += __LINUX__
+    DEFINES += __LINUX32__
 } else:contains(QSYS_PRIVATE, Linux64) {
     DEFINES += __LINUX__
     DEFINES += __LINUX64__
@@ -84,9 +85,9 @@ QAPP_STD_DIR = $${QSYS_PRIVATE}
 
 message(add_platform.pri)
 message(Build $${TARGET} to $${QSYS_PRIVATE} \(QSYS=$${QSYS_PRIVATE} is configed in project build page.\) )
-message(Build $${TARGET} at $${QSYS_STD_DIR} \(Qt Kit page FileSystem Name=$${QSYS_PRIVATE}\) )
+message(Build $${TARGET} at $${QSYS_STD_DIR} \(Qt Kit page FileSystem Name=$${QSYS_PRIVATE}"," optionaled\) )
 message(Build $${TARGET} on $${QMAKE_HOST.os} \(Operating System=$${QMAKE_HOST.os}\) )
-isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name is decided by env variable QSYS. Please set it. )
+isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name \(optionaled\) is decided by env variable QSYS. Please set it. )
 
 isEmpty(QSYS_PRIVATE) {
     message(env variable QSYS is required! pleace check add_platform.pri)
