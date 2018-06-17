@@ -3,15 +3,15 @@
 #这是给用户提供的方便pri
 #这个比较common，允许拷贝到用户工程中更改。
 #----------------------------------------------------------------
+#_bundle的取舍，在于macOS系统下，使用的library为bundle形式，还是dylib形式。
 
 #######################################################################################
 #初始化设置
 #######################################################################################
 #3.4
-LIBRARYVER =
 
 #######################################################################################
-#定义内部函数
+#定义函数
 #######################################################################################
 #修改
 defineTest(add_include_OpenSceneGraph){
@@ -19,11 +19,16 @@ defineTest(add_include_OpenSceneGraph){
     header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    isEmpty(header_path)header_path=$$get_add_include(OpenSceneGraph)
+    isEmpty(header_path)header_path=$$get_add_include(OpenSceneGraph, OpenSceneGraph)
 
     command =
     #basic
     command += $${header_path}
+    #这里添加$${path}下的子文件夹
+    #...
+    #isEmpty(header_path)header_path=$$get_add_include_bundle(OpenSceneGraph, OpenSceneGraph)
+    #command += $${header_path}
+    
     command += $${header_path}/OpenThreads
     command += $${header_path}/osg
     command += $${header_path}/osgAnimation
@@ -41,6 +46,9 @@ defineTest(add_include_OpenSceneGraph){
     command += $${header_path}/osgUI
     command += $${header_path}/osgUtil
     command += $${header_path}/osgViewer
+    command += $${header_path}/osgViewer/api
+    command += $${header_path}/osgViewer/api/Win32
+    command += $${header_path}/osgViewer/config
     command += $${header_path}/osgVolume
     command += $${header_path}/osgWidget
 
@@ -57,34 +65,63 @@ defineTest(add_defines_OpenSceneGraph){
     return (1)
 }
 
+#修改
+defineTest(add_library_OpenSceneGraph){
+    #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
+    #添加这个SDK里的library
+    #add_library(OpenSceneGraph, OpenSceneGraph)
+    
+    add_library(OpenSceneGraph, OpenThreads)
+    add_library(OpenSceneGraph, osg)
+    add_library(OpenSceneGraph, osgAnimation)
+    add_library(OpenSceneGraph, osgDB)
+    add_library(OpenSceneGraph, osgFX)
+    add_library(OpenSceneGraph, osgGA)
+    add_library(OpenSceneGraph, osgManipulator)
+    add_library(OpenSceneGraph, osgParticle)
+    add_library(OpenSceneGraph, osgPresentation)
+    add_library(OpenSceneGraph, osgQt)
+    add_library(OpenSceneGraph, osgShadow)
+    add_library(OpenSceneGraph, osgSim)
+    add_library(OpenSceneGraph, osgTerrain)
+    add_library(OpenSceneGraph, osgText)
+    add_library(OpenSceneGraph, osgUI)
+    add_library(OpenSceneGraph, osgUtil)
+    add_library(OpenSceneGraph, osgViewer)
+    add_library(OpenSceneGraph, osgVolume)
+    add_library(OpenSceneGraph, osgWidget)
 
-defineTest(add_library_OpenSceneGraph) {
-    #链接Library
-    add_library(OpenSceneGraph, OpenThreads$${LIBRARYVER})
-    add_library(OpenSceneGraph, osg$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgAnimation$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgDB$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgFX$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgGA$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgManipulator$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgParticle$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgPresentation$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgQt$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgShadow$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgSim$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgTerrain$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgText$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgUI$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgUtil$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgViewer$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgVolume$${LIBRARYVER})
-    add_library(OpenSceneGraph, osgWidget$${LIBRARYVER})
     return (1)
 }
 
-#发布依赖library的函数
+
+#发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
+#修改
 defineTest(add_deploy_library_OpenSceneGraph) {
-    add_deploy_libraryes(OpenSceneGraph)
+    #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
+    #add_deploy_library(OpenSceneGraph, OpenSceneGraph)
+    #add_deploy_libraryes(OpenSceneGraph)
+    
+    add_deploy_library(OpenSceneGraph, OpenThreads)
+    add_deploy_library(OpenSceneGraph, osg)
+    add_deploy_library(OpenSceneGraph, osgAnimation)
+    add_deploy_library(OpenSceneGraph, osgDB)
+    add_deploy_library(OpenSceneGraph, osgFX)
+    add_deploy_library(OpenSceneGraph, osgGA)
+    add_deploy_library(OpenSceneGraph, osgManipulator)
+    add_deploy_library(OpenSceneGraph, osgParticle)
+    add_deploy_library(OpenSceneGraph, osgPresentation)
+    add_deploy_library(OpenSceneGraph, osgQt)
+    add_deploy_library(OpenSceneGraph, osgShadow)
+    add_deploy_library(OpenSceneGraph, osgSim)
+    add_deploy_library(OpenSceneGraph, osgTerrain)
+    add_deploy_library(OpenSceneGraph, osgText)
+    add_deploy_library(OpenSceneGraph, osgUI)
+    add_deploy_library(OpenSceneGraph, osgUtil)
+    add_deploy_library(OpenSceneGraph, osgViewer)
+    add_deploy_library(OpenSceneGraph, osgVolume)
+    add_deploy_library(OpenSceneGraph, osgWidget)
+
     return (1)
 }

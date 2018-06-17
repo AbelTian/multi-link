@@ -210,7 +210,21 @@ void MainWindow::on_pushButton_clicked()
     {
         if ( mfi.isFile() )
         {
-            if ( mfi.suffix().contains ( "dll" ) )
+            //.dll.a
+            if ( mfi.completeSuffix() == "dll.a"  )
+            {
+                use_suffix = 5;
+            }
+        }
+    }
+
+
+    foreach ( QFileInfo mfi, d2.entryInfoList() )
+    {
+        if ( mfi.isFile() )
+        {
+            //.dll
+            if ( mfi.completeSuffix() == "dll" )
             {
                 use_suffix = 4;
             }
@@ -221,18 +235,21 @@ void MainWindow::on_pushButton_clicked()
     {
         if ( mfi.isFile() )
         {
-            if ( mfi.suffix().contains ( "so" ) )
+            //.dylib .lib
+            if ( mfi.completeSuffix().contains ( "lib" ) )
             {
                 use_suffix = 3;
             }
         }
     }
 
+
     foreach ( QFileInfo mfi, d2.entryInfoList() )
     {
         if ( mfi.isFile() )
         {
-            if ( mfi.suffix().contains ( "lib" ) )
+            //.so .so.1 .so.1.2  +.so.1.2.3
+            if ( mfi.completeSuffix().contains ( "so" ) )
             {
                 use_suffix = 2;
             }
@@ -243,7 +260,8 @@ void MainWindow::on_pushButton_clicked()
     {
         if ( mfi.isFile() )
         {
-            if ( mfi.suffix().contains ( "a" ) )
+            //.a
+            if ( mfi.completeSuffix() == "a" )
             {
                 use_suffix = 1;
             }
@@ -265,22 +283,27 @@ void MainWindow::on_pushButton_clicked()
             pline() << mfi.suffix() << mfi.completeBaseName() << mfi.completeSuffix();
             if ( use_suffix == 1 )
             {
-                if ( !mfi.suffix().contains ( "a" ) )
+                if ( mfi.completeSuffix() != "a"  )
                     continue;
             }
             else if ( use_suffix == 2 )
             {
-                if ( !mfi.suffix().contains ( "lib" ) )
+                if ( !mfi.completeSuffix().contains ( "so" ) )
                     continue;
             }
             else if ( use_suffix == 3 )
             {
-                if ( !mfi.suffix().contains ( "so" ) )
+                if ( !mfi.completeSuffix().contains ( "lib" ) )
                     continue;
             }
             else if ( use_suffix == 4 )
             {
-                if ( !mfi.suffix().contains ( "dll" ) )
+                if ( mfi.completeSuffix() != "dll" )
+                    continue;
+            }
+            else if ( use_suffix == 5 )
+            {
+                if ( mfi.completeSuffix() != "dll.a" )
                     continue;
             }
 
