@@ -187,7 +187,7 @@ void MainWindow::on_pushButton_clicked()
 
             //遍历成功，所有的子文件夹已经深度优先遍历。
             //subdir name
-            ui->textBrowser->append ( QString ( "isEmpty(header_path)header_path=$$get_add_include_bundle(%1, %2)" )
+            ui->textBrowser->append ( QString ( "isEmpty(header_path)header_path=$$get_add_include(%1, %2)" )
                                       .arg ( ui->lineEdit_2->text() )
                                       .arg ( mfi.baseName() ) );
             ui->textBrowser->append ( "command += $${header_path}" );
