@@ -55,8 +55,8 @@ defineTest(add_library_Template){
 #修改
 defineTest(add_deploy_library_Template) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
-    add_deploy_library(Template, Template)
     #add_deploy_libraryes(Template)
+    add_deploy_library(Template, Template)
 
     return (1)
 }

@@ -39,7 +39,11 @@ include(../../multi-link/add_base_manager.pri)
 add_version(1,0,0,0)
 add_deploy()
 add_dependent_manager(QQt)
+#add_dependent_manager(Template)
 
 #是deploy环节依赖touch
 system(touch main.cpp)
 add_deploy_config($$PWD/AppRoot)
+
+DISTFILES += AppRoot/add_library_Template.pri
+

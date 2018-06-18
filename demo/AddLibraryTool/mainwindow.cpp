@@ -389,7 +389,7 @@ void MainWindow::on_pushButton_clicked()
 
     QString sep1 = "#...";
     QString sep2 = QString ( "add_library(%1, %1)" ).arg ( ui->lineEdit_2->text() );
-    QString sep3 = QString ( "#add_deploy_libraryes(%1)" ).arg ( ui->lineEdit_2->text() );
+    QString sep3 = QString ( "add_deploy_library(%1, %1)" ).arg ( ui->lineEdit_2->text() );
 
     QBuffer buf ( &fBytes );
     buf.open ( QBuffer::ReadOnly );
@@ -446,6 +446,20 @@ void MainWindow::on_pushButton_clicked()
     return;
 }
 
+void MainWindow::on_pushButton_2_clicked()
+{
+    QString sep = "/";
+#ifdef Q_OS_WIN
+    sep = "\\";
+#endif
+    QString filename = ui->lineEdit->text() + sep + ui->tabWidget->tabBar()->tabText ( 3 );
+    pline() << filename;
+    QFile file ( filename );
+    file.open ( QFile::Truncate | QFile::WriteOnly );
+    QString content = ui->textBrowser_4->toPlainText();
+    file.write ( content.toLocal8Bit() );
+    file.close();
+}
 
 bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
 {
@@ -549,3 +563,4 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
 
     return QMainWindow::eventFilter ( watched, event );
 }
+
