@@ -77,5 +77,5 @@ SUBDIRS =
 
 ########################################################################################
 #test project
-SUBDIRS += test/nonQtProjTest
+#SUBDIRS += test/nonQtProjTest
 SUBDIRS += test/AddLibPriTest
