@@ -36,7 +36,8 @@ FORMS += \
 include(../../multi-link/add_base_manager.pri)
 add_version(1,0,0,0)
 add_deploy()
-#add_create_dependent_manager(simbody)
-#add_dependent_manager(crypto++)
-add_dependent_manager(curl)
-add_dependent_manager(Boost)
+
+#test link workflow...
+add_create_dependent_manager(lua)
+add_create_dependent_manager(tolua)
+#add_create_dependent_manager(Template)
