@@ -1,30 +1,30 @@
 #----------------------------------------------------------------
 #add_library_FLTK.pri
-#ÕâÊÇ¸øÓÃ»§Ìá¹©µÄ·½±ãpri
-#Õâ¸ö±È½Ïcommon£¬ÔÊĞí¿½±´µ½ÓÃ»§¹¤³ÌÖĞ¸ü¸Ä¡£
+#è¿™æ˜¯ç»™ç”¨æˆ·æä¾›çš„æ–¹ä¾¿pri
+#è¿™ä¸ªæ¯”è¾ƒcommonï¼Œå…è®¸æ‹·è´åˆ°ç”¨æˆ·å·¥ç¨‹ä¸­æ›´æ”¹ã€‚
 #----------------------------------------------------------------
-#_bundleµÄÈ¡Éá£¬ÔÚÓÚmacOSÏµÍ³ÏÂ£¬Ê¹ÓÃµÄlibraryÎªbundleĞÎÊ½£¬»¹ÊÇdylibĞÎÊ½¡£
+#_bundleçš„å–èˆï¼Œåœ¨äºmacOSç³»ç»Ÿä¸‹ï¼Œä½¿ç”¨çš„libraryä¸ºbundleå½¢å¼ï¼Œè¿˜æ˜¯dylibå½¢å¼ã€‚
 
 #######################################################################################
-#³õÊ¼»¯ÉèÖÃ
+#åˆå§‹åŒ–è®¾ç½®
 #######################################################################################
 
 
 #######################################################################################
-#¶¨Òåº¯Êı
+#å®šä¹‰å‡½æ•°
 #######################################################################################
-#ĞŞ¸Ä
+#ä¿®æ”¹
 defineTest(add_include_FLTK){
-    #²»Îª¿Õ£¬¿Ï¶¨ÊÇÔ´ÂëÀïµÄÂ·¾¶¡£ ÓÃÓÚµ¼³öÍ·ÎÄ¼ş
+    #ä¸ä¸ºç©ºï¼Œè‚¯å®šæ˜¯æºç é‡Œçš„è·¯å¾„ã€‚ ç”¨äºå¯¼å‡ºå¤´æ–‡ä»¶
     header_path = $$1
-    #Èç¹û²ÎÊı1Îª¿Õ£¬ÄÇÃ´ÊÇÓÃSDKÀïµÄÂ·¾¶ ÓÃÓÚÁ´½ÓÊ±°üº¬Í·ÎÄ¼ş
-    #´Ë´¦_bundle´ú±í macÏÂÍ·ÎÄ¼şÔÚbundleÀï¡£ ÁôÒâ
-    isEmpty(header_path)header_path=$$get_add_include(FLTK, FLTK)
+    #å¦‚æœå‚æ•°1ä¸ºç©ºï¼Œé‚£ä¹ˆæ˜¯ç”¨SDKé‡Œçš„è·¯å¾„ ç”¨äºé“¾æ¥æ—¶åŒ…å«å¤´æ–‡ä»¶
+    #æ­¤å¤„_bundleä»£è¡¨ macä¸‹å¤´æ–‡ä»¶åœ¨bundleé‡Œã€‚ ç•™æ„
+    isEmpty(header_path):header_path=$$get_add_include(FLTK, FLTK)
 
     command =
     #basic
     command += $${header_path}
-    #ÕâÀïÌí¼Ó$${path}ÏÂµÄ×ÓÎÄ¼ş¼Ğ
+    #è¿™é‡Œæ·»åŠ $${path}ä¸‹çš„å­æ–‡ä»¶å¤¹
     #...
     command += $${header_path}/images
 
@@ -33,18 +33,18 @@ defineTest(add_include_FLTK){
     return (1)
 }
 
-#ĞŞ¸Ä
+#ä¿®æ”¹
 defineTest(add_defines_FLTK){
-    #Ìí¼ÓÕâ¸öSDKÀïµÄdefines
+    #æ·»åŠ è¿™ä¸ªSDKé‡Œçš„defines
     #add_defines()
 
     return (1)
 }
 
-#ĞŞ¸Ä
+#ä¿®æ”¹
 defineTest(add_library_FLTK){
-    #Õâ¸öµØ·½add_library_bundle´ú±í macOSÏÂ£¬libÔÚbundleÀï¡£ ÁôÒâ
-    #Ìí¼ÓÕâ¸öSDKÀïµÄlibrary
+    #è¿™ä¸ªåœ°æ–¹add_library_bundleä»£è¡¨ macOSä¸‹ï¼Œlibåœ¨bundleé‡Œã€‚ ç•™æ„
+    #æ·»åŠ è¿™ä¸ªSDKé‡Œçš„library
     #add_library(FLTK, FLTK)
     add_library(FLTK, fltk)
     add_library(FLTK, fltk_forms)
@@ -58,11 +58,11 @@ defineTest(add_library_FLTK){
 }
 
 
-#·¢²¼ÒÀÀµlibrary
-#×¢ÒâAndroidÒ²ĞèÒªÕâ¸öº¯Êı£¬Ê¹ÓÃÕâ¸öº¯ÊıAndroid²Å»á·¢²¼Libraryµ½ÔËĞĞÊ±¡£ÉÏ±ßµÄÖ»ÊÇÁ´½Ó×÷ÓÃ¡£
-#ĞŞ¸Ä
+#å‘å¸ƒä¾èµ–library
+#æ³¨æ„Androidä¹Ÿéœ€è¦è¿™ä¸ªå‡½æ•°ï¼Œä½¿ç”¨è¿™ä¸ªå‡½æ•°Androidæ‰ä¼šå‘å¸ƒLibraryåˆ°è¿è¡Œæ—¶ã€‚ä¸Šè¾¹çš„åªæ˜¯é“¾æ¥ä½œç”¨ã€‚
+#ä¿®æ”¹
 defineTest(add_deploy_library_FLTK) {
-    #Õâ¸öµØ·½add_deploy_library_bundle´ú±ímacOSÏÂ·¢²¼µÄÊÇbundle¸ñÊ½¡£
+    #è¿™ä¸ªåœ°æ–¹add_deploy_library_bundleä»£è¡¨macOSä¸‹å‘å¸ƒçš„æ˜¯bundleæ ¼å¼ã€‚
     #add_deploy_library(FLTK, FLTK)
     #add_deploy_libraryes(FLTK)
     add_deploy_library(FLTK, fltk)
