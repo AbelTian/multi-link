@@ -352,7 +352,7 @@ void MainWindow::on_pushButton_clicked()
 
             QString name = mfi.completeBaseName();
             if ( use_suffix == SUFFIX_DLL_A )
-                name = name.remove ( name.size() - 3, 3 );
+                name = name.remove ( name.size() - 4, 4 );
 
             if ( name.startsWith ( "lib" ) )
                 name.remove ( 0, 3 );

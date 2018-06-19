@@ -38,6 +38,6 @@ add_version(1,0,0,0)
 add_deploy()
 
 #test link workflow...
-add_create_dependent_manager(lua)
-add_create_dependent_manager(tolua)
+#add_create_dependent_manager(lua)
+#add_create_dependent_manager(tolua)
 #add_create_dependent_manager(Template)
