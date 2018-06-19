@@ -187,7 +187,7 @@ void MainWindow::on_pushButton_clicked()
 
             //遍历成功，所有的子文件夹已经深度优先遍历。
             //subdir name
-            ui->textBrowser->append ( QString ( "isEmpty(header_path)header_path=$$get_add_include(%1, %2)" )
+            ui->textBrowser->append ( QString ( "isEmpty(header_path):header_path=$$get_add_include(%1, %2)" )
                                       .arg ( ui->lineEdit_2->text() )
                                       .arg ( mfi.baseName() ) );
             ui->textBrowser->append ( "command += $${header_path}" );
@@ -204,41 +204,28 @@ void MainWindow::on_pushButton_clicked()
     }
 
 
+    enum
+    {
+        SUFFIX_LA = 1,
+        SUFFIX_DLL_A,
+        SUFFIX_A,
+        SUFFIX_LIB,     //LIB DYLIB
+        SUFFIX_SO,      //.SO .X.X.SO .SO.X.X.X
+        SUFFIX_DLL,
+
+        SUFFIX_MAX
+    };
+
     QDir d2 ( lib );
     int use_suffix = 0;
     foreach ( QFileInfo mfi, d2.entryInfoList() )
     {
         if ( mfi.isFile() )
         {
-            //.dll.a
-            if ( mfi.completeSuffix() == "dll.a"  )
-            {
-                use_suffix = 5;
-            }
-        }
-    }
-
-
-    foreach ( QFileInfo mfi, d2.entryInfoList() )
-    {
-        if ( mfi.isFile() )
-        {
             //.dll
-            if ( mfi.completeSuffix() == "dll" )
+            if ( mfi.suffix() == "dll" )
             {
-                use_suffix = 4;
-            }
-        }
-    }
-
-    foreach ( QFileInfo mfi, d2.entryInfoList() )
-    {
-        if ( mfi.isFile() )
-        {
-            //.dylib .lib
-            if ( mfi.completeSuffix().contains ( "lib" ) )
-            {
-                use_suffix = 3;
+                use_suffix = SUFFIX_DLL;
             }
         }
     }
@@ -249,9 +236,33 @@ void MainWindow::on_pushButton_clicked()
         if ( mfi.isFile() )
         {
             //.so .so.1 .so.1.2  +.so.1.2.3
-            if ( mfi.completeSuffix().contains ( "so" ) )
+            if ( mfi.suffix() == "so"  )
             {
-                use_suffix = 2;
+                use_suffix = SUFFIX_SO;
+            }
+        }
+    }
+
+    foreach ( QFileInfo mfi, d2.entryInfoList() )
+    {
+        if ( mfi.isFile() )
+        {
+            //.dylib .lib
+            if ( mfi.suffix().contains ( "lib" ) )
+            {
+                use_suffix = SUFFIX_LIB;
+            }
+        }
+    }
+
+    foreach ( QFileInfo mfi, d2.entryInfoList() )
+    {
+        if ( mfi.isFile() )
+        {
+            //.dll.a
+            if ( mfi.completeSuffix().right ( 5 ) == "dll.a"  )
+            {
+                use_suffix = SUFFIX_DLL_A;
             }
         }
     }
@@ -263,7 +274,19 @@ void MainWindow::on_pushButton_clicked()
             //.a
             if ( mfi.completeSuffix() == "a" )
             {
-                use_suffix = 1;
+                use_suffix = SUFFIX_A;
+            }
+        }
+    }
+
+    foreach ( QFileInfo mfi, d2.entryInfoList() )
+    {
+        if ( mfi.isFile() )
+        {
+            //.la
+            if ( mfi.suffix() == "la" )
+            {
+                use_suffix = SUFFIX_LA;
             }
         }
     }
@@ -281,42 +304,69 @@ void MainWindow::on_pushButton_clicked()
             libDict[mfi.baseName()]["absolutepath"] = mfi.absolutePath();
 
             pline() << mfi.suffix() << mfi.completeBaseName() << mfi.completeSuffix();
-            if ( use_suffix == 1 )
+            switch ( use_suffix )
             {
-                if ( mfi.completeSuffix() != "a"  )
+                case SUFFIX_LA:
+                {
+                    if ( mfi.suffix() != "la"  )
+                        continue;
+                }
+                break;
+                case SUFFIX_A:
+                {
+                    if ( mfi.completeSuffix().contains ( "dll.a" )  )
+                        continue;
+
+                    if ( mfi.suffix() != "a"  )
+                        continue;
+                }
+                break;
+                case SUFFIX_DLL_A:
+                {
+                    if ( mfi.completeSuffix().right ( 5 ) != "dll.a" )
+                        continue;
+                }
+                break;
+                case SUFFIX_LIB:
+                {
+                    if ( !mfi.suffix().contains ( "lib" ) )
+                        continue;
+                }
+                break;
+                case SUFFIX_SO:
+                {
+                    if ( mfi.suffix() != "so"  )
+                        continue;
+                }
+                break;
+                case SUFFIX_DLL:
+                {
+                    if ( mfi.suffix() != "dll"  )
+                        continue;
+                }
+                break;
+                default:
                     continue;
-            }
-            else if ( use_suffix == 2 )
-            {
-                if ( !mfi.completeSuffix().contains ( "so" ) )
-                    continue;
-            }
-            else if ( use_suffix == 3 )
-            {
-                if ( !mfi.completeSuffix().contains ( "lib" ) )
-                    continue;
-            }
-            else if ( use_suffix == 4 )
-            {
-                if ( mfi.completeSuffix() != "dll" )
-                    continue;
-            }
-            else if ( use_suffix == 5 )
-            {
-                if ( mfi.completeSuffix() != "dll.a" )
-                    continue;
+                    break;
             }
 
-            QString name = mfi.baseName();
+            QString name = mfi.completeBaseName();
+            if ( use_suffix == SUFFIX_DLL_A )
+                name = name.remove ( name.size() - 3, 3 );
+
             if ( name.startsWith ( "lib" ) )
                 name.remove ( 0, 3 );
             pline() << name;
 
             //if ( ui->textBrowser_2->toPlainText().contains ( name ) )
             //    continue;
+
             if ( libList.contains ( name ) )
                 continue;
+
             QString tempname = name;
+            if ( tempname.endsWith ( "-d" ) )
+                tempname.remove ( tempname.size() - 2, 2 );
             if ( tempname.endsWith ( "d" ) )
                 tempname.remove ( tempname.size() - 1, 1 );
             if ( tempname.endsWith ( "_debug" ) )
@@ -325,50 +375,13 @@ void MainWindow::on_pushButton_clicked()
             if ( libList.contains ( tempname ) )
                 continue;
 
-            libList.push_back ( name );
+            libList.push_back ( tempname );
 
-            QString lib_path = QString ( "add_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( name );
+            QString lib_path = QString ( "add_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( tempname );
             ui->textBrowser_2->append ( lib_path );
 
-            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( name );
+            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( tempname );
             ui->textBrowser_3->append ( lib_deploy_path );
-        }
-        else
-        {
-            if ( mfi.fileName() == "." || mfi.fileName() == ".." )
-                continue;
-
-            continue;
-            //qDebug() << "Entry Dir" << mfi.absoluteFilePath();
-            //pline() << mfi.absoluteDir();
-            //pline() << mfi.baseName();
-            //pline() << mfi.canonicalPath();
-            //pline() << mfi.completeBaseName();
-            //pline() << mfi.path();
-            //pline() << mfi.filePath();
-            //pline() << mfi.fileName();
-
-            //QString path = mfi.absoluteDir();
-            //pline() << mfi.absoluteFilePath();
-            pline() << mfi.baseName() << mfi.fileName() << mfi.filePath();
-
-            headerDict[mfi.baseName()]["basename"] = mfi.baseName();
-            headerDict[mfi.baseName()]["absolutename"] = mfi.absoluteFilePath();
-            headerDict[mfi.baseName()]["absolutepath"] = mfi.absolutePath();
-
-            //深层次遍历
-            calculate ( headerDict[mfi.baseName()], mfi.absoluteFilePath() );
-
-            //遍历成功，所有的子文件夹已经深度优先遍历。
-            QQtDictionaryListIterator itor ( headerDict[mfi.baseName()]["childen"].getList() );
-            while ( itor.hasNext() )
-            {
-                const QQtDictionary& dict = itor.next();
-                QString path = dict.getValue().toString();
-                QString header_path = QString ( "command += $${header_path}/%1" ).arg ( path );
-                ui->textBrowser->append ( header_path );
-            }
-
         }
     }
 

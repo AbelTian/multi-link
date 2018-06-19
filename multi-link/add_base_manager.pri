@@ -178,7 +178,6 @@ defineTest(add_create_dependent_manager){
     pripath = $$3
     #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
     isEmpty(libgroupname):return(0)
-    equals(libgroupname, Template):return(0)
     isEmpty(libname):libname = $$libgroupname
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
