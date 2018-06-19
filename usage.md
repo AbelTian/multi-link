@@ -74,5 +74,13 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 - 给用户提供了AddLibTool用于辅助用户从SDKROOT直接获取add_library_xxx.pri文件。  
 - ProductExecTool用于帮助用户从产品库里运行程序，程序太多的时候，一个一个深入目录点击运行也是比较不容易。    
 
+# Multi-link v2在操作系统中的地位  
+
+在操作系统里Multi-link的地位如下，用户说这是嵌入式操作系统的结构，其实这也是桌面操作系统的结构。  
+Multi-link 2主要应用于App和App Framework层的多关系链接工作。
+在这种二进制不兼容的多种多样的系统当中，这种链接方式非常有用。     
+在Library层，通常比较现代的工程管理工具为CMake，而在App层比较流行的工程管理工具为qmake，跟随Qt发布的qmake。  
+
+![Multi-link的地位](screenshot/15.jpg "Multi-link 2的地位")    
 
 [返回](.)  
