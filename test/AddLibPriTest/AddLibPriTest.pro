@@ -39,6 +39,9 @@ add_deploy()
 
 #test link workflow...
 #add_create_dependent_manager(lua)
+#add_create_dependent_manager(Sequence)
+#add_create_dependent_manager(leveldb)
 #add_create_dependent_manager(tolua)
-add_create_dependent_manager(Python)
+#add_create_dependent_manager(Python)
 message($$QMAKE_TARGET_COPYRIGHT)
+add_create_dependent_manager(libuv)
