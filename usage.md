@@ -15,7 +15,8 @@ QKIT不再使用，而仅仅使用QSYS。
 | Linux 64bit | Linux64 | - | Linux64 |  
 | macOS clang 64bit | macOS | - | macOS |  
 | Arm 32bit | Arm32 | - | Arm32 |  
-| Mips 32bit | Mips32 | - | Mips32 |  
+| ArmHF 32bit | Armhf32 | - | Armhf32 |
+| Mips 32bit | Mips32 | - | Mips32 |
 | Embedded 32bit | Embedded | - | Embedded |  
 | iOS clang | iOS | - | iOS |  
 | iOS Simulator |﻿iOSSimulator | - | iOSSimulator |  

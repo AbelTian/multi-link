@@ -25,6 +25,7 @@ MainWindow::MainWindow ( QWidget* parent ) :
              << "Linux64"
              << "Embedded"
              << "Arm32"
+             << "Armhf32"
              << "Mips32"
              << "Android"
              << "macOS"
