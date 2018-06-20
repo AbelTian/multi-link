@@ -57,6 +57,7 @@ MainWindow::MainWindow ( QWidget* parent ) :
     ui->comboBox->addItem ( "Linux64" );
     ui->comboBox->addItem ( "Embedded" );
     ui->comboBox->addItem ( "Arm32" );
+    ui->comboBox->addItem ( "Armhf32" );
     ui->comboBox->addItem ( "Mips32" );
     ui->comboBox->addItem ( "Android" );
     ui->comboBox->addItem ( "macOS" );

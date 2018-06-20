@@ -3,3 +3,7 @@ Lua
 
 LevelDB
 WindowsÏÂ±àÒëÊ§°Ü
+
+cocos2d-x 
+linuxÏÂ±àÒëÊ§°Ü¡£
+

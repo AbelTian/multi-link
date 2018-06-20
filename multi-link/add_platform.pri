@@ -17,6 +17,12 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __EMBEDDED_LINUX__
     #arm32 private
     DEFINES += __ARM_LINUX__
+} else:contains(QSYS_PRIVATE, Armhf32) {
+    DEFINES += __EMBEDDED_LINUX__
+    #arm32 private
+    DEFINES += __ARM_LINUX__
+    #armhf32 private
+    DEFINES += __ARMHF_LINUX__
 } else:contains(QSYS_PRIVATE, Mips32) {
     DEFINES += __EMBEDDED_LINUX__
     #mips32 private

@@ -493,7 +493,7 @@ defineReplace(add_host_name){
 
 #获取目标平台的名称
 defineReplace(add_xplatform_name){
-    #MSVC MSVC32 MSVC64 Windows Win32 Win64 macOS iOS iOSSimulator Android AndroidX86 Linux Linux64 Arm32 Mips32 Embedded
+    #MSVC MSVC32 MSVC64 Windows Win32 Win64 macOS iOS iOSSimulator Android AndroidX86 Linux Linux64 Arm32 Armhf32 Mips32 Embedded
     return ($${QSYS_PRIVATE})
 }
 
