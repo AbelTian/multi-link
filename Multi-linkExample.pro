@@ -11,8 +11,6 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS =
-
 #need webkit webkitwidgets - WebSupport
 #webengine
 #ignored
@@ -74,3 +72,4 @@ SUBDIRS =
 #macOS Windows linux
 SUBDIRS += demo/ProductExecTool
 SUBDIRS += demo/AddLibraryTool
+SUBDIRS += demo/SdkListTool

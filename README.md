@@ -7,6 +7,11 @@ Multi-link技术使用众多的pri进行函数定义，提供给用户丰富的A
 我编写的Multi-link技术使用内置支持Library的方式支持众多的Library，方便共享对Library的支持，并且方便准确及时地同步到工程中进行使用，基本上编写一次，便不必再修改。  
 用户有使用方便的Library可以给我发邮件，tianduanrui@163.com.把add_library_XXX.pri发给我。我会把它提交到Multi-link工程里。  
 
+经过发布的App直接点击就可以运行，*大的省去了用户手动发布App的劳烦过程。  
+*Multi-link提供ProductExecTool，可以对产品集中查看、调用运行。*  
+*Multi-link提供AddLibraryTool，方便用户通过准备好的SDK自动生成add_library_xxx.pri的链接环。*  
+*Multi-link提供Multi-linkConfigTool，方便用户配置Multi-link v2必需的三大路径，build/sdk/deploy root。*  
+*Multi-link提供SdkListTool，方便用户查看已经准备好的SDK在各个平台准备情况的表格。*  
 
 #### 软件架构  
 
@@ -30,6 +35,9 @@ Multi-link技术使用众多的pri进行函数定义，提供给用户丰富的A
 4. 如果希望添加自定义模块，那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录。仿照demo里的样子写自定义的add_library_XXX.pri. 
 
 [详细使用说明](usage.md)  
+
+#### 提供的工具  
+
 
 #### 参与贡献
 
