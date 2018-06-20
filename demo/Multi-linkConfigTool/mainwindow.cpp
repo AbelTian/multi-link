@@ -16,6 +16,8 @@ MainWindow::MainWindow ( QWidget* parent ) :
 {
     ui->setupUi ( this );
 
+    setMinimumSize ( 600, 220 );
+
     QString homepath;
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     homepath = QStandardPaths::writableLocation ( QStandardPaths::HomeLocation );;
@@ -27,34 +29,40 @@ MainWindow::MainWindow ( QWidget* parent ) :
     QString filename = homepath + "/.qmake/app_configure.pri";
     QFile file ( filename );
     file.open ( QFile::ReadOnly );
-    QByteArray bytes = file.readAll();
+    if ( !file.isOpen() )
+        return;
+
+    fileBytes = file.readAll();
     file.close();
 
     QString deployroot;
     QString sdkroot;
     QString buildroot;
 
-    QString str = bytes;
+    QString str = fileBytes;
     QStringList sss = str.split ( '\n' );
     QStringListIterator itor ( sss );
     while ( itor.hasNext() )
     {
         QString s = itor.next();
-        if ( s.contains ( "APP_DEPLOY_ROOT" ) )
+        //以变量名开始的为对的。
+        //如果=为空则忽略。
+        //以最后一次遇到的有值的变量为准。
+        if ( s.trimmed().startsWith ( "APP_DEPLOY_ROOT" ) )
         {
             QString s0 = s.split ( '=' ) [1].trimmed();
             if ( s0.isEmpty() )
                 continue;
             deployroot = s0;
         }
-        if ( s.contains ( "LIB_SDK_ROOT" ) )
+        if ( s.trimmed().startsWith ( "LIB_SDK_ROOT" ) )
         {
             QString s0 = s.split ( '=' ) [1].trimmed();
             if ( s0.isEmpty() )
                 continue;
             sdkroot = s0;
         }
-        if ( s.contains ( "APP_BUILD_ROOT" ) )
+        if ( s.trimmed().startsWith ( "APP_BUILD_ROOT" ) )
         {
             QString s0 = s.split ( '=' ) [1].trimmed();
             if ( s0.isEmpty() )
@@ -66,8 +74,6 @@ MainWindow::MainWindow ( QWidget* parent ) :
     ui->lineEdit->setText ( deployroot );
     ui->lineEdit_2->setText ( sdkroot );
     ui->lineEdit_3->setText ( buildroot );
-
-    setMinimumSize ( 600, 220 );
 }
 
 MainWindow::~MainWindow()
@@ -99,5 +105,11 @@ void MainWindow::on_pushButton_clicked()
     file.write ( deployroot.toLocal8Bit() );
     file.write ( sdkroot.toLocal8Bit() );
     file.write ( buildroot.toLocal8Bit() );
+
+    file.write ( "\n" );
+    file.write ( "#兼容Multi-link v1.0\n" );
+    file.write ( "QQT_BUILD_ROOT=$${APP_BUILD_ROOT}\n" );
+    file.write ( "QQT_SDK_ROOT=$${LIB_SDK_ROOT}\n" );
+
     file.close();
 }
