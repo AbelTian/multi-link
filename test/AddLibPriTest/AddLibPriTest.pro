@@ -40,4 +40,5 @@ add_deploy()
 #test link workflow...
 #add_create_dependent_manager(lua)
 #add_create_dependent_manager(tolua)
-#add_create_dependent_manager(FLTK)
+add_create_dependent_manager(Python)
+message($$QMAKE_TARGET_COPYRIGHT)
