@@ -107,40 +107,41 @@ void MainWindow::on_pushButton_clicked()
 
             ui->tableWidget->setRowCount ( ui->tableWidget->rowCount() + 1 );
 
-            QDir d ( ui->lineEdit->text() + "/" + mfi.fileName() );
-            foreach ( QFileInfo subMfi, d.entryInfoList() )
+            //如果直接使用，却不new item，会崩溃退出。
+            //虽然设置了count，但是里面没有item。
+            //ui->tableWidget->item ( row, 0 )->setText ( mfi.fileName() );
+
+            QTableWidgetItem* item = new QTableWidgetItem ( mfi.fileName() );
+            ui->tableWidget->setItem ( row, 0, item );
+
+            int col = 1;
+            QStringListIterator itor ( platList );
+            while ( itor.hasNext() )
             {
-                if ( subMfi.isFile() ) {}
+                itor.next();
+                QTableWidgetItem* item = new QTableWidgetItem();
+                item->setFlags ( item->flags() | Qt::ItemIsUserCheckable );
+                item->setCheckState ( Qt::Unchecked );
+                ui->tableWidget->setItem ( row, col, item );
+                col++;
+            }
+
+            QDir d ( ui->lineEdit->text() + "/" + mfi.fileName() );
+            foreach ( QFileInfo mfi, d.entryInfoList() )
+            {
+
+                if ( mfi.isFile() ) {}
                 else
                 {
-                    if ( subMfi.fileName() == "." || subMfi.fileName() == ".." )
+                    if ( mfi.fileName() == "." || mfi.fileName() == ".." )
                         continue;
 
-                    //如果直接使用，却不new item，会崩溃退出。
-                    //虽然设置了count，但是里面没有item。
-                    //ui->tableWidget->item ( row, 0 )->setText ( mfi.fileName() );
-
-                    QTableWidgetItem* item = new QTableWidgetItem ( mfi.fileName() );
-                    ui->tableWidget->setItem ( row, 0, item );
-
-                    int col = 1;
+                    int index = 0;
                     QStringListIterator itor ( platList );
                     while ( itor.hasNext() )
                     {
-                        itor.next();
-                        QTableWidgetItem* item = new QTableWidgetItem();
-                        item->setFlags ( item->flags() | Qt::ItemIsUserCheckable );
-                        item->setCheckState ( Qt::Unchecked );
-                        ui->tableWidget->setItem ( row, col, item );
-                        col++;
-                    }
-
-                    int index = 0;
-                    itor.toFront();
-                    while ( itor.hasNext() )
-                    {
                         QString str = itor.next();
-                        if ( str == subMfi.fileName() )
+                        if ( str == mfi.fileName() )
                         {
                             ui->tableWidget->item ( row, index )->setCheckState ( Qt::Checked );
                             break;
