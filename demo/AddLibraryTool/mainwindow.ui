@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>AddLibraryTool</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -159,7 +159,7 @@ add_library_xxx.pri会被保存到Lib Sdk Root。</string>
      <x>0</x>
      <y>0</y>
      <width>752</width>
-     <height>28</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>

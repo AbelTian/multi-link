@@ -46,7 +46,7 @@ defineReplace(get_add_library_bundle) {
         LINK += -l$${librealname}
     }
 
-    message(link $${librealname} from $$CUR_LIB_PWD)
+    message($${TARGET} link $${librealname} from $$CUR_LIB_PWD)
     return ($${LINK})
 }
 
@@ -75,7 +75,7 @@ defineReplace(get_add_library) {
     #win can't with the blank! error: -l QQt
     LINK += -l$${librealname}
 
-    message(link $${librealname} from $$CUR_LIB_PWD)
+    message($${TARGET} link $${librealname} from $$CUR_LIB_PWD)
 
     return ($${LINK})
 }
@@ -105,7 +105,7 @@ defineReplace(get_add_include_bundle) {
 
     INCLUDE =
     INCLUDE += $${CUR_INC_PWD}
-    message (include $${CUR_INC_PWD})
+    message ($${TARGET} include $${CUR_INC_PWD})
 
     return ($${INCLUDE})
 }
@@ -129,7 +129,7 @@ defineReplace(get_add_include) {
 
     INCLUDE =
     INCLUDE += $${CUR_INC_PWD}
-    message (include $${CUR_INC_PWD})
+    message ($${TARGET} include $${CUR_INC_PWD})
 
     return ($${INCLUDE})
 }
@@ -237,7 +237,7 @@ defineReplace(get_add_library_path) {
     }
 
     LINK += -L$${CUR_LIB_PWD}
-    message(add library path $$CUR_LIB_PWD)
+    message($${TARGET} add library path $$CUR_LIB_PWD)
 
     return ($${LINK})
 }

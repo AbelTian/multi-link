@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>376</width>
-    <height>141</height>
+    <height>159</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Multi-linkConfigTool</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
