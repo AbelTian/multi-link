@@ -8,8 +8,7 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-#1
-LIBRARYVER =
+
 
 #######################################################################################
 #定义函数
@@ -20,13 +19,15 @@ defineTest(add_include_OGRE){
     header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    isEmpty(header_path):header_path=$$get_add_include(OGRE, OGRE)
+    #isEmpty(header_path):header_path=$$get_add_include(OGRE, OGRE)
 
     command =
     #basic
-    command += $${header_path}
+    #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
+    isEmpty(header_path):header_path=$$get_add_include(OGRE, OGRE)
+    command += $${header_path}
     command += $${header_path}/Bites
     command += $${header_path}/HLMS
     command += $${header_path}/MeshLodGenerator
@@ -39,16 +40,14 @@ defineTest(add_include_OGRE){
     command += $${header_path}/Plugins/ParticleFX
     command += $${header_path}/Plugins/PCZSceneManager
     command += $${header_path}/Plugins/STBICodec
-
     command += $${header_path}/Property
     command += $${header_path}/RenderSystems
-    command += $${header_path}/RenderSystems/Direct3D9
     command += $${header_path}/RenderSystems/Direct3D11
+    command += $${header_path}/RenderSystems/Direct3D9
     command += $${header_path}/RenderSystems/GL
     command += $${header_path}/RenderSystems/GL/GL
     command += $${header_path}/RenderSystems/GL3Plus
     command += $${header_path}/RenderSystems/GL3Plus/GL
-
     command += $${header_path}/RTShaderSystem
     command += $${header_path}/Terrain
     command += $${header_path}/Threading
@@ -68,20 +67,21 @@ defineTest(add_defines_OGRE){
 }
 
 #修改
-#这个地方add_library_bundle代表 macOS下，lib在bundle里。
 defineTest(add_library_OGRE){
+    #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    add_library(OGRE, OgreBites$${LIBRARYVER})
-    add_library(OGRE, OgreGLSupport$${LIBRARYVER})
-    add_library(OGRE, OgreHLMS$${LIBRARYVER})
-    add_library(OGRE, OgreMain$${LIBRARYVER})
-    add_library(OGRE, OgreMeshLodGenerator$${LIBRARYVER})
-    add_library(OGRE, OgreOverlay$${LIBRARYVER})
-    add_library(OGRE, OgrePaging$${LIBRARYVER})
-    add_library(OGRE, OgreProperty$${LIBRARYVER})
-    add_library(OGRE, OgreRTShaderSystem$${LIBRARYVER})
-    add_library(OGRE, OgreTerrain$${LIBRARYVER})
-    add_library(OGRE, OgreVolume$${LIBRARYVER})
+    #add_library(OGRE, OGRE)
+    add_library(OGRE, OgreBites)
+    add_library(OGRE, OgreGLSupport)
+    add_library(OGRE, OgreHLMS)
+    add_library(OGRE, OgreMain)
+    add_library(OGRE, OgreMeshLodGenerator)
+    add_library(OGRE, OgreOverlay)
+    add_library(OGRE, OgrePaging)
+    add_library(OGRE, OgreProperty)
+    add_library(OGRE, OgreRTShaderSystem)
+    add_library(OGRE, OgreTerrain)
+    add_library(OGRE, OgreVolume)
 
     return (1)
 }
@@ -91,7 +91,20 @@ defineTest(add_library_OGRE){
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
 #修改
 defineTest(add_deploy_library_OGRE) {
-    add_deploy_libraryes(OGRE, OGRE$${LIBRARYVER})
+    #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(OGRE)
+    #add_deploy_library(OGRE, OGRE)
+    add_deploy_library(OGRE, OgreBites)
+    add_deploy_library(OGRE, OgreGLSupport)
+    add_deploy_library(OGRE, OgreHLMS)
+    add_deploy_library(OGRE, OgreMain)
+    add_deploy_library(OGRE, OgreMeshLodGenerator)
+    add_deploy_library(OGRE, OgreOverlay)
+    add_deploy_library(OGRE, OgrePaging)
+    add_deploy_library(OGRE, OgreProperty)
+    add_deploy_library(OGRE, OgreRTShaderSystem)
+    add_deploy_library(OGRE, OgreTerrain)
+    add_deploy_library(OGRE, OgreVolume)
+
     return (1)
 }
