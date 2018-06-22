@@ -6,12 +6,15 @@
 #include <QStringList>
 #include <QStringListIterator>
 #include <qqtdictionary.h>
+#include <QTextBrowser>
 
 MainWindow::MainWindow ( QWidget* parent ) :
     QMainWindow ( parent ),
     ui ( new Ui::MainWindow )
 {
     ui->setupUi ( this );
+
+    setMinimumSize ( 1024, 600 );
 
     ui->comboBox->addItem ( "Windows" );
     ui->comboBox->addItem ( "Win32" );
@@ -34,14 +37,11 @@ MainWindow::MainWindow ( QWidget* parent ) :
     //suggest
     ui->comboBox->setCurrentIndex ( 0 );
 
-    setMinimumSize ( 1024, 600 );
 
-    ui->lineEdit_2->installEventFilter ( this );
+    ui->lineEdit_3->installEventFilter ( this );
 
-    connect ( this, SIGNAL ( clickBtn() ), this, SLOT ( on_pushButton_clicked() ), Qt::QueuedConnection );
-
-    connect ( ui->lineEdit_2, SIGNAL ( textChanged ( QString ) ), this, SLOT ( textChanged ( QString ) ) );
-    connect ( ui->lineEdit, SIGNAL ( textChanged ( QString ) ), this, SLOT ( sdkRootChanged ( QString ) ) );
+    ui->listWidget->setFixedWidth ( 200 );
+    ui->listWidget->setWindowTitle ( "Sdk List" );
 
     QFile f ( "add_library_Template.pri" );
     f.open ( QFile::ReadOnly );
@@ -80,14 +80,62 @@ MainWindow::MainWindow ( QWidget* parent ) :
         }
     }
 
+    ui->label->setBuddy ( ui->lineEdit );
+    connect ( ui->lineEdit, SIGNAL ( textChanged ( QString ) ), this, SLOT ( textChanged ( QString ) ) );
     ui->lineEdit->setText ( deployroot );
 
-    //clickBtn();
+    connect ( this, SIGNAL ( clickBtn() ), this, SLOT ( on_pushButton_clicked() ), Qt::QueuedConnection );
+    clickBtn();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+void MainWindow::textChanged ( QString str )
+{
+    ui->lineEdit_2->setText ( QString ( "%1/app-lib" ).arg ( str ) );
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    if ( ui->lineEdit->text().isEmpty() )
+        return;
+
+    ui->statusBar->showMessage ( "refresh processing...." );
+
+    ui->listWidget->clear();
+
+    int row = 0;
+    QDir d ( ui->lineEdit->text() );
+    foreach ( QFileInfo mfi, d.entryInfoList() )
+    {
+        if ( mfi.isFile() )
+        {
+            //qDebug() << "File :" << mfi.fileName();
+        }
+        else
+        {
+            if ( mfi.fileName() == "." || mfi.fileName() == ".." )
+                continue;
+
+            //如果直接使用，却不new item，会崩溃退出。
+            //虽然设置了count，但是里面没有item。
+            //ui->tableWidget->item ( row, 0 )->setText ( mfi.fileName() );
+
+            QListWidgetItem* item = new QListWidgetItem ( mfi.fileName() );
+            item->setFlags ( item->flags() | Qt::ItemIsUserCheckable );
+            item->setCheckState ( Qt::Unchecked );
+            ui->listWidget->addItem ( item );
+            row++;
+        }
+    }
+
+
+    ui->statusBar->showMessage ( "Refresh Successed." );
+    return;
 }
 
 void MainWindow::calculate ( QQtDictionary& dict, QString path )
@@ -132,36 +180,27 @@ void MainWindow::calculate ( QQtDictionary& dict, QString path )
     }
 }
 
-void MainWindow::textChanged ( QString str )
+void MainWindow::outputWrokflow ( QString sdkName )
 {
-    ui->tabWidget->setTabText ( 3, QString ( "add_library_%1.pri" ).arg ( str ) );
-}
+    QTextBrowser* textAddInclude = 0;
+    QTextBrowser* textAddLibrary = 0;
+    QTextBrowser* textAddDeployLibrary = 0;
+    QTextBrowser* textAddLibraryPri = 0;
+    if ( textAddInclude == 0 )
+    {
+        textAddInclude = new QTextBrowser ( this );
+        textAddLibrary = new QTextBrowser ( this );
+        textAddDeployLibrary = new QTextBrowser ( this );
+        textAddLibraryPri = new QTextBrowser ( this );
+    }
 
-void MainWindow::sdkRootChanged ( QString str )
-{
-    QString path = str + "/app-lib";
-#ifdef Q_OS_WIN
-    path.replace ( "/", "\\" );
-#endif
-    ui->lineEdit_3->setText ( path );
-}
+    textAddInclude->clear();
+    textAddLibrary->clear();
+    textAddDeployLibrary->clear();
+    textAddLibraryPri->clear();
 
-void MainWindow::on_pushButton_clicked()
-{
-    if ( ui->lineEdit->text().isEmpty() )
-        return;
-
-    if ( ui->lineEdit_2->text().isEmpty() )
-        return;
-
-    ui->statusBar->showMessage ( "processing...." );
-
-    ui->textBrowser->clear();
-    ui->textBrowser_2->clear();
-    ui->textBrowser_3->clear();
-
-    QString header = ui->lineEdit->text() + "/" + ui->lineEdit_2->text() + "/" + ui->comboBox->currentText() + "/include";
-    QString lib = ui->lineEdit->text() + "/" + ui->lineEdit_2->text() + "/" + ui->comboBox->currentText() + "/lib";
+    QString header = ui->lineEdit->text() + "/" + sdkName + "/" + ui->comboBox->currentText() + "/include";
+    QString lib = ui->lineEdit->text() + "/" + sdkName + "/" + ui->comboBox->currentText() + "/lib";
 
     QQtDictionary headerDict;
     QQtDictionary libDict;
@@ -201,17 +240,17 @@ void MainWindow::on_pushButton_clicked()
 
             //遍历成功，所有的子文件夹已经深度优先遍历。
             //subdir name
-            ui->textBrowser->append ( QString ( "isEmpty(header_path):header_path=$$get_add_include(%1, %2)" )
-                                      .arg ( ui->lineEdit_2->text() )
-                                      .arg ( mfi.baseName() ) );
-            ui->textBrowser->append ( "command += $${header_path}" );
+            textAddInclude->append ( QString ( "isEmpty(header_path):header_path=$$get_add_include(%1, %2)" )
+                                     .arg ( sdkName )
+                                     .arg ( mfi.baseName() ) );
+            textAddInclude->append ( "command += $${header_path}" );
             QQtDictionaryListIterator itor ( headerDict[mfi.baseName()]["childen"].getList() );
             while ( itor.hasNext() )
             {
                 const QQtDictionary& dict = itor.next();
                 QString path = dict.getValue().toString();
                 QString header_path = QString ( "command += $${header_path}/%1" ).arg ( path );
-                ui->textBrowser->append ( header_path );
+                textAddInclude->append ( header_path );
             }
             //ui->textBrowser->append ( "" );
         }
@@ -391,22 +430,20 @@ void MainWindow::on_pushButton_clicked()
 
             libList.push_back ( tempname );
 
-            QString lib_path = QString ( "add_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( tempname );
-            ui->textBrowser_2->append ( lib_path );
+            QString lib_path = QString ( "add_library(%1, %2)" ).arg ( sdkName ).arg ( tempname );
+            textAddLibrary->append ( lib_path );
 
-            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( tempname );
-            ui->textBrowser_3->append ( lib_deploy_path );
+            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( sdkName ).arg ( tempname );
+            textAddDeployLibrary->append ( lib_deploy_path );
         }
     }
 
-    ui->textBrowser_4->clear();
-
     QByteArray fBytes = fileBytes;
-    fBytes.replace ( "Template", ui->lineEdit_2->text().toLocal8Bit() );
+    fBytes.replace ( "Template", sdkName.toLocal8Bit() );
 
-    QString addIncStr = ui->textBrowser->toPlainText();
-    QString addLibStr = ui->textBrowser_2->toPlainText();
-    QString addDeployLibStr = ui->textBrowser_3->toPlainText();
+    QString addIncStr = textAddInclude->toPlainText();
+    QString addLibStr = textAddLibrary->toPlainText();
+    QString addDeployLibStr = textAddDeployLibrary->toPlainText();
 
     QStringList addIncList = addIncStr.split ( '\n' );
     QStringList addLibList = addLibStr.split ( '\n' );
@@ -415,8 +452,8 @@ void MainWindow::on_pushButton_clicked()
     pline() << addIncList.size() << addLibList.size() << addDeployLibList.size();
 
     QString sep1 = "#...";
-    QString sep2 = QString ( "add_library(%1, %1)" ).arg ( ui->lineEdit_2->text() );
-    QString sep3 = QString ( "add_deploy_library(%1, %1)" ).arg ( ui->lineEdit_2->text() );
+    QString sep2 = QString ( "add_library(%1, %1)" ).arg ( sdkName );
+    QString sep3 = QString ( "add_deploy_library(%1, %1)" ).arg ( sdkName );
 
     QBuffer buf ( &fBytes );
     buf.open ( QBuffer::ReadOnly );
@@ -432,7 +469,7 @@ void MainWindow::on_pushButton_clicked()
             line.remove ( line.size() - 1, 1 );
         }
 
-        ui->textBrowser_4->append ( line );
+        textAddLibraryPri->append ( line );
 
         if ( line.contains ( sep1.toLocal8Bit() ) )
         {
@@ -441,7 +478,7 @@ void MainWindow::on_pushButton_clicked()
             while ( itor.hasNext() )
             {
                 QString str = itor.next();
-                ui->textBrowser_4->append ( "    " + str );
+                textAddLibraryPri->append ( "    " + str );
             }
         }
         else if ( line.contains ( sep2.toLocal8Bit() ) )
@@ -451,7 +488,7 @@ void MainWindow::on_pushButton_clicked()
             while ( itor.hasNext() )
             {
                 QString str = itor.next();
-                ui->textBrowser_4->append ( "    " + str );
+                textAddLibraryPri->append ( "    " + str );
             }
         }
         else if ( line.contains ( sep3.toLocal8Bit() ) )
@@ -461,40 +498,65 @@ void MainWindow::on_pushButton_clicked()
             while ( itor.hasNext() )
             {
                 QString str = itor.next();
-                ui->textBrowser_4->append ( "    " + str );
+                textAddLibraryPri->append ( "    " + str );
             }
         }
     }
 
     buf.close();
 
-    ui->statusBar->showMessage ( "Successed." );
+    //注意不能循环创建。
+    QDir ( qApp->applicationDirPath() ).mkdir ( ui->lineEdit_2->text() );
 
-    return;
+    QString filename = ui->lineEdit_2->text() + "/" + QString ( "add_library_%1.pri" ).arg ( sdkName );
+#ifdef Q_OS_WIN
+    filename.replace ( "/", "\\" );
+#endif
+    pline() << filename;
+    QFile file ( filename );
+    file.open ( QFile::Truncate | QFile::WriteOnly );
+    QString content = textAddLibraryPri->toPlainText();
+    file.write ( content.toLocal8Bit() );
+    file.close();
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
+
     if ( ui->lineEdit->text().isEmpty() )
         return;
 
     if ( ui->lineEdit_2->text().isEmpty() )
         return;
 
-    if ( ui->lineEdit_3->text().isEmpty() )
+    if ( ui->listWidget->count() <= 0 )
         return;
 
-    QString sep = "/";
-#ifdef Q_OS_WIN
-    sep = "\\";
-#endif
-    QString filename = ui->lineEdit_3->text() + sep + ui->tabWidget->tabBar()->tabText ( 3 );
-    pline() << filename;
-    QFile file ( filename );
-    file.open ( QFile::Truncate | QFile::WriteOnly );
-    QString content = ui->textBrowser_4->toPlainText();
-    file.write ( content.toLocal8Bit() );
-    file.close();
+    ui->statusBar->showMessage ( "processing...." );
+
+    ui->textBrowser->clear();
+    ui->textBrowser_2->clear();
+    ui->textBrowser_3->clear();
+
+    QStringList sdkList;
+    for ( int i = 0; i < ui->listWidget->count(); i++ )
+    {
+        if ( ui->listWidget->item ( i )->checkState() == Qt::Checked )
+            sdkList.append ( ui->listWidget->item ( i )->text() );
+    }
+
+    QStringListIterator itor ( sdkList );
+    while ( itor.hasNext() )
+    {
+        QString sdkName = itor.next();
+        outputWrokflow ( sdkName );
+        ui->textBrowser->append ( QString ( "add_library_%1.pri" ).arg ( sdkName ) );
+        ui->textBrowser_2->append ( QString ( "add_dependent_manager(%1)" ).arg ( sdkName ) );
+        ui->textBrowser_3->append ( QString ( "add_custom_dependent_manager(%1)" ).arg ( sdkName ) );
+    }
+
+    ui->statusBar->showMessage ( "Successed." );
+
 }
 
 bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
@@ -502,7 +564,7 @@ bool MainWindow::eventFilter ( QObject* watched, QEvent* event )
     if ( event->type() == QEvent::Paint )
         return QMainWindow::eventFilter ( watched, event );
 
-    if ( watched != ui->lineEdit_2 )
+    if ( watched != ui->lineEdit_3 )
         return QMainWindow::eventFilter ( watched, event );
 
     if ( event->type() == QEvent::KeyRelease )

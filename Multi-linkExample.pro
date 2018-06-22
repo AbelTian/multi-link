@@ -72,4 +72,5 @@ CONFIG += ordered
 #macOS Windows linux
 SUBDIRS += demo/ProductExecTool
 SUBDIRS += demo/AddLibraryTool
+SUBDIRS += demo/AddLibraryTool-Multiple
 SUBDIRS += demo/SdkListTool

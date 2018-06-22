@@ -103,6 +103,9 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit_3"/>
+        </item>
+        <item row="1" column="2">
          <widget class="QPushButton" name="pushButton_2">
           <property name="text">
            <string>Save</string>
@@ -110,19 +113,13 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Output Directory:</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
-        <item row="0" column="0" colspan="2">
+        <item row="0" column="0" colspan="3">
          <widget class="QTextBrowser" name="textBrowser_4"/>
         </item>
        </layout>

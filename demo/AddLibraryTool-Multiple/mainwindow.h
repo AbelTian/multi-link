@@ -18,13 +18,14 @@ public:
 
     void calculate ( QQtDictionary& dict, QString path );
     //void calculateLib ( QQtDictionary& dict, QString path );
+    void outputWrokflow ( QString sdkName );
 
 signals:
     void clickBtn();
 
 protected slots:
     void textChanged ( QString );
-    void sdkRootChanged ( QString );
+
 private:
     QByteArray fileBytes;
 
