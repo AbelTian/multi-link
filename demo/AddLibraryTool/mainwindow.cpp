@@ -273,10 +273,10 @@ void MainWindow::on_pushButton_clicked()
     {
         if ( mfi.isFile() )
         {
-            //.dll.a
-            if ( mfi.completeSuffix().right ( 5 ) == "dll.a"  )
+            //.a
+            if ( mfi.completeSuffix() == "a" )
             {
-                use_suffix = SUFFIX_DLL_A;
+                use_suffix = SUFFIX_A;
             }
         }
     }
@@ -285,10 +285,10 @@ void MainWindow::on_pushButton_clicked()
     {
         if ( mfi.isFile() )
         {
-            //.a
-            if ( mfi.completeSuffix() == "a" )
+            //.dll.a
+            if ( mfi.completeSuffix().right ( 5 ) == "dll.a"  )
             {
-                use_suffix = SUFFIX_A;
+                use_suffix = SUFFIX_DLL_A;
             }
         }
     }
