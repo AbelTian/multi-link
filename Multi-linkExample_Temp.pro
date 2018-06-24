@@ -52,7 +52,7 @@ SUBDIRS =
 #SUBDIRS += test/QQtFMODTest
 
 #need vlcQt libvlc library
-#SUBDIRS += test/qqtliveplayer
+#SUBDIRS += demo/qqtliveplayer
 
 #macOS下，这两个必须分开工程编译。
 #SUBDIRS += examples/CustomLinkLibDemo
@@ -72,8 +72,6 @@ SUBDIRS =
 
 ########################################################################################
 #macOS Windows linux
-#SUBDIRS += demo/ProductExecTool
-#SUBDIRS += demo/AddLibraryTool
 
 ########################################################################################
 #test project

@@ -66,7 +66,7 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 - v2.1默认不再链接QQt。  
 - 建议用户把multi-link作为子模块clone下来。  
 - 用户在include(multi-link/add_base_manager.pri)以后，  
-    - add_dependent_manager(QQt) 就完成了链接、跟随发布(App Proj) QQt。  
+    - add_dependent_manager(QQt) 就完成了链接、跟随发布QQt。（内部自动判断Proj类型，App Proj才会发布，Lib Proj不会发布。）    
     - add_custom_dependent_manager(xxx)是在自定义目录加载add_library_xxx.pri，默认工程当前目录。  
     - add_create_dependent_manager(xxx)是在自定义目录加载add_library_xxx.pri，不存在则使用模板创建这个pri，默认app-lib目录。  
 - add_deploy() 或者 add_sdk()(Lib Proj) 是标准使用函数，任何工程都用他。
@@ -74,6 +74,12 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 - add_lanauage() 添加语言。  
 - 给用户提供了AddLibTool用于辅助用户从SDKROOT直接获取add_library_xxx.pri文件。  
 - ProductExecTool用于帮助用户从产品库里运行程序，程序太多的时候，一个一个深入目录点击运行也是比较不容易。    
+
+# 多链接技术使用说明   
+
+看懂了v2的设计思路、原理以后，看看这里的多链接技术使用说明。  
+
+![Multi-link 2.1使用说明](screenshot/17.png)  
 
 # Multi-link v2在操作系统中的地位  
 
