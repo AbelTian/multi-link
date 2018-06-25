@@ -73,6 +73,23 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __ANDROIDX86__
 }
 
+#defineReplace(get_base_name){
+#    return ("FFFFF")
+#}
+
+#QMAKESPEC_NAME = $$[QT_INSTALL_PREFIX]
+#QSPEC = $$get_base_name($${QMAKESPEC_NAME})
+#message($$TARGET use spec name $${QSPEC})
+#message ($$[QT_INSTALL_PREFIX])
+#message ($$[QMAKE_SPEC])
+#message ($$dirname($$[QT_INSTALL_PREFIX]))
+#QMAKESPEC_NAME = $${QMAKESPEC}
+#QMAKESPEC_NAME ~= s@^/.*/([^/]+)/?@\1@g
+#QMAKESPECS = $${QMAKESPEC}
+#QMAKESPECS ~= s:/[^/]*$::p
+#message ($${QMAKESPEC_NAME})
+#message ($${QMAKESPECS})
+
 #注意：Multi-link对于CONFIG+=build_all是在默认编译路径下同时编译两种lib，Debug和Release文件夹下，qmake默认就是这么做的，Multi-link也会这么做，请注意。
 BUILD=
 CONFIG(debug, debug|profile|release):BUILD=Debug
@@ -101,7 +118,8 @@ isEmpty(QSYS_PRIVATE) {
 }
 
 isEmpty(QSYS_PRIVATE) {
-    message(env variable QSYS is required!)
+    message(1. I suggest you change creator default build directory!)
+    message(2. env variable QSYS is required!)
     message(pleace check add_platform.pri)
     error("error occured, please check build output panel.")
 }
