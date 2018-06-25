@@ -50,6 +50,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(crypto++)
     add_dependent_manager(curl)
     add_dependent_manager(dlib)
+    add_dependent_manager(FFmpeg2)
     add_dependent_manager(FFmpeg3.2)
     add_dependent_manager(FFmpeg4.0)
     add_dependent_manager(FLTK)
