@@ -73,15 +73,29 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __ANDROIDX86__
 }
 
-#defineReplace(get_base_name){
-#    return ("FFFFF")
-#}
+defineReplace(get_base_name){
+    isEmpty(1):error("get_base_name(absolute_file_path) need one argument.")
+    absolute_file_path = $$1
+    absolute_file_path ~= s,\\,/,g
+    file_path = $$absolute_file_path
+    file_path ~= s:/[^/]*$::p
+    base_name = $$replace(absolute_file_path, $$file_path/, "")
+    return ($${base_name})
+}
+
+defineReplace(get_file_path){
+    isEmpty(1):error("get_file_path(absolute_file_path) need one argument.")
+    file_path = $$1
+    file_path ~= s:/[^/]*$::p
+    return ($${file_path})
+}
 
 #QMAKESPEC_NAME = $$[QT_INSTALL_PREFIX]
 #QSPEC = $$get_base_name($${QMAKESPEC_NAME})
-#message($$TARGET use spec name $${QSPEC})
+#message($$TARGET use Qt version $${QSPEC})
+#message($$TARGET use spec $$[QMAKE_XSPEC])
+
 #message ($$[QT_INSTALL_PREFIX])
-#message ($$[QMAKE_SPEC])
 #message ($$dirname($$[QT_INSTALL_PREFIX]))
 #QMAKESPEC_NAME = $${QMAKESPEC}
 #QMAKESPEC_NAME ~= s@^/.*/([^/]+)/?@\1@g
