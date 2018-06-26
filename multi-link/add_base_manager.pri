@@ -302,6 +302,7 @@ defineReplace(add_decorate_target_name){
     contains(BUILD, Debug) {
         mac:ret = $${ret}_debug
         win32:ret = $${ret}d
+        #linux debug and release is same to each other.
     }
 
     return ($$ret)
