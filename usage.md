@@ -1,6 +1,9 @@
 # Multi-link v1.0  
 v1.0仅仅支持链接LibQQt，并且依附在LibQQt代码中。  
 
+- Qt Creator设置默认编译目录：  
+%{JS: Util.asciify("/your/local/path/to/build/root/%{CurrentProject:Name}/%{Qt:Version}/%{CurrentKit:FileSystemName}/%{CurrentBuild:Name}")}  
+
 # Multi-link v2.0    
 
 在完成的Multi-link技术里，新的QSYS环境变量和Qt Kit的关系  
