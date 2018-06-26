@@ -118,58 +118,6 @@ ios{
 contains(DEFINES, LIB_STATIC_LIBRARY) {
 }
 
-################################################################
-##build cache (此处为中间目标目录，对用户并不重要)
-##此处加以干涉，使目录清晰。
-##此处关于DESTDIR的设置，导致用户必须把这个文件的包含，提前到最前边的位置，才能进行App里的目录操作。
-##删除干涉?
-##用户注意：(done in app_base_manager), 首先include(app_link_lib_library.pri)，然后做app的工作，和include其他pri，包括LibLib提供的其他pri，保证这个顺序就不会出错了。
-##对编译目标目录进行干涉管理，显得更加细腻。
-##用户注意：这里相当于给编译中间目录加了一个自动校准，属于校正范畴。
-##这样做保持了App工程和LibLib工程中间目录的一致性，但是并不必要。
-##升级后的多链接技术，省略了BuildType目录，这个设置有必要了。
-##默认，就分开了，无论Debug/Debug 还是Windows/Debug，就分开了。
-################################################################
-defineTest(add_build_dir_struct){
-    BUILD_DIR =
-    !isEmpty(1):BUILD_DIR=$$1/
-
-    OBJECTS_DIR =   $${BUILD_DIR}obj
-    MOC_DIR =       $${BUILD_DIR}obj/moc.cpp
-    UI_DIR =        $${BUILD_DIR}obj/ui.h
-    RCC_DIR =       $${BUILD_DIR}obj/qrc.cpp
-    DESTDIR =       $${BUILD_DIR}bin
-
-    equals(QMAKE_HOST.os, Windows) {
-        OBJECTS_DIR~=s,/,\\,g
-        MOC_DIR~=s,/,\\,g
-        UI_DIR~=s,/,\\,g
-        RCC_DIR~=s,/,\\,g
-        DESTDIR~=s,/,\\,g
-    }
-
-    export(OBJECTS_DIR)
-    export(MOC_DIR)
-    export(UI_DIR)
-    export(RCC_DIR)
-    export(DESTDIR)
-
-    return (1)
-}
-
-#经过验证，在windows下debug和release中间目标的确不同。
-#在macOS里，设置相同的编译目录，竟然一样，可是生成目标大小也一样...理论上应该不一样，可能是release覆盖了debug的中间目标。
-#所以，这个地方，编译目录，无论如何debug和release要分开
-add_build_dir_struct($${BUILD})
-
-################################################################
-##Lib Functions Macro
-################################################################
-#You need switch these more macro according to your needs when you build this library
-#You can tailor Lib  with these macro.
-#Default: macroes is configed, some open, some close, compatibled to special accotation.
-##App希望裁剪LibLib，开关这个文件里的组件宏，用户有必要读懂这个头文件。up to so.
-
 ##################C++11 Module###############################
 #if you use C++11, open this annotation. suggest: ignore
 #DEFINES += __CPP11__
@@ -218,4 +166,58 @@ win32 {
         QMAKE_IOS_DEPLOYMENT_TARGET = 8
     }
 }
+
+################################################################
+##build cache (此处为中间目标目录，对用户并不重要)
+##此处加以干涉，使目录清晰。
+##此处关于DESTDIR的设置，导致用户必须把这个文件的包含，提前到最前边的位置，才能进行App里的目录操作。
+##删除干涉?
+##用户注意：(done in app_base_manager), 首先include(app_link_lib_library.pri)，然后做app的工作，和include其他pri，包括LibLib提供的其他pri，保证这个顺序就不会出错了。
+##对编译目标目录进行干涉管理，显得更加细腻。
+##用户注意：这里相当于给编译中间目录加了一个自动校准，属于校正范畴。
+##这样做保持了App工程和LibLib工程中间目录的一致性，但是并不必要。
+##升级后的多链接技术，省略了BuildType目录，这个设置有必要了。
+##默认，就分开了，无论Debug/Debug 还是Windows/Debug，就分开了。
+################################################################
+defineTest(add_build_dir_struct){
+    BUILD_DIR =
+    !isEmpty(1):BUILD_DIR=$$1/
+
+    OBJECTS_DIR =   $${BUILD_DIR}obj
+    MOC_DIR =       $${BUILD_DIR}obj/moc.cpp
+    UI_DIR =        $${BUILD_DIR}obj/ui.h
+    RCC_DIR =       $${BUILD_DIR}obj/qrc.cpp
+    DESTDIR =       $${BUILD_DIR}bin
+
+    equals(QMAKE_HOST.os, Windows) {
+        OBJECTS_DIR~=s,/,\\,g
+        MOC_DIR~=s,/,\\,g
+        UI_DIR~=s,/,\\,g
+        RCC_DIR~=s,/,\\,g
+        DESTDIR~=s,/,\\,g
+    }
+
+    export(OBJECTS_DIR)
+    export(MOC_DIR)
+    export(UI_DIR)
+    export(RCC_DIR)
+    export(DESTDIR)
+
+    return (1)
+}
+
+#经过验证，在windows下debug和release中间目标的确不同。
+#在macOS里，设置相同的编译目录，竟然一样，可是生成目标大小也一样...理论上应该不一样，可能是release覆盖了debug的中间目标。
+#所以，这个地方，编译目录，无论如何debug和release要分开
+add_build_dir_struct($${BUILD})
+
+
+################################################################
+##Lib Functions Macro
+################################################################
+#You need switch these more macro according to your needs when you build this library
+#You can tailor Lib  with these macro.
+#Default: macroes is configed, some open, some close, compatibled to special accotation.
+##App希望裁剪LibLib，开关这个文件里的组件宏，用户有必要读懂这个头文件。up to so.
+#应用于Library header.pri
 

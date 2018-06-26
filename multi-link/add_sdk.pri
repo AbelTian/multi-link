@@ -299,7 +299,12 @@ defineReplace(get_add_sdk_work_flow){
 
     #fix bug: 从sdk的头文件目录里移除multi-link目录。 Multi-link 2.0
     #用户把multi-link作为submodule的时候，请保证multi-link文件夹的名字为multi-link。
-    command += $$RM_DIR $${LIB_INC_DIR}/multi-link $$CMD_SEP
+    MULTI_LINK_DIR = $${LIB_INC_DIR}/multi-link
+    equals(QMAKE_HOST.os, Windows) {
+        #on windows every path must use \ sep.
+        MULTI_LINK_DIR~=s,/,\\,g
+    }
+    command += $$RM_DIR $${MULTI_LINK_DIR} $$CMD_SEP
 
     command += $$get_add_Qt_lib_pri()
     #$$CMD_SEP
@@ -447,7 +452,7 @@ defineTest(add_sdk){
         LIB_SDK_PWD~=s,/,\\,g
     }
 
-    message($${TARGET} is builded at $${LIB_BUILD_PWD})
+    #message($${TARGET} is builded at $${LIB_BUILD_PWD})
     message($${TARGET} add sdk to $${LIB_SDK_PWD})
 
     command += $$get_add_sdk_private($${libname}, $${librealname})
@@ -541,7 +546,7 @@ defineTest(add_sdk_to_Qt){
         LIB_SDK_PWD~=s,/,\\,g
     }
 
-    message($${TARGET} is builded at $${LIB_BUILD_PWD})
+    #message($${TARGET} is builded at $${LIB_BUILD_PWD})
 
     command += $$get_add_sdk_private($${libname}, $${librealname})
     #message($$command)

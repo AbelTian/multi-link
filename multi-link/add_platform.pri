@@ -110,6 +110,7 @@ message(add_platform.pri)
 message(Build $${TARGET} to $${QSYS_PRIVATE} \(QSYS=$${QSYS_PRIVATE} is configed in project build page.\) )
 message(Build $${TARGET} at $${QSYS_STD_DIR} \(Qt Kit page FileSystem Name=$${QSYS_PRIVATE}"," optionaled\) )
 message(Build $${TARGET} on $${QMAKE_HOST.os} \(Operating System=$${QMAKE_HOST.os}\) )
+message(Build $${TARGET} in $${OUT_PWD})
 isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name \(optionaled\) is decided by env variable QSYS. Please set it. )
 
 isEmpty(QSYS_PRIVATE) {
