@@ -2,7 +2,7 @@
 v1.0仅仅支持链接LibQQt，并且依附在LibQQt代码中。  
 
 - Qt Creator设置默认编译目录：  
-%{JS: Util.asciify("/your/local/path/to/build/root/%{CurrentProject:Name}/%{Qt:Version}/%{CurrentKit:FileSystemName}/%{CurrentBuild:Name}")}  
+%{JS: Util.asciify("/your/local/path/to/build/root/%{CurrentProject:Name}/%{CurrentKit:FileSystemName}/%{Qt:Version}/%{CurrentBuild:Name}")}
 
 # Multi-link v2.0    
 
