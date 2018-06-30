@@ -510,6 +510,16 @@ defineTest(clean_target) {
     return (1)
 }
 
+#create file
+defineTest(add_file){
+    file_name = $$1
+    file_path = $$2
+    isEmpty(file_path):file_path=$${PWD}
+    exists($${file_path}/$${file_name}):return(0)
+    empty_file($${file_path}/$${file_name})
+    return(1)
+}
+
 #################################################################
 ##definition and configration
 ##need QSYS
