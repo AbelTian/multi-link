@@ -1,6 +1,11 @@
 #-------------------------------------------------------------
 #add_deploy_library.pri
 #提供app发布library函数，只是app工程使用
+
+#依赖add_multi_link_technology.pri
+#依赖add_function.pri
+#依赖add_platform.pri
+
 #-------------------------------------------------------------
 #add_deploy_library
 #add_deploy_library_bundle

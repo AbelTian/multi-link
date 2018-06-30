@@ -1,8 +1,7 @@
 #################################################################
-##project $${TARGET} version pri
+#project version pri
+#依赖 无
 #################################################################
-#拷贝到用户用户工程目录里使用用
-##add_sdk need this pri
 
 defineReplace(get_version_string_1) {
     major_version = $$1

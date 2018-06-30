@@ -2,11 +2,15 @@
 #add_deploy_config.pri
 #用于发布app的配置文件。只是app工程使用
 
+#依赖add_multi_link_technology.pri
+#依赖add_function.pri
+#依赖add_platform.pri
+#---------------------------------------------------------------------
+
 #这个目录一般在源代码目录里
 #add_deploy_config(<config_path>) #build and deploy path
 #add_deploy_config_to(<config_path>, <target_path>) #target path
 #add_deploy_config_to_group(<config_path>, <groupname>) #group deploy path build path
-#---------------------------------------------------------------------
 
 ################################################################################
 #内部用函数

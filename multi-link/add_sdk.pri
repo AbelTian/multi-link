@@ -4,7 +4,11 @@
 ##install to SDK path
 ##把Library按照SDK格式安装到LIB_SDK_ROOT
 ##发布到sdk是为Multi link准备的。
-##依赖add_version.pri
+
+##依赖add_version.pri里设置的version。
+##依赖add_platform.pri里的QSYS变量和路径
+##依赖add_multi_link_technology.pri里面的三大路径
+##依赖add_function.pri
 
 ##please don't modify this pri
 #------------------------------------------------------------------------------------------------

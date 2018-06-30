@@ -1,6 +1,11 @@
 #-------------------------------------------------------------
 #add_library.pri
 #提供app链接library函数，app lib工程通用
+
+#依赖add_multi_link_technology.pri
+#依赖add_platform.pri
+#依赖add_project.pri
+
 #-------------------------------------------------------------
 #add_include
 #add_include_bundle
