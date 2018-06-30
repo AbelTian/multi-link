@@ -439,32 +439,6 @@ defineReplace(get_app_deploy_path) {
     return ($$APP_DEPLOY_PWD)
 }
 
-#内部默认 $$PWD
-APP_SOURCE_PWD =
-#内部默认 $$DESTDIR
-APP_BUILD_DESTDIR =
-#内部默认 $$TARGET_NAME $$libname
-APP_PROJECT_NAME =
-#这个值为什么初始化是空的呢？
-QMAKE_PROJECT_NAME = $$TARGET
-
-#这个目录用于读取sdk头文件进行发布
-#这个目录可选设置
-#如果调用这个函数的文件所在不是在源代码目录下，比如$${PWD}/../src，可以通过这里修正
-defineTest(add_source_dir){
-    APP_SOURCE_PWD = $$1
-    export(APP_SOURCE_PWD)
-    return (1)
-}
-
-#这个目录用于读取sdk库文件进行发布
-#这个目录可选设置
-#如果用户更改了编译目录DEST_DIR_TARGET，比如src/$$DEST_DIR，可以通过这里改变，当然这种设置不科学，内部依赖DEST_DIR，为什么还要用DESTDIR_TARGET。
-defineTest(add_build_dir){
-    APP_BUILD_DESTDIR = $$1
-    export(APP_BUILD_DESTDIR)
-    return (1)
-}
 
 #如果工程名字和目标名字不一样，可以修正。
 #比如：TARGET = ABC 工程名 = EFG[.pro] 就要调用这个函数设置工程名为ABC，Creator工程树上的工程名字就会改变。
