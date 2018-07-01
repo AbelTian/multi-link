@@ -127,7 +127,8 @@ defineReplace(get_add_deploy_library_bundle_on_mac) {
     #解决方法一：忽略第一遍编译。也就是什么SDK都没有的时候，编译一遍，lib生成了SDK，可是不管他，再qmake后编译一遍。能解决。
     #解决方法二：$(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)，在Makefile处理的时候调用，这个应该能成功，没尝试。
     libmajorver =
-    libmajorver = $$system(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)
+    #libmajorver = $$system(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)
+    libmajorver = $(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)
     #这里是以防万一lib不存在 但是不能退出？如果是subdirs包含Library的工程，就不能退出。
     isEmpty(libmajorver){
         libmajorver=0
