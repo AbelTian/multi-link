@@ -45,3 +45,7 @@ target_wrapper.*
 # QtCtreator CMake
 CMakeLists.txt.user*
 
+.DS_Store
+*.rc
+*.icns
+
