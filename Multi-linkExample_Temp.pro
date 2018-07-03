@@ -75,4 +75,4 @@ CONFIG += ordered
 #test project
 #SUBDIRS += test/nonQtProjTest
 SUBDIRS += test/AddLibPriTest
-#SUBDIRS += test/AddAppIconTest
+SUBDIRS += test/AddAppIconTest
