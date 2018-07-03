@@ -63,6 +63,9 @@ include ($${PWD}/add_version.pri)
 #program language
 include ($${PWD}/add_language.pri)
 
+#program icons (app only)
+include ($${PWD}/add_icons.pri)
+
 ####################################################################################
 #工程常用的函数
 ####################################################################################

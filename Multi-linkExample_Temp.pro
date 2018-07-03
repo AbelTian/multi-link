@@ -11,8 +11,6 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS =
-
 #need webkit webkitwidgets - WebSupport
 #webengine
 #ignored
@@ -76,4 +74,5 @@ SUBDIRS =
 ########################################################################################
 #test project
 #SUBDIRS += test/nonQtProjTest
-SUBDIRS += test/AddLibPriTest
+#SUBDIRS += test/AddLibPriTest
+SUBDIRS += test/AddAppIconTest
