@@ -48,6 +48,9 @@ contains(QMAKE_HOST.os,Windows) {
 defineReplace(get_mkdir) {
     filepath = $$1
     isEmpty(1): error("get_mkdir(filepath) requires one argument")
+    contains(QMAKE_HOST.os, Windows){
+        filepath~=s,/,\\,g
+    }
     command = $${MK_DIR} $${filepath}
     #message($${command})
     return ($${command})
@@ -66,6 +69,9 @@ defineReplace(get_errcode) {
 defineReplace(get_empty_file) {
     filename = $$1
     isEmpty(1): error("get_empty_file(filename) requires one argument")
+    contains(QMAKE_HOST.os, Windows){
+        filename~=s,/,\\,g
+    }
     command =
     equals(QMAKE_HOST.os, Windows) {
         command = echo . 2> $${filename}
@@ -79,6 +85,9 @@ defineReplace(get_write_file) {
     variable = $$2
     !isEmpty(3): error("get_write_file(name, content) requires two arguments.")
     isEmpty(2): error("get_write_file(name, content) requires two arguments.")
+    contains(QMAKE_HOST.os, Windows){
+        filename~=s,/,\\,g
+    }
     command = echo $${variable} >> $${filename}
     return ($$command)
 }
@@ -90,6 +99,10 @@ defineReplace(get_copy_dir_and_file) {
     target = $$3
     !isEmpty(4): error("get_copy_dir_and_file(source, pattern, target) requires three arguments.")
     isEmpty(3) : error("get_copy_dir_and_file(source, pattern, target) requires three arguments.")
+    contains(QMAKE_HOST.os, Windows){
+        source~=s,/,\\,g
+        target~=s,/,\\,g
+    }
     command =
     equals(QMAKE_HOST.os, Windows) {
         command = $${COPY_DIR} $${source}\\$${pattern} $${target}
@@ -146,6 +159,9 @@ defineReplace(get_md5_command) {
     isEmpty(1): error("get_md5_command(filename) requires one argument")
     !isEmpty(2): error("get_md5_command(filename) requires one argument")
     command =
+    contains(QMAKE_HOST.os, Windows){
+        filename~=s,/,\\,g
+    }
     equals(QMAKE_HOST.os, Windows) {
         command = md5 -n $${filename}
     } else:mac* {
