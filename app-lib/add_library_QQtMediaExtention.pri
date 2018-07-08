@@ -87,6 +87,15 @@ defineTest(add_defines_QQtMediaExtention){
 
     DEFINES += __QTAV_MEDIA__
     contains(DEFINES, __QTAV_MEDIA__) {
+        CONFIG += c++14
+        contains(DEFINES, LIB_LIBRARY){
+            DEFINES += BUILD_QTAV_LIB
+            DEFINES += BUILD_QTAVWIDGETS_LIB
+        }else:contains(DEFINES, LIB_STATIC_LIBRARY){
+            DEFINES += BUILD_QTAV_STATIC
+            DEFINES += BUILD_QTAVWIDGETS_STATIC
+        }
+
         #用户需要到QtAV群里面下载QtAV的依赖库，然后都放到FFmpeg3SDK标准目录里。
         add_dependent_manager(FFmpeg3)
         #add_dependent_manager(SDL2)
