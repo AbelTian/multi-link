@@ -61,6 +61,7 @@ defineTest(add_defines_QQt){
         #指定/mp编译选项，编译器将使用并行编译，同时起多个编译进程并行编译不同的cpp
         msvc:MSVC_CCFLAGS += /MP
         #指出：这个FLAG只能用于MSVC
+        #指出：DLL导入错误，是因为环境变量设置错误不是这里引起的。修改设置，重新编译还是错误，build目录clean不干净，手动删除干净。如果还是不行，对源代码进行touch，无法区分import和export的dll，是编译器的错误。
 
         msvc:QMAKE_CFLAGS += $${MSVC_CCFLAGS}
         msvc:QMAKE_CXXFLAGS += $${MSVC_CCFLAGS}
@@ -360,6 +361,9 @@ defineTest(add_defines_QQt){
 
         #click sound widgets
         DEFINES += __CLICKSOUNDWIDGETS__
+
+        #on screen display widget
+        DEFINES += __OSDWIDGETS__
     }
 
     ########################################################################
@@ -371,8 +375,6 @@ defineTest(add_defines_QQt){
     #if you use HighGrade module, open this annotation
     #高级模块，包含不少的高级功能组件，这个模块可以集中开关。
     DEFINES += __HIGHGRADE__
-    #依赖网络模块
-    !contains (DEFINES, __NETWORKSUPPORT__): DEFINES -= __HIGHGRADE__
     contains (DEFINES, __HIGHGRADE__) {
 
     }
@@ -423,20 +425,16 @@ defineTest(add_defines_QQt){
     return (1)
 }
 
-
 ##################################################################
 ##include directories
 ##################################################################
-#把QQt SDK头文件路径加入进来 为搜索头文件而添加
-#其实过去做的自动添加QQt头文件就是这个功能
-#用户包含QQt头文件，就不必加相对路径了，方便了很多
-#修改
+#把QQt 源代码头文件路径加入进来 为搜索头文件而添加
 defineTest(add_include_QQt){
     #不为空，肯定是源码里的路径。 用于导出头文件
     header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    isEmpty(header_path):header_path=$$get_add_include_bundle(QQt, QQt)
+    isEmpty(header_path):header_path=$$get_add_include_bundle(QQt)
 
     command =
     #basic
@@ -481,6 +479,7 @@ defineTest(add_include_QQt){
     command += $${header_path}/exquisite/gifwidgets
     command += $${header_path}/exquisite/openglwidgets
     command += $${header_path}/exquisite/colorwidgets
+    command += $${header_path}/exquisite/osdwidgets
     command += $${header_path}/exquisite/mathml
     command += $${header_path}/exquisite/dmmu
 
@@ -505,12 +504,10 @@ defineTest(add_include_QQt){
     return (1)
 }
 
-
 defineTest(add_library_QQt){
     #链接QQt
     add_library_bundle(QQt, QQt)
 }
-
 
 #以上代码只完成了链接libQQt 包含libQQt头文件 包含libQQt宏文件(在宏文件控制下Library的头文件才有精确的意义)
 #没有发布libQQt

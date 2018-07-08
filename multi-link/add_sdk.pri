@@ -308,7 +308,9 @@ defineReplace(get_add_sdk_work_flow){
         #on windows every path must use \ sep.
         MULTI_LINK_DIR~=s,/,\\,g
     }
-    command += $$RM_DIR $${MULTI_LINK_DIR} $$CMD_SEP
+    #用户需要注意，APP_SOURCE_DIR目录不能包括multi-link目录，建议multi-link和src目录平行放置。
+    #这样可以避免SDK里面出现multi-link文件夹的bug。
+    #command += $$RM_DIR $${MULTI_LINK_DIR} $$CMD_SEP
 
     command += $$get_add_Qt_lib_pri()
     #$$CMD_SEP
