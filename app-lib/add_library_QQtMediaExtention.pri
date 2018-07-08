@@ -46,7 +46,7 @@ defineTest(add_include_QQtMediaExtention){
     command += $${header_path}/QtAV/src/codec
     command += $${header_path}/QtAV/src/codec/video
     command += $${header_path}/QtAV/src/compat
-    command += $${header_path}/QtAV/src/compat/msvc
+    msvc:command += $${header_path}/QtAV/src/compat/msvc
     command += $${header_path}/QtAV/src/cuda
     command += $${header_path}/QtAV/src/cuda/dllapi
     command += $${header_path}/QtAV/src/directx
