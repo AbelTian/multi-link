@@ -48,7 +48,6 @@ defineTest(add_library_speex){
     #添加这个SDK里的library
     #add_library(speex, speex)
     add_library(speex, speex)
-    add_library(speex, speexdsp)
 
     return (1)
 }
@@ -62,7 +61,6 @@ defineTest(add_deploy_library_speex) {
     #add_deploy_libraryes(speex)
     #add_deploy_library(speex, speex)
     add_deploy_library(speex, speex)
-    add_deploy_library(speex, speexdsp)
 
     return (1)
 }
