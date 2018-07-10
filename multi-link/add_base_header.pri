@@ -223,3 +223,26 @@ add_build_dir_struct($${BUILD})
 ##App希望裁剪LibLib，开关这个文件里的组件宏，用户有必要读懂这个头文件。up to so.
 #应用于Library header.pri
 
+################################################################
+##Lib Share Export Macro
+################################################################
+#这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
+#win32目标下，这个宏的意义非常深远。
+win32 {
+    contains(DEFINES, LIB_LIBRARY){
+        #build dynamic
+        DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_EXPORT
+    } else: contains(DEFINES, LIB_STATIC_LIBRARY){
+        #build and link
+        DEFINES += LIBRARY_SHARED_EXPORT=
+    } else {
+        #link dynamic
+        DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_IMPORT
+    }
+}
+
+#类Unix系统下这个宏没有意义。
+unix {
+    #build and link
+    DEFINES += LIBRARY_SHARED_EXPORT=
+}
