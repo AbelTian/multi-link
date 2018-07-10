@@ -222,6 +222,41 @@ defineTest(add_lib_project) {
     return (1)
 }
 
+############################################################
+#Multi-link内部有固定的链接逻辑，但是可以从这里强制改变。
+#Multi-link内部默认只有在ios里，才会静态编译和链接library。
+############################################################
+#强制更换为动态库 （Only lib project）
+defineTest(add_dynamic_library_project) {
+    #删除静态设置
+    CONFIG -= static staticlib
+    DEFINES -= LIB_STATIC_LIBRARY
+    #添加动态设置
+    CONFIG += dll
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        DEFINES += LIB_LIBRARY
+        message(Build $${TARGET} LIB_LIBRARY is defined. build)
+    }
+}
+
+#强制更换为静态库 （Only lib project）
+defineTest(add_static_library_project) {
+    #删除动态设置
+    CONFIG -= dll
+    DEFINES -= LIB_LIBRARY
+    #添加静态设置
+    CONFIG += static staticlib
+    DEFINES += LIB_STATIC_LIBRARY
+    message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+}
+
+#app想要静态链接library，那么可以从这里强制静态链接。
+defineTest(add_static_link_library) {
+    #添加静态设置
+    DEFINES += LIB_STATIC_LIBRARY
+    message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+}
+
 #获取target的确切的名字
 #区分debug和release用的。
 #输入，target_name 为空，则默认为TARGET
