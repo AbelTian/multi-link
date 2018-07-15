@@ -271,9 +271,6 @@ defineTest(add_defines_QQt){
         #raw socket, 这个是常用的，不要关，dont close。...
         DEFINES += __TCPUDPSOCKET__
 
-        ##################Local RawSocket Module###############################
-        DEFINES += __LOCALSOCKET__
-
         ##################WebService Module###############################
         #if you use Qt Service Support ( QtSoap ), open this annotation
         DEFINES += __WEBSERVICESUPPORT__
@@ -414,6 +411,8 @@ defineTest(add_defines_QQt){
     #高级模块，包含不少的高级功能组件，这个模块可以集中开关。
     DEFINES += __HIGHGRADE__
     contains (DEFINES, __HIGHGRADE__) {
+        #QQt 线程间 进程间 通讯模块
+        #在LibQQt v4.0-v5.0的时候完成。
         DEFINES += __QQT_COMMUNICATION_SUPPORT__
         contains(DEFINES, __QQT_COMMUNICATION_SUPPORT__) {
             ##################Shared Memory Module###############################
@@ -484,7 +483,7 @@ defineTest(add_include_QQt){
     header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    isEmpty(header_path):header_path=$$get_add_include_bundle(QQt)
+    isEmpty(header_path):header_path=$$get_add_include_bundle(QQt, QQt)
 
     command =
     #basic
