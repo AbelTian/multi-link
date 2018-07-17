@@ -72,15 +72,14 @@ defineTest(add_deploy_library_QtAV) {
     add_deploy_library(QtAV, ass)
     add_deploy_library(QtAV, OpenAL32)
     #FFmpeg3
-    add_deploy_library(QtAV, avcodec)
-    add_deploy_library(QtAV, avdevice)
-    add_deploy_library(QtAV, avfilter)
-    add_deploy_library(QtAV, avformat)
-    add_deploy_library(QtAV, avresample)
-    add_deploy_library(QtAV, avutil)
-    add_deploy_library(QtAV, postproc)
-    add_deploy_library(QtAV, swresample)
-    add_deploy_library(QtAV, swscale)
+    add_deploy_library(QtAV, avcodec-57)
+    add_deploy_library(QtAV, avdevice-57)
+    add_deploy_library(QtAV, avfilter-6)
+    add_deploy_library(QtAV, avformat-57)
+    add_deploy_library(QtAV, avresample-3)
+    add_deploy_library(QtAV, avutil-55)
+    add_deploy_library(QtAV, swresample-2)
+    add_deploy_library(QtAV, swscale-4)
 
     return (1)
 }

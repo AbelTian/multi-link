@@ -8,7 +8,7 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-
+#3.2
 
 #######################################################################################
 #定义函数
@@ -78,14 +78,14 @@ defineTest(add_deploy_library_FFmpeg3) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(FFmpeg3)
     #add_deploy_library(FFmpeg3, FFmpeg3)
-    add_deploy_library(FFmpeg3, avcodec)
-    add_deploy_library(FFmpeg3, avdevice)
-    add_deploy_library(FFmpeg3, avfilter)
-    add_deploy_library(FFmpeg3, avformat)
-    add_deploy_library(FFmpeg3, avutil)
-    add_deploy_library(FFmpeg3, postproc)
-    add_deploy_library(FFmpeg3, swresample)
-    add_deploy_library(FFmpeg3, swscale)
+    add_deploy_library(FFmpeg3, avcodec-57)
+    add_deploy_library(FFmpeg3, avdevice-57)
+    add_deploy_library(FFmpeg3, avfilter-6)
+    add_deploy_library(FFmpeg3, avformat-57)
+    add_deploy_library(FFmpeg3, avutil-55)
+    add_deploy_library(FFmpeg3, postproc-54)
+    add_deploy_library(FFmpeg3, swresample-2)
+    add_deploy_library(FFmpeg3, swscale-4)
 
     return (1)
 }

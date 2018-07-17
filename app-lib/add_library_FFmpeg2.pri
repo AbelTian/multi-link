@@ -28,13 +28,13 @@ defineTest(add_include_FFmpeg2){
     #...
     isEmpty(header_path):header_path=$$get_add_include(FFmpeg2, FFmpeg2)
     command += $${header_path}
-    command += $${header_path}/libavcodec
-    command += $${header_path}/libavdevice
-    command += $${header_path}/libavfilter
-    command += $${header_path}/libavformat
-    command += $${header_path}/libavutil
-    command += $${header_path}/libswresample
-    command += $${header_path}/libswscale
+    #command += $${header_path}/libavcodec
+    #command += $${header_path}/libavdevice
+    #command += $${header_path}/libavfilter
+    #command += $${header_path}/libavformat
+    #command += $${header_path}/libavutil
+    #command += $${header_path}/libswresample
+    #command += $${header_path}/libswscale
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
@@ -73,13 +73,14 @@ defineTest(add_deploy_library_FFmpeg2) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(FFmpeg2)
     #add_deploy_library(FFmpeg2, FFmpeg2)
-    add_deploy_library(FFmpeg2, avcodec)
-    add_deploy_library(FFmpeg2, avdevice)
-    add_deploy_library(FFmpeg2, avfilter)
-    add_deploy_library(FFmpeg2, avformat)
-    add_deploy_library(FFmpeg2, avutil)
-    add_deploy_library(FFmpeg2, swresample)
-    add_deploy_library(FFmpeg2, swscale)
+    add_deploy_library(FFmpeg2, avcodec-57)
+    add_deploy_library(FFmpeg2, avdevice-57)
+    add_deploy_library(FFmpeg2, avfilter-6)
+    add_deploy_library(FFmpeg2, avformat-57)
+    add_deploy_library(FFmpeg2, avutil-55)
+    add_deploy_library(FFmpeg2, postproc-54)
+    add_deploy_library(FFmpeg2, swresample-2)
+    add_deploy_library(FFmpeg2, swscale-4)
 
     return (1)
 }

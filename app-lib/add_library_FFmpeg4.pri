@@ -8,7 +8,7 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-
+#4.0
 
 #######################################################################################
 #定义函数
@@ -28,14 +28,14 @@ defineTest(add_include_FFmpeg4){
     #...
     isEmpty(header_path):header_path=$$get_add_include(FFmpeg4, FFmpeg4)
     command += $${header_path}
-    command += $${header_path}/libavcodec
-    command += $${header_path}/libavdevice
-    command += $${header_path}/libavfilter
-    command += $${header_path}/libavformat
-    command += $${header_path}/libavutil
-    command += $${header_path}/libpostproc
-    command += $${header_path}/libswresample
-    command += $${header_path}/libswscale
+    #command += $${header_path}/libavcodec
+    #command += $${header_path}/libavdevice
+    #command += $${header_path}/libavfilter
+    #command += $${header_path}/libavformat
+    #command += $${header_path}/libavutil
+    #command += $${header_path}/libpostproc
+    #command += $${header_path}/libswresample
+    #command += $${header_path}/libswscale
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
@@ -75,14 +75,14 @@ defineTest(add_deploy_library_FFmpeg4) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(FFmpeg4)
     #add_deploy_library(FFmpeg4, FFmpeg4)
-    add_deploy_library(FFmpeg4, avcodec)
-    add_deploy_library(FFmpeg4, avdevice)
-    add_deploy_library(FFmpeg4, avfilter)
-    add_deploy_library(FFmpeg4, avformat)
-    add_deploy_library(FFmpeg4, avutil)
-    add_deploy_library(FFmpeg4, postproc)
-    add_deploy_library(FFmpeg4, swresample)
-    add_deploy_library(FFmpeg4, swscale)
+    add_deploy_library(FFmpeg4, avcodec-58)
+    add_deploy_library(FFmpeg4, avdevice-58)
+    add_deploy_library(FFmpeg4, avfilter-7)
+    add_deploy_library(FFmpeg4, avformat-58)
+    add_deploy_library(FFmpeg4, avutil-56)
+    add_deploy_library(FFmpeg4, postproc-55)
+    add_deploy_library(FFmpeg4, swresample-3)
+    add_deploy_library(FFmpeg4, swscale-5)
 
     return (1)
 }

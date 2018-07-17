@@ -227,17 +227,17 @@ defineReplace(get_add_deploy_library_on_windows) {
     else:DEPLOYTYPE = --release
 
     command =
-    command += $$RM $${APP_BUILD_PWD}\\*$${librealname}*.* $$CMD_SEP
+    command += $$RM $${APP_BUILD_PWD}\\*$${librealname}.* $$CMD_SEP
     #build的地方调试需要.lib等其他文件
-    command += $$COPY_DIR $${LIB_LIB_PWD}\\*$${librealname}*.* $${APP_BUILD_PWD} $$CMD_SEP
+    command += $$COPY_DIR $${LIB_LIB_PWD}\\*$${librealname}.* $${APP_BUILD_PWD} $$CMD_SEP
     #拷贝sdk到build
-    command += $$COPY_DIR $${LIB_BIN_PWD}\\*$${librealname}*.* $${APP_BUILD_PWD} $$CMD_SEP
+    command += $$COPY_DIR $${LIB_BIN_PWD}\\*$${librealname}.* $${APP_BUILD_PWD} $$CMD_SEP
 
 
-    command += $$RM $${APP_DEPLOY_PWD}\\*$${librealname}*.* $$CMD_SEP
+    command += $$RM $${APP_DEPLOY_PWD}\\*$${librealname}.* $$CMD_SEP
     #deploy的地方不需要.lib等文件
     #拷贝sdk到deploy
-    command += $$COPY_DIR $${LIB_BIN_PWD}\\*$${librealname}*.* $${APP_DEPLOY_PWD} $$CMD_SEP
+    command += $$COPY_DIR $${LIB_BIN_PWD}\\*$${librealname}.* $${APP_DEPLOY_PWD} $$CMD_SEP
 
     #经过调试发现，如果DLL引用了Qt库，App却没有引用，windeployqt不会发布那些库，在这里发布。
     command += windeployqt $${APP_DEPLOY_PWD}\\$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
