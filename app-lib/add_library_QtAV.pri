@@ -1,5 +1,5 @@
 #----------------------------------------------------------------
-#add_library_FFmpeg3X64.pri
+#add_library_QtAV.pri
 #这是给用户提供的方便pri
 #这个比较common，允许拷贝到用户工程中更改。
 #----------------------------------------------------------------
@@ -8,36 +8,32 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-
+#1.11
 
 #######################################################################################
 #定义函数
 #######################################################################################
 #修改
-defineTest(add_include_FFmpeg3X64){
+defineTest(add_include_QtAV){
     #不为空，肯定是源码里的路径。 用于导出头文件
     header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    #isEmpty(header_path):header_path=$$get_add_include(FFmpeg3X64, FFmpeg3X64)
+    #isEmpty(header_path):header_path=$$get_add_include(QtAV, QtAV)
 
     command =
     #basic
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    isEmpty(header_path):header_path=$$get_add_include(FFmpeg3X64, FFmpeg3)
+    isEmpty(header_path):header_path=$$get_add_include(QtAV, QtAV)
     command += $${header_path}
-    command += $${header_path}/AL
-    command += $${header_path}/ass
-    command += $${header_path}/libavcodec
-    command += $${header_path}/libavdevice
-    command += $${header_path}/libavfilter
-    command += $${header_path}/libavformat
-    command += $${header_path}/libavresample
-    command += $${header_path}/libavutil
-    command += $${header_path}/libswresample
-    command += $${header_path}/libswscale
+    command += $${header_path}/..
+    command += $${header_path}/private
+
+    header_path=$$get_add_include(QtAV, QtAVWidgets)
+    command += $${header_path}
+    command += $${header_path}/..
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
@@ -45,7 +41,7 @@ defineTest(add_include_FFmpeg3X64){
 }
 
 #修改
-defineTest(add_defines_FFmpeg3X64){
+defineTest(add_defines_QtAV){
     #添加这个SDK里的defines
     #add_defines()
 
@@ -53,18 +49,12 @@ defineTest(add_defines_FFmpeg3X64){
 }
 
 #修改
-defineTest(add_library_FFmpeg3X64){
+defineTest(add_library_QtAV){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    #add_library(FFmpeg3X64, FFmpeg3X64)
-    add_library(FFmpeg3X64, avcodec)
-    add_library(FFmpeg3X64, avdevice)
-    add_library(FFmpeg3X64, avfilter)
-    add_library(FFmpeg3X64, avformat)
-    add_library(FFmpeg3X64, avresample)
-    add_library(FFmpeg3X64, avutil)
-    add_library(FFmpeg3X64, swresample)
-    add_library(FFmpeg3X64, swscale)
+    #add_library(QtAV, QtAV)
+    add_library(QtAV, QtAV1)
+    add_library(QtAV, QtAVWidgets1)
 
     return (1)
 }
@@ -73,18 +63,23 @@ defineTest(add_library_FFmpeg3X64){
 #发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
 #修改
-defineTest(add_deploy_library_FFmpeg3X64) {
+defineTest(add_deploy_library_QtAV) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
-    #add_deploy_libraryes(FFmpeg3X64)
-    #add_deploy_library(FFmpeg3X64, FFmpeg3X64)
-    add_deploy_library(FFmpeg3X64, avcodec)
-    add_deploy_library(FFmpeg3X64, avdevice)
-    add_deploy_library(FFmpeg3X64, avfilter)
-    add_deploy_library(FFmpeg3X64, avformat)
-    add_deploy_library(FFmpeg3X64, avresample)
-    add_deploy_library(FFmpeg3X64, avutil)
-    add_deploy_library(FFmpeg3X64, swresample)
-    add_deploy_library(FFmpeg3X64, swscale)
+    #add_deploy_libraryes(QtAV)
+    #add_deploy_library(QtAV, QtAV)
+    add_deploy_library(QtAV, QtAV1)
+    add_deploy_library(QtAV, QtAVWidgets1)
+    add_deploy_library(QtAV, ass)
+    add_deploy_library(QtAV, OpenAL32)
+    #FFmpeg3
+    add_deploy_library(QtAV, avcodec-57)
+    add_deploy_library(QtAV, avdevice-57)
+    add_deploy_library(QtAV, avfilter-6)
+    add_deploy_library(QtAV, avformat-57)
+    add_deploy_library(QtAV, avresample-3)
+    add_deploy_library(QtAV, avutil-55)
+    add_deploy_library(QtAV, swresample-2)
+    add_deploy_library(QtAV, swscale-4)
 
     return (1)
 }

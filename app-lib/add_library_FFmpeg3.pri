@@ -8,7 +8,7 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-
+#3.2
 
 #######################################################################################
 #定义函数
@@ -28,16 +28,17 @@ defineTest(add_include_FFmpeg3){
     #...
     isEmpty(header_path):header_path=$$get_add_include(FFmpeg3, FFmpeg3)
     command += $${header_path}
-    command += $${header_path}/AL
-    command += $${header_path}/ass
-    command += $${header_path}/libavcodec
-    command += $${header_path}/libavdevice
-    command += $${header_path}/libavfilter
-    command += $${header_path}/libavformat
-    command += $${header_path}/libavresample
-    command += $${header_path}/libavutil
-    command += $${header_path}/libswresample
-    command += $${header_path}/libswscale
+    #这里需要引起猛烈的注意
+    #如果包含了这些目录，gcc会检测到和系统头文件重名的冲突而无法编译通过。
+    #我编译了很久总是报告头文件冲突，就是因为这里，如果有个after选项，把这些目录after加到系统头文件后边就好了。
+    #command += $${header_path}/libavcodec
+    #command += $${header_path}/libavdevice
+    #command += $${header_path}/libavfilter
+    #command += $${header_path}/libavformat
+    #command += $${header_path}/libavutil
+    #command += $${header_path}/libpostproc
+    #command += $${header_path}/libswresample
+    #command += $${header_path}/libswscale
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
@@ -61,8 +62,8 @@ defineTest(add_library_FFmpeg3){
     add_library(FFmpeg3, avdevice)
     add_library(FFmpeg3, avfilter)
     add_library(FFmpeg3, avformat)
-    add_library(FFmpeg3, avresample)
     add_library(FFmpeg3, avutil)
+    add_library(FFmpeg3, postproc)
     add_library(FFmpeg3, swresample)
     add_library(FFmpeg3, swscale)
 
@@ -77,14 +78,14 @@ defineTest(add_deploy_library_FFmpeg3) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(FFmpeg3)
     #add_deploy_library(FFmpeg3, FFmpeg3)
-    add_deploy_library(FFmpeg3, avcodec)
-    add_deploy_library(FFmpeg3, avdevice)
-    add_deploy_library(FFmpeg3, avfilter)
-    add_deploy_library(FFmpeg3, avformat)
-    add_deploy_library(FFmpeg3, avresample)
-    add_deploy_library(FFmpeg3, avutil)
-    add_deploy_library(FFmpeg3, swresample)
-    add_deploy_library(FFmpeg3, swscale)
+    add_deploy_library(FFmpeg3, avcodec-57)
+    add_deploy_library(FFmpeg3, avdevice-57)
+    add_deploy_library(FFmpeg3, avfilter-6)
+    add_deploy_library(FFmpeg3, avformat-57)
+    add_deploy_library(FFmpeg3, avutil-55)
+    add_deploy_library(FFmpeg3, postproc-54)
+    add_deploy_library(FFmpeg3, swresample-2)
+    add_deploy_library(FFmpeg3, swscale-4)
 
     return (1)
 }
