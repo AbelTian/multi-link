@@ -28,7 +28,7 @@ defineTest(add_include_QDjango){
     #...
     isEmpty(header_path):header_path=$$get_add_include(QDjango, qdjango-db)
     command += $${header_path}
-    isEmpty(header_path):header_path=$$get_add_include(QDjango, qdjango-http)
+    header_path=$$get_add_include(QDjango, qdjango-http)
     command += $${header_path}
 
     INCLUDEPATH += $$command
