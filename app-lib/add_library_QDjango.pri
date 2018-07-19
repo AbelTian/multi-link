@@ -26,9 +26,12 @@ defineTest(add_include_QDjango){
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    isEmpty(header_path):header_path=$$get_add_include(QDjango, qdjango-db)
+    #header_path = $$1
+    isEmpty(1):header_path=$$get_add_include(QDjango, qdjango-db)
     command += $${header_path}
-    header_path=$$get_add_include(QDjango, qdjango-http)
+    
+    #header_path = $$1
+    isEmpty(1):header_path=$$get_add_include(QDjango, qdjango-http)
     command += $${header_path}
 
     INCLUDEPATH += $$command

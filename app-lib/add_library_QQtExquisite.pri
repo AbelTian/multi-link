@@ -26,7 +26,8 @@ defineTest(add_include_QQtExquisite){
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    isEmpty(header_path):header_path=$$get_add_include(QQtExquisite, QQtExquisite)
+    #header_path = $$1
+    isEmpty(1):header_path=$$get_add_include_bundle(QQtExquisite, QQtExquisite)
     command += $${header_path}
 
     INCLUDEPATH += $$command
@@ -47,7 +48,7 @@ defineTest(add_library_QQtExquisite){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
     #add_library(QQtExquisite, QQtExquisite)
-    add_library(QQtExquisite, QQtExquisite)
+    add_library_bundle(QQtExquisite, QQtExquisite)
 
     return (1)
 }
@@ -60,7 +61,7 @@ defineTest(add_deploy_library_QQtExquisite) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(QQtExquisite)
     #add_deploy_library(QQtExquisite, QQtExquisite)
-    add_deploy_library(QQtExquisite, QQtExquisite)
+    add_deploy_library_bundle(QQtExquisite, QQtExquisite)
 
     return (1)
 }
