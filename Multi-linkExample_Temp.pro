@@ -50,7 +50,8 @@ CONFIG += ordered
 #SUBDIRS += test/QQtFMODTest
 
 #need vlcQt libvlc library
-#SUBDIRS += demo/qqtliveplayer
+#
+SUBDIRS += demo/qqtliveplayer
 
 #macOS下，这两个必须分开工程编译。
 #SUBDIRS += examples/CustomLinkLibDemo

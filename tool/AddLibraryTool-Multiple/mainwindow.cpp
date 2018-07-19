@@ -240,7 +240,9 @@ void MainWindow::outputWrokflow ( QString sdkName )
 
             //遍历成功，所有的子文件夹已经深度优先遍历。
             //subdir name
-            textAddInclude->append ( QString ( "isEmpty(header_path):header_path=$$get_add_include(%1, %2)" )
+            textAddInclude->append ( "" );//blank line
+            textAddInclude->append ( "#header_path = $$1" );
+            textAddInclude->append ( QString ( "isEmpty(1):header_path=$$get_add_include(%1, %2)" )
                                      .arg ( sdkName )
                                      .arg ( mfi.baseName() ) );
             textAddInclude->append ( "command += $${header_path}" );

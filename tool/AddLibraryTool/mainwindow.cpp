@@ -167,7 +167,7 @@ void MainWindow::on_pushButton_clicked()
     QQtDictionary libDict;
 
     QDir d ( header );
-
+    //遍历头文件
     foreach ( QFileInfo mfi, d.entryInfoList() )
     {
         if ( mfi.isFile() )
@@ -201,7 +201,13 @@ void MainWindow::on_pushButton_clicked()
 
             //遍历成功，所有的子文件夹已经深度优先遍历。
             //subdir name
-            ui->textBrowser->append ( QString ( "isEmpty(header_path):header_path=$$get_add_include(%1, %2)" )
+            //其实，这个空判断只有在有一个模块的时候才有点作用，在多个模块的时候，这个空判断是没有用的。
+            //这个空判断的目的，是如果用户手动调用add_include_XXX(path)，qmake会到path指定路径去找一系列的头文件，自定义用的。
+            //但是通常状况下，都是去SDK标准目录下寻找，所以这个空判断显得，没什么用。
+            //根据multi-link的设计，这个路径的空判断毫无作用，但是功能保留下来。
+            ui->textBrowser->append ( "" );//blank line
+            ui->textBrowser->append ( "#header_path = $$1" );//tip
+            ui->textBrowser->append ( QString ( "isEmpty(1):header_path=$$get_add_include(%1, %2)" )
                                       .arg ( ui->lineEdit_2->text() )
                                       .arg ( mfi.baseName() ) );
             ui->textBrowser->append ( "command += $${header_path}" );
