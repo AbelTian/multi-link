@@ -205,7 +205,7 @@ void MainWindow::on_pushButton_clicked()
             //这个空判断的目的，是如果用户手动调用add_include_XXX(path)，qmake会到path指定路径去找一系列的头文件，自定义用的。
             //但是通常状况下，都是去SDK标准目录下寻找，所以这个空判断显得，没什么用。
             //根据multi-link的设计，这个路径的空判断毫无作用，但是功能保留下来。
-            ui->textBrowser->append ( "" );//blank line
+            ui->textBrowser->append ( "" );//blank line 第一行会为空？不知为何。
             ui->textBrowser->append ( "#header_path = $$1" );//tip
             ui->textBrowser->append ( QString ( "isEmpty(1):header_path=$$get_add_include(%1, %2)" )
                                       .arg ( ui->lineEdit_2->text() )
