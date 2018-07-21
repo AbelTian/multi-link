@@ -126,6 +126,7 @@ defineReplace(get_add_deploy_library_bundle_on_mac) {
     #这里有个bug，用户删除了SDK以后，App qmake阶段读取这个SDK，结果读到这个位置，为0...bug，其实不应该为0，应该为用户设置的SDK版本号。
     #解决方法一：忽略第一遍编译。也就是什么SDK都没有的时候，编译一遍，lib生成了SDK，可是不管他，再qmake后编译一遍。能解决。
     #解决方法二：$(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)，在Makefile处理的时候调用。经过测试，libmajorver没有被赋值为求值命令，所以这个办法不行。
+    #解决方法三：这个readlink的过程交给shell解决，包括后边的install_name_tool，OK，解决。
     libmajorver =
     libmajorver = $$system(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)
     #libmajorver = $(readlink $${LIB_LIB_PWD}/$${libname}.framework/Versions/Current)
@@ -133,7 +134,8 @@ defineReplace(get_add_deploy_library_bundle_on_mac) {
     isEmpty(libmajorver){
         libmajorver=0
         message($$TARGET deploy $$libname"," unexisted lib.)
-        return ("echo unexisted lib $$libname .")
+        message($$TARGET first-time bug has been fixed"," wont exit.)
+        #return ("echo unexisted lib $$libname .")
     }
 
     command =
@@ -161,13 +163,21 @@ defineReplace(get_add_deploy_library_bundle_on_mac) {
 
     #更改app bundle链接Lib的位置。
     contains(CONFIG, app_bundle) {
-        command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
-             @rpath/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
-             $${APP_BUILD_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} &&
+        command += chmod +x $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
+        command += . $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
+            $${LIB_LIB_PWD} $${libname} $${librealname} yes \
+            $${APP_BUILD_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} &&
+        #command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
+        #     @rpath/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
+        #     $${APP_BUILD_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} &&
     } else {
-        command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
-             @executable_path/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
+        command += chmod +x $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
+        command += . $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
+            $${LIB_LIB_PWD} $${libname} $${librealname} no \
              $${APP_BUILD_PWD}/$${TARGET} &&
+        #command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
+        #     @executable_path/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
+        #     $${APP_BUILD_PWD}/$${TARGET} &&
     }
 
 
@@ -194,13 +204,21 @@ defineReplace(get_add_deploy_library_bundle_on_mac) {
 
     #更改app bundle链接Lib的位置。
     contains(CONFIG, app_bundle) {
-        command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
-             @rpath/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
-             $${APP_DEPLOY_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} &&
+        command += chmod +x $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
+        command += . $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
+            $${LIB_LIB_PWD} $${libname} $${librealname} yes \
+            $${APP_DEPLOY_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} &&
+        #command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
+        #     @rpath/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
+        #     $${APP_DEPLOY_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} &&
     } else {
-        command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
-             @executable_path/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
+        command += chmod +x $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
+        command += . $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
+            $${LIB_LIB_PWD} $${libname} $${librealname} no \
              $${APP_DEPLOY_PWD}/$${TARGET} &&
+        #command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
+        #     @executable_path/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
+        #     $${APP_DEPLOY_PWD}/$${TARGET} &&
     }
 
     command += echo . #app deploy library $$librealname progressed.
