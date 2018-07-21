@@ -39,6 +39,8 @@ defineTest(add_include_QQtInput){
 defineTest(add_defines_QQtInput){
     #添加这个SDK里的defines
     #add_defines()
+    #如果定义编译静态库，那么开启
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTINPUT_STATIC_LIBRARY
 
     return (1)
 }
