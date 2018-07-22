@@ -16,6 +16,8 @@ MainWindow::MainWindow ( QWidget* parent ) :
 
     setMinimumSize ( 1024, 600 );
 
+    ui->checkBox->setChecked ( true );
+
     ui->comboBox->addItem ( "Windows" );
     ui->comboBox->addItem ( "Win32" );
     ui->comboBox->addItem ( "Win64" );
@@ -205,6 +207,10 @@ void MainWindow::outputWrokflow ( QString sdkName )
     QQtDictionary headerDict;
     QQtDictionary libDict;
 
+    QString bundle = "";
+    if ( ui->checkBox->isChecked() )
+        bundle = "_bundle";
+
     QDir d ( header );
 
     foreach ( QFileInfo mfi, d.entryInfoList() )
@@ -242,7 +248,8 @@ void MainWindow::outputWrokflow ( QString sdkName )
             //subdir name
             textAddInclude->append ( "" );//blank line
             textAddInclude->append ( "#header_path = $$1" );
-            textAddInclude->append ( QString ( "isEmpty(1):header_path=$$get_add_include(%1, %2)" )
+            textAddInclude->append ( QString ( "isEmpty(1):header_path=$$get_add_include%1(%2, %3)" )
+                                     .arg ( bundle )
                                      .arg ( sdkName )
                                      .arg ( mfi.baseName() ) );
             textAddInclude->append ( "command += $${header_path}" );
@@ -432,10 +439,16 @@ void MainWindow::outputWrokflow ( QString sdkName )
 
             libList.push_back ( tempname );
 
-            QString lib_path = QString ( "add_library(%1, %2)" ).arg ( sdkName ).arg ( tempname );
+            QString lib_path = QString ( "add_library%1(%2, %3)" )
+                               .arg ( bundle )
+                               .arg ( sdkName )
+                               .arg ( tempname );
             textAddLibrary->append ( lib_path );
 
-            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( sdkName ).arg ( tempname );
+            QString lib_deploy_path = QString ( "add_deploy_library%1(%2, %3)" )
+                                      .arg ( bundle )
+                                      .arg ( sdkName )
+                                      .arg ( tempname );
             textAddDeployLibrary->append ( lib_deploy_path );
         }
     }

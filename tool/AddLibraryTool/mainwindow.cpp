@@ -13,6 +13,8 @@ MainWindow::MainWindow ( QWidget* parent ) :
 {
     ui->setupUi ( this );
 
+    ui->checkBox->setChecked ( true );
+
     ui->comboBox->addItem ( "Windows" );
     ui->comboBox->addItem ( "Win32" );
     ui->comboBox->addItem ( "Win64" );
@@ -166,6 +168,10 @@ void MainWindow::on_pushButton_clicked()
     QQtDictionary headerDict;
     QQtDictionary libDict;
 
+    QString bundle = "";
+    if ( ui->checkBox->isChecked() )
+        bundle = "_bundle";
+
     QDir d ( header );
     //遍历头文件
     foreach ( QFileInfo mfi, d.entryInfoList() )
@@ -207,7 +213,8 @@ void MainWindow::on_pushButton_clicked()
             //根据multi-link的设计，这个路径的空判断毫无作用，但是功能保留下来。
             ui->textBrowser->append ( "" );//blank line 第一行会为空？不知为何。
             ui->textBrowser->append ( "#header_path = $$1" );//tip
-            ui->textBrowser->append ( QString ( "isEmpty(1):header_path=$$get_add_include(%1, %2)" )
+            ui->textBrowser->append ( QString ( "isEmpty(1):header_path=$$get_add_include%1(%2, %3)" )
+                                      .arg ( bundle )
                                       .arg ( ui->lineEdit_2->text() )
                                       .arg ( mfi.baseName() ) );
             ui->textBrowser->append ( "command += $${header_path}" );
@@ -397,10 +404,16 @@ void MainWindow::on_pushButton_clicked()
 
             libList.push_back ( tempname );
 
-            QString lib_path = QString ( "add_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( tempname );
+            QString lib_path = QString ( "add_library%1(%2, %3)" )
+                               .arg ( bundle )
+                               .arg ( ui->lineEdit_2->text() )
+                               .arg ( tempname );
             ui->textBrowser_2->append ( lib_path );
 
-            QString lib_deploy_path = QString ( "add_deploy_library(%1, %2)" ).arg ( ui->lineEdit_2->text() ).arg ( tempname );
+            QString lib_deploy_path = QString ( "add_deploy_library%1(%2, %3)" )
+                                      .arg ( bundle )
+                                      .arg ( ui->lineEdit_2->text() )
+                                      .arg ( tempname );
             ui->textBrowser_3->append ( lib_deploy_path );
         }
     }
