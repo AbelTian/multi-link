@@ -17,6 +17,7 @@
 #add_dependent_manager()
 #add_custom_dependent_manager()
 #add_create_dependent_manager()
+#add_from_sdk_dependent_manager()
 #add_app_project()
 #add_lib_project()
 #add_decorate_target_name()
@@ -78,7 +79,7 @@ defineTest(add_dependent_manager){
 }
 
 #从自定义路径加载add_library_<libname>.pri
-#第二个参数为空，则从调用处添加。
+#第二个参数为空，则从调用处添加。默认路径是调用处，当前路径
 defineTest(add_custom_dependent_manager){
     libgroupname = $$1
     libname = $$2
@@ -112,6 +113,7 @@ defineTest(add_custom_dependent_manager){
     return (1)
 }
 
+#默认路径是 multi-link里app-lib
 defineTest(add_create_dependent_manager){
     libgroupname = $$1
     libname = $$2
@@ -134,6 +136,17 @@ defineTest(add_create_dependent_manager){
         }
     }
 
+    add_custom_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+#默认路径是SDK ROOT下app-lib
+defineTest(add_create_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
     add_custom_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
 

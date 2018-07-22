@@ -15,48 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Lib Group Name:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Lib Sdk Root:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Platform:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_2"/>
-    </item>
-    <item row="1" column="4">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Refresh</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1" colspan="4">
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="5">
+    <item row="2" column="0" colspan="7">
      <widget class="QTabWidget" name="tabWidget">
       <property name="layoutDirection">
        <enum>Qt::LeftToRight</enum>
@@ -140,12 +99,62 @@ Platform是说通过哪个平台的SDK遍历libName，其实platform下面包括
 
 add_deploy_library()和add_library()是一样的。
 
-add_library_xxx.pri会被保存到Lib Sdk Root。</string>
+add_library_xxx.pri会被保存到Lib Sdk Root。
+
+macOS bundle 代表在苹果系统下，使用bundle格式的library，默认是使用的，而且建议使用。</string>
           </property>
          </widget>
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="lineEdit_2"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Lib Sdk Root:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Lib Group Name:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QComboBox" name="comboBox"/>
+    </item>
+    <item row="1" column="3">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Platform:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="6">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1" colspan="6">
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QCheckBox" name="checkBox">
+      <property name="text">
+       <string>macOS bundle</string>
+      </property>
      </widget>
     </item>
    </layout>
