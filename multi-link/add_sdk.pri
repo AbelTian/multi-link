@@ -104,7 +104,7 @@ defineReplace(get_add_sdk_dir_struct) {
     #if it's qt library, don't create
     command =
     !equals(LIB_SDK_PWD , $$[QT_INSTALL_DATA]){
-        contains(QSYS_PRIVATE, macOS):contains(TEMPLATE, lib_bundle) {
+        contains(QSYS_PRIVATE, macOS):contains(CONFIG, lib_bundle) {
             #bundle模式没有include目录
         } else {
             command += $$MK_DIR $$LIB_INC_DIR $$CMD_SEP
@@ -265,7 +265,7 @@ defineReplace(get_add_sdk_work_flow){
     liblowername = $$lower($${librealname})
 
     command =
-    contains(QSYS_PRIVATE, macOS) {
+    contains(QSYS_PRIVATE, macOS):contains(CONFIG, lib_bundle) {
         #在编译路径里，创作一次sdk，完成framework链接等的修复工作
         command += $$get_add_mac_sdk_fix_building_framework($${librealname}, $${librealname}) $$CMD_SEP
         #command += echo $$libname fix framework success. $$CMD_SEP
@@ -281,7 +281,7 @@ defineReplace(get_add_sdk_work_flow){
     equals(QMAKE_HOST.os, Windows) {
         #message(create lib windows struct library)
         command += $$get_add_windows_sdk() $$CMD_SEP
-        command += $$COPY $${LIB_BUILD_PWD}\\*.prl lib $$CMD_SEP
+        contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}\\*.prl lib $$CMD_SEP
     } else {
         #macOS lib_bundle make sdk
         contains(QSYS_PRIVATE, macOS):contains(CONFIG, lib_bundle) {
@@ -291,13 +291,13 @@ defineReplace(get_add_sdk_work_flow){
             command += $$get_add_mac_sdk($${librealname}, $${librealname}) $$CMD_SEP
             command += $$CD ../../ $$CMD_SEP
             #create prl
-            command += $$COPY $${LIB_BUILD_PWD}/$${librealname}.framework/$${librealname}.prl lib/$${libname}.framework/$${librealname}.prl $$CMD_SEP
+            contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}/$${librealname}.framework/$${librealname}.prl lib/$${libname}.framework/$${librealname}.prl $$CMD_SEP
         } else {
             #Android在linux开发机下也会走这里，Android目标，Lib可以发布Win和Linux两种格式的SDK。
             #message(create lib linux struct library)
             #macOS no bundle 也会走这里，已经支持非bundle
             command += $$get_add_linux_sdk() $$CMD_SEP
-            command += $$COPY $${LIB_BUILD_PWD}/*.prl lib $$CMD_SEP
+            contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}/*.prl lib $$CMD_SEP
         }
     }
 

@@ -205,6 +205,8 @@ defineTest(add_lib_project) {
             CONFIG += dll
             #macOS下必须开开bundle
             CONFIG += lib_bundle
+            #fix plugin bug.
+            contains(CONFIG, plugin):CONFIG -= lib_bundle
         } else:contains(QSYS_PRIVATE, iOS|iOSSimulator) {
             CONFIG += static
         } else {
@@ -224,6 +226,8 @@ defineTest(add_lib_project) {
     #lib 必须创建prl
     #create sdk need
     CONFIG += create_prl
+    #fix plugin bug.
+    contains(CONFIG, plugin):CONFIG -= create_prl
 
     #debug版本和release版本的所有的不同。
     #Lib的TARGET，在两个版本上有区别，通过TARGET = add_decorate_target($$TARGET)可以解决。
