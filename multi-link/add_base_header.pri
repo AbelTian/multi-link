@@ -231,18 +231,18 @@ add_build_dir_struct($${BUILD})
 win32 {
     contains(DEFINES, LIB_LIBRARY){
         #build dynamic
-        DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_EXPORT
+        DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
     } else: contains(DEFINES, LIB_STATIC_LIBRARY){
         #build and link
-        DEFINES += LIBRARY_SHARED_EXPORT=
+        DEFINES += LIBRARYSHARED_EXPORT=
     } else {
         #link dynamic
-        DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_IMPORT
+        DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
     }
 }
 
 #类Unix系统下这个宏没有意义。
 unix {
     #build and link
-    DEFINES += LIBRARY_SHARED_EXPORT=
+    DEFINES += LIBRARYSHARED_EXPORT=
 }
