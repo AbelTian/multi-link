@@ -75,14 +75,14 @@ defineTest(add_deploy_library_FFmpeg4) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(FFmpeg4)
     #add_deploy_library(FFmpeg4, FFmpeg4)
-    add_deploy_library(FFmpeg4, avcodec-58)
-    add_deploy_library(FFmpeg4, avdevice-58)
-    add_deploy_library(FFmpeg4, avfilter-7)
-    add_deploy_library(FFmpeg4, avformat-58)
-    add_deploy_library(FFmpeg4, avutil-56)
-    add_deploy_library(FFmpeg4, postproc-55)
-    add_deploy_library(FFmpeg4, swresample-3)
-    add_deploy_library(FFmpeg4, swscale-5)
+    add_deploy_library(FFmpeg4, avcodec*)
+    add_deploy_library(FFmpeg4, avdevice*)
+    add_deploy_library(FFmpeg4, avfilter*)
+    add_deploy_library(FFmpeg4, avformat*)
+    add_deploy_library(FFmpeg4, avutil*)
+    add_deploy_library(FFmpeg4, postproc*)
+    add_deploy_library(FFmpeg4, swresample*)
+    add_deploy_library(FFmpeg4, swscale*)
 
     return (1)
 }
