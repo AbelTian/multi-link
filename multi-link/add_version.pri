@@ -3,37 +3,35 @@
 #依赖 无
 #################################################################
 
-defineReplace(get_version_string_1) {
+#Qt4 error parse. qmake v2
+#embedded Qt5 error parse. qmake v3
+defineReplace(get_version_string_one_piece) {
     major_version = $$1
-    !isEmpty(2): error("get_version_string_1(major) requires one arguments")
-    isEmpty(1): error("get_version_string_1(major) requires one arguments")
+    isEmpty(1):!isEmpty(2): error("get_version_string_one_piece(major) requires one arguments")
     command = $${major_version}
     return ($$command)
 }
-defineReplace(get_version_string_2) {
+defineReplace(get_version_string_two_piece) {
     major_version = $$1
     minor_version = $$2
-    !isEmpty(3): error("get_version_string_2(major, minor) requires two arguments")
-    isEmpty(2): error("get_version_string_2(major, minor) requires two arguments")
+    isEmpty(2):!isEmpty(3): error("get_version_string_two_piece(major, minor) requires two arguments")
     command = $${major_version}.$${minor_version}
     return ($$command)
 }
-defineReplace(get_version_string_3) {
+defineReplace(get_version_string_three_piece) {
     major_version = $$1
     minor_version = $$2
     patch_version = $$3
-    !isEmpty(4): error("get_version_string_3(major, minor, patch) requires three arguments")
-    isEmpty(3): error("get_version_string_3(major, minor, patch) requires three arguments")
+    isEmpty(3):!isEmpty(4): error("get_version_string_three_piece(major, minor, patch) requires three arguments")
     command = $${major_version}.$${minor_version}.$${patch_version}
     return ($$command)
 }
-defineReplace(get_version_string_4) {
+defineReplace(get_version_string_four_piece) {
     major_version = $$1
     minor_version = $$2
     patch_version = $$3
     build_version = $$4
-    !isEmpty(5): error("get_version_string_4(major, minor, patch, build) requires four arguments")
-    isEmpty(4): error("get_version_string_4(major, minor, patch, build) requires four arguments")
+    isEmpty(4):!isEmpty(5): error("get_version_string_four_piece(major, minor, patch, build) requires four arguments")
     command = $${major_version}.$${minor_version}.$${patch_version}.$${build_version}
     return ($$command)
 }
@@ -51,11 +49,12 @@ defineTest(add_version) {
     APP_MINOR_VERSION = $$2
     APP_PATCH_VERSION = $$3
     APP_BUILD_VERSION = $$4
+    #message($$APP_MAJOR_VERSION $$APP_MINOR_VERSION $$APP_PATCH_VERSION $$APP_BUILD_VERSION)
 
-    APP_VERSION1 = $$get_version_string_1( $${APP_MAJOR_VERSION} )
-    APP_VERSION2 = $$get_version_string_2( $${APP_MAJOR_VERSION}, $${APP_MINOR_VERSION} )
-    APP_VERSION3 = $$get_version_string_3( $${APP_MAJOR_VERSION}, $${APP_MINOR_VERSION}, $${APP_PATCH_VERSION} )
-    APP_VERSION4 = $$get_version_string_4( $${APP_MAJOR_VERSION}, $${APP_MINOR_VERSION}, $${APP_PATCH_VERSION}, $${APP_BUILD_VERSION} )
+    APP_VERSION1 = $$get_version_string_one_piece( $${APP_MAJOR_VERSION} )
+    APP_VERSION2 = $$get_version_string_two_piece( $${APP_MAJOR_VERSION}, $${APP_MINOR_VERSION} )
+    APP_VERSION3 = $$get_version_string_three_piece( $${APP_MAJOR_VERSION}, $${APP_MINOR_VERSION}, $${APP_PATCH_VERSION} )
+    APP_VERSION4 = $$get_version_string_four_piece( $${APP_MAJOR_VERSION}, $${APP_MINOR_VERSION}, $${APP_PATCH_VERSION}, $${APP_BUILD_VERSION} )
 
     #这两个变量赋值是什么关系？
     #qmake 域变量
