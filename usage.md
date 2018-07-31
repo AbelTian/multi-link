@@ -26,21 +26,21 @@ QKIT不再使用，而仅仅使用QSYS。
 | Android armeabi |﻿Android | - |﻿Android |  
 | Android x86 |﻿AndroidX86 | - |﻿AndroidX86 |  
 
-####使用场景截图  
+#### 使用场景截图   
 
 ![使用场景](screenshot/11.png "这是Multi-link技术的使用方式截图")  
 
-####Multi-link技术能够达到的管理能力   
+#### Multi-link技术能够达到的管理能力   
+
 App和Lib的源代码，一直处于编写之中。  
 App和Lib的目标，一直从Build位置，持续发布到Deploy位置和SDK位置。  
 用户再也不必为了管理生成目标、发布目标和链接而劳费手劲。  
 在2008年的时候还没有这个技术，2018年，这个技术终于变成了现实。  
 现在，按照GPL发布，  
 基于qmake。  
-
 ![Multi-link技术的能力](screenshot/12.png "这是Multi-link技术的能力")  
 
-####多链接技术创造的生产线  
+#### 多链接技术创造的生产线   
 Multi-link会一直处于App/Lib生产线的控制器地位。   
 Multi-link允许用户自行添加任何依赖项，我把一些常用的依赖项添加用pri放在了app-lib里，
 而这些依赖项的SDK我保存在了百度网盘，以方便用户取用，用户只需要下载下来解压到自己的LIB_SDK_ROOT里。  
@@ -50,17 +50,16 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 ![Multi-link技术的能力](screenshot/13.png "这是Multi-link技术的能力")  
 
 
-####多链接技术使用注意  
+#### 多链接技术使用注意   
 1. Multi-link 2.0已经不强调 build的编译路径设置。
 2. 也不强调对Qt Creator FileSystemName的设置。也就是不要求用户按照过去的要求设置Creator的默认编译路径。
 3. Multi-link可以独立于任何Library App工程使用，建议作为submodule使用，能够可靠保证移植性。
 4. 但是QSYS_STD_DIR还是有用的，输出SDK和DeployAPP的时候使用。并且，QAPP_STD_DIR和这个SDK的路径还不一样，App发布用的有个Debug和Release的区分，SDK的没有（区分），在一起。
 
-####多链接技术已经支持的Library  
+#### 多链接技术已经支持的Library   
 并且多链接技术已经提供了产品运行器和SDK链接文件编写辅助工具。  
 对Library的支持会持续更新。  
 用户也可以把使用的方便的add_library_xxx.pri发送给我到tianduanrui@163.com，我会把它加入app-lib族。  
-
 ![Multi-link技术支持](screenshot/14.png "这是Multi-link技术支持")  
 
 
