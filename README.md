@@ -31,7 +31,7 @@ Multi-link技术使用众多的pri进行函数定义，提供给用户丰富的A
 
 ## 软件架构  
 
-[多链接技术的工程结构.xlsx](Multi-link.xlsx)  
+[多链接技术的工程结构.xlsx](Multi-linkFunctionList.xlsx)  
 由于Qt第四代编译比较困难，Qt4内置的qmake版本2.01a版本太低，对函数的支持不足，对嵌套函数的支持也不足，  
 所以，Multi-link2.0不支持Qt4。  
 Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的版本，Qt4 qmake版本太低，不便于开发。      
