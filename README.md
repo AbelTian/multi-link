@@ -62,6 +62,27 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 1. 源代码目录里multi-link目录有必要和代码目录平级。不应当把multi-link文件夹放到src目录里。  
 2. macOS下，一切被依赖的Library不可以和依赖者App或者Library共同编译。免于触发first-time bug。 
     - 已经修复.   
+    
+## 简而言之  
+为了方便用户理解Multi-link，这里简而言之。   
+
+Multi-link R2 关键点：  
+LIB_SDK_ROOT  
+APP_BUILD_ROOT  
+APP_DEPLOY_ROOT  
+在App工程里，在工程编译设置那里，项目-构建环境-系统环境变量添加 QSYS=Win32  
+
+Multi-link R1 关键点（针对LibQQt R2）：  
+QQT_SDK_ROOT  
+QQT_BUILD_ROOT  
+APP_DEPLOY_ROOT  
+在App工程里，在工程编译设置那里，项目-构建环境-系统环境变量添加 QKIT=WIN32   
+
+三个大路径。加一个环境变量。  
+就是这么简单。  
+
+注释：*三个大路径在用户配置目录里，叫app_configure.pri，qmake的时候，编译输出panel会提示你那个文件在哪里。*    
+*如果你特别喜欢Virual Studio，不喜欢Qt Creator，请绕路。*  
 
 ## 联系我  
 邮箱： tianduarnui@163.com  
