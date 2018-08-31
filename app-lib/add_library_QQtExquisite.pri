@@ -39,6 +39,17 @@ defineTest(add_include_QQtExquisite){
 defineTest(add_defines_QQtExquisite){
     #添加这个SDK里的defines
     #add_defines()
+    #如果定义编译静态库，那么开启
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTEXQUISITE_STATIC_LIBRARY
+
+    #预估
+    #QQtMessageQueue - libzmq
+    #QQtDBus - QtDBus
+    #QQtV4L2 Module - libv4l2
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
 
     return (1)
 }

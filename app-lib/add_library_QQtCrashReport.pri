@@ -19,7 +19,7 @@ defineTest(add_include_QQtCrashReport){
     header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    #isEmpty(header_path):header_path=$$get_add_include_bundle(QQtCrashReport, QQtCrashReport)
+    #isEmpty(header_path):header_path=$$get_add_include(QQtCrashReport, QQtCrashReport)
 
     command =
     #basic
@@ -27,7 +27,7 @@ defineTest(add_include_QQtCrashReport){
     #这里添加$${path}下的子文件夹
     #...
     #header_path = $$1
-    isEmpty(1):header_path=$$get_add_include(QQtMediaExtention, QQtMediaExtention)
+    isEmpty(1):header_path=$$get_add_include_bundle(QQtCrashReport, QQtCrashReport)
     command += $${header_path}
 
     INCLUDEPATH += $$command
@@ -39,7 +39,27 @@ defineTest(add_include_QQtCrashReport){
 defineTest(add_defines_QQtCrashReport){
     #添加这个SDK里的defines
     #add_defines()
+    #如果定义编译静态库，那么开启
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTCRASHREPORT_STATIC_LIBRARY
 
+    contains(DEFINES, __MSVC__){
+        LIBS += -lDbgHelp
+    }
+    win32:msvc {
+        QMAKE_LFLAGS_RELEASE = /INCREMENTAL:NO /DEBUG
+    } else {
+        #QMAKE_CFLAGS += -rdynamic
+        #QMAKE_CXXFLAGS += -rdynamic
+    }
+
+    export(QMAKE_CFLAGS)
+    export(QMAKE_CXXFLAGS)
+    export(QMAKE_LFLAGS_RELEASE)
+    export(LIBS)
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
+    
     return (1)
 }
 
@@ -47,8 +67,8 @@ defineTest(add_defines_QQtCrashReport){
 defineTest(add_library_QQtCrashReport){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    #add_library_bundle(QQtCrashReport, QQtCrashReport)
-    
+    #add_library(QQtCrashReport, QQtCrashReport)
+    add_library_bundle(QQtCrashReport, QQtCrashReport)
 
     return (1)
 }
@@ -60,8 +80,8 @@ defineTest(add_library_QQtCrashReport){
 defineTest(add_deploy_library_QQtCrashReport) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(QQtCrashReport)
-    #add_deploy_library_bundle(QQtCrashReport, QQtCrashReport)
-    
+    #add_deploy_library(QQtCrashReport, QQtCrashReport)
+    add_deploy_library_bundle(QQtCrashReport, QQtCrashReport)
 
     return (1)
 }

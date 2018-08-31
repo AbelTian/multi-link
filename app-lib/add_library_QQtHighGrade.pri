@@ -39,6 +39,13 @@ defineTest(add_include_QQtHighGrade){
 defineTest(add_defines_QQtHighGrade){
     #添加这个SDK里的defines
     #add_defines()
+    #如果定义编译静态库，那么开启
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTHIGHGRADE_STATIC_LIBRARY
+
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
 
     return (1)
 }

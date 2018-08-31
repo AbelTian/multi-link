@@ -41,7 +41,35 @@ defineTest(add_include_QQtMediaExtention){
 defineTest(add_defines_QQtMediaExtention){
     #添加这个SDK里的defines
     #add_defines()
+    #如果定义编译静态库，那么开启
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTMEDIAEXTENTION_STATIC_LIBRARY
 
+    #QQtMedia Module
+    #DEFINES += __QQT_MEDIA__
+    contains(DEFINES, __QQT_MEDIA__) {
+        #add_dependent_manager(FFmpeg2)
+        #add_dependent_manager(SDL)
+    }
+
+    #QtMedia Module
+    #这个是Qt5默认的媒体
+    #DEFINES += __QT_MEDIA__
+    contains(DEFINES, __QT_MEDIA__) {
+        #e-linux 依赖gstreamer
+        QT += multimedia
+    }
+
+    #Phonon Module
+    #这个是Qt4默认的媒体
+    #DEFINES += __PHONON_MEDIA__
+    contains(DEFINES, __PHONON_MEDIA__) {
+        #e-linux 依赖gstreamer
+        QT += phonon
+    }
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 

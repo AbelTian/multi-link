@@ -41,6 +41,8 @@ defineTest(add_include_Log4Qt){
 defineTest(add_defines_Log4Qt){
     #添加这个SDK里的defines
     #add_defines()
+    #肯定是动态的
+    #contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LOG4QT_STATIC
 
     return (1)
 }

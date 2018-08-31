@@ -34,6 +34,8 @@ defineTest(add_include_Qwt){
 defineTest(add_defines_Qwt){
     #添加这个SDK里的defines
     #add_defines()
+    #Qwt比较特殊，使用QWT_DLL约束动态编译和链接。这里不定义QWT_MAKEDLL代表导入。
+    DEFINES += QT_DLL QWT_DLL
 
     return (1)
 }

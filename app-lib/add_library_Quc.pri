@@ -40,7 +40,8 @@ defineTest(add_include_Quc){
 defineTest(add_defines_Quc){
     #添加这个SDK里的defines
     #add_defines()
-
+    #肯定是动态的
+    
     return (1)
 }
 

@@ -39,7 +39,8 @@ defineTest(add_include_QtXlsx){
 defineTest(add_defines_QtXlsx){
     #添加这个SDK里的defines
     #add_defines()
-
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += XLSX_NO_LIB
+    
     return (1)
 }
 
