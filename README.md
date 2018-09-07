@@ -42,18 +42,21 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
     - LIB_SDK_ROOT = /home/abel/Develop/b1-sdk
     - APP_BUILD_ROOT = /home/abel/Develop/c0-buildstation
     - APP_DEPLOY_ROOT = /home/abel/Develop/b0-product
-2. 在project build configure页面配置env，QSYS=Windows等指示平台变量。
+2. 在project build configure页面配置构建环境变量，QSYS=Windows等指示平台变量（参见add_platform.pri）。
 
 ## 使用说明
 
 1. 一个可以拷贝multi-link到自己工程目录，
     - 一个可以clone multi-link到公共位置
-    - 一个可以clone multi-link到工程目录作为submodule。这个是推荐方式。
+    - 一个可以clone multi-link到工程目录作为submodule。这个是推荐方式，作者对链接库们的支持容易使用到自己的工程里。
 2. include (.../multi-link/add_base_manager.pri)  
-3. 仿照demo里的pri配置自己的工程。  
+3. 仿照demo里的pri配置自己的工程。（optional，自己随便add_xxxFuncName()试试，:)）    
 4. 如果希望添加自定义模块，
     - 那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录（optional）。   
     - 使用AddLibraryTool写自定义的add_library_XXX.pri.   
+5. 如果想添加自定义模块，方法2，推荐的方法。
+    - 使用AddLibraryTool写自定义的add_library_XXX.pri，拷贝到自己的工程目录，
+    - 在工程配置文件（.pro文件）里，调用add_custom_dependent_manager(XXX)，即可。  
 
 [详细使用说明](usage.md)  
 
