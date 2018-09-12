@@ -13,6 +13,7 @@
 #add_icons函数会从logo文件夹里加载图标。用户需要在logo文件夹下准备好必要的资源。
 #路径里不要有空格
 defineTest(add_icons){
+    #调用处$${PWD}，不是这个pri的位置。
     !exists("$${PWD}/logo"):mkdir("$${PWD}/logo")
     contains(DEFINES, __WIN__){
         #win32 win64 msvc msvc64 winrt?
