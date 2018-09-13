@@ -12,7 +12,7 @@
 <context>
     <name>QQTApp</name>
     <message>
-        <location filename="../../qqtapp.cpp" line="147"/>
+        <location filename="../../qqtapp.cpp" line="142"/>
         <source>Some app want to run in u disk!accepted?</source>
         <translation type="unfinished"></translation>
     </message>
