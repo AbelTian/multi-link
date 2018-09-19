@@ -31,7 +31,6 @@ QKIT不再使用，而仅仅使用QSYS。
 ![使用场景](screenshot/11.png "这是Multi-link技术的使用方式截图")  
 
 #### Multi-link技术能够达到的管理能力   
-
 App和Lib的源代码，一直处于编写之中。  
 App和Lib的目标，一直从Build位置，持续发布到Deploy位置和SDK位置。  
 用户再也不必为了管理生成目标、发布目标和链接而劳费手劲。  
@@ -49,7 +48,6 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 利用Multi-link技术的添加Library模板很容易的。 
 ![Multi-link技术的能力](screenshot/13.png "这是Multi-link技术的能力")  
 
-
 #### 多链接技术使用注意   
 1. Multi-link 2.0已经不强调 build的编译路径设置。
 2. 也不强调对Qt Creator FileSystemName的设置。也就是不要求用户按照过去的要求设置Creator的默认编译路径。
@@ -61,6 +59,9 @@ SDK难免有不全，难免不能满足任何用户的需求，请用户自行�
 对Library的支持会持续更新。  
 用户也可以把使用的方便的add_library_xxx.pri发送给我到tianduanrui@163.com，我会把它加入app-lib族。  
 ![Multi-link技术支持](screenshot/14.png "这是Multi-link技术支持")  
+
+#### 多链接技术配置工具   
+![Multi-link技术支持](screenshot/18.png "这是Multi-link技术支持")  
 
 
 # Multi-link v2.1    

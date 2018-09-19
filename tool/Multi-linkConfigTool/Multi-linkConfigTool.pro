@@ -3,6 +3,7 @@
 # Project created by QtCreator 2018-06-18T10:37:35
 #
 #-------------------------------------------------
+#app_configure.pri请使用utf-8编码，Unix回车符。也就是说建议用户使用这个图形配置工具进行配置。
 
 QT       += core gui
 
