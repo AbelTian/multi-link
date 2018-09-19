@@ -24,7 +24,7 @@ Multi-link技术使用众多的pri进行函数定义，提供给用户丰富的A
 
 经过发布的App直接点击就可以运行，*大的省去了用户手动发布App的劳烦过程。  
 *Multi-link提供ProductExecTool，可以对产品集中查看、调用运行。*  
-*Multi-link提供AddLibraryTool，方便用户通过准备好的SDK自动生成add_library_xxx.pri的链接环。*  
+*Multi-link提供AddLibraryTool，方便用户通过准备好的SDK自动生成add_library_xxx.pri的链接环。生成链接环容易了就不必担心app-lib里面提供的链接环不够用了。*  
 *Multi-link提供AddLibraryTool-Multiple，可以同时对多套SDK进行生成链接环。*  
 *Multi-link提供Multi-linkConfigTool，方便用户配置Multi-link v2必需的三大路径，build/sdk/deploy root。*  
 *Multi-link提供SdkListTool，方便用户查看已经准备好的SDK在各个平台准备情况的表格。*  
@@ -42,21 +42,21 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
     - LIB_SDK_ROOT = /home/abel/Develop/b1-sdk
     - APP_BUILD_ROOT = /home/abel/Develop/c0-buildstation
     - APP_DEPLOY_ROOT = /home/abel/Develop/b0-product
+    - 可以编译运行Multi-linkConfigTool，实现一次图形化的配置，配置好了还会兼容Multi-link 1.0.
+    - 配置一次就可以了，Multi-link提供的其他工具就都可以用了。  
 2. 在project build configure页面配置构建环境变量，QSYS=Windows等指示平台变量（参见add_platform.pri）。
+    - 这个是每次每个build都需要配置的，这个有Qt Creator的开发历史原因。  
 
 ## 使用说明
 
 1. 一个可以拷贝multi-link到自己工程目录，
     - 一个可以clone multi-link到公共位置
-    - 一个可以clone multi-link到工程目录作为submodule。这个是推荐方式，作者对链接库们的支持容易使用到自己的工程里。
+    - 一个可以clone multi-link到工程目录作为submodule。这个是推荐方式，我对链接库们的支持容易使用到自己的工程里，我一般使用这个方式。
 2. include (.../multi-link/add_base_manager.pri)  
-3. 仿照demo里的pri配置自己的工程。（optional，自己随便add_xxxFuncName()试试，:)）    
-4. 如果希望添加自定义模块，
-    - 那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录（optional）。   
-    - 使用AddLibraryTool写自定义的add_library_XXX.pri.   
-5. 如果想添加自定义模块，方法2，推荐的方法。
-    - 使用AddLibraryTool写自定义的add_library_XXX.pri，拷贝到自己的工程目录，
-    - 在工程配置文件（.pro文件）里，调用add_custom_dependent_manager(XXX)，即可。  
+4. add_version() add_deploy() add_dependent_manager(QQt) add_dependent_manager(XXXLib) ...
+5. 如果希望添加自定义模块，如果希望添加自己使用的其他的app-lib没支持的库，
+    - 那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录（optional，Multi-link 1.0）。   
+    - 使用AddLibraryTool写自定义的add_library_XXX.pri（Multi-link 2.0），然后拷贝这个pri到工程目录，或者到Multi-link的app-lib目录，使用add_custom_dependent_manager(XXX)/add_dependent_manager(XXX)调用.   
 
 [详细使用说明](usage.md)  
 
@@ -66,27 +66,6 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 2. macOS下，一切被依赖的Library不可以和依赖者App或者Library共同编译。免于触发first-time bug。 
     - 已经修复.   
     
-## 简而言之  
-为了方便用户理解Multi-link，这里简而言之。   
-
-Multi-link R2 关键点：  
-LIB_SDK_ROOT  
-APP_BUILD_ROOT  
-APP_DEPLOY_ROOT  
-在App工程里，在工程编译设置那里，项目-构建环境-系统环境变量添加 QSYS=Win32  
-
-Multi-link R1 关键点（针对LibQQt R2）：  
-QQT_SDK_ROOT  
-QQT_BUILD_ROOT  
-APP_DEPLOY_ROOT  
-在App工程里，在工程编译设置那里，项目-构建环境-系统环境变量添加 QKIT=WIN32   
-
-三个大路径。加一个环境变量。  
-就是这么简单。  
-
-注释：*三个大路径在用户配置目录里，叫app_configure.pri，qmake的时候，编译输出panel会提示你那个文件在哪里。*    
-*如果你特别喜欢Virual Studio，不喜欢Qt Creator，请绕路。*  
-
 ## 联系我  
 邮箱： tianduarnui@163.com  
 QQ: 2657635903  
