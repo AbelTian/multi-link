@@ -115,11 +115,59 @@ defineReplace(get_add_deploy_on_linux) {
 defineReplace(get_add_deploy_on_android) {
     #need QQT_BUILD_PWD
 
+    BUILDPOSTFIX =
+    equals(BUILD, Debug):BUILDPOSTFIX=-debug
+
     command =
-    command += $$MK_DIR $${APP_DEPLOY_PWD} $$CMD_SEP
-    command += $$RM $${APP_DEPLOY_PWD}/$${TARGET} $$CMD_SEP
-    command += $$COPY $${APP_BUILD_PWD}/$${TARGET} $${APP_DEPLOY_PWD}/$${TARGET}
+    #command += $$MK_DIR $${appdeploypwd} $$CMD_SEP
+    #command += $$RM $${APP_DEPLOY_PWD}/$${TARGET}$${BUILDPOSTFIX}.apk $$CMD_SEP
+    #command += $$RM $${APP_DEPLOY_PWD}/$${TARGET}$${BUILDPOSTFIX}-unaligned.apk $$CMD_SEP
+    #command += $$COPY $${OUT_PWD}/android-build/bin/QtApp-debug.apk $${APP_DEPLOY_PWD}/$${TARGET}$${BUILDPOSTFIX}.apk $$CMD_SEP
+    #command += $$COPY $${OUT_PWD}/android-build/bin/QtApp-debug-unaligned.apk $${APP_DEPLOY_PWD}/$${TARGET}$${BUILDPOSTFIX}-unaligned.apk
     #message($$command)
+
+    appdeploypwd=$${APP_DEPLOY_PWD}
+    appdeployapk=$${APP_DEPLOY_PWD}/$${TARGET}$${BUILDPOSTFIX}.apk
+    appdeployunalignedapk=$${APP_DEPLOY_PWD}/$${TARGET}$${BUILDPOSTFIX}-unaligned.apk
+    appbuildapk=$${OUT_PWD}/android-build/bin/QtApp-debug.apk
+    appbuildunalignedapk=$${OUT_PWD}/android-build/bin/QtApp-debug-unaligned.apk
+    equals(QMAKE_HOST.os, Windows) {
+        appdeploypwd~=s,/,\\,g
+        appdeployapk~=s,/,\\,g
+        appdeployunalignedapk~=s,/,\\,g
+        appbuildapk~=s,/,\\,g
+        appbuildunalignedapk~=s,/,\\,g
+    }
+
+    #创建产品目录
+    mkdir($${appdeploypwd})
+
+    #拷贝apk的SHELL在产品处 android-product.sh android-product-debug.sh [.bat]
+    SHELLNAME = $${APP_DEPLOY_PWD}/android-product$${BUILDPOSTFIX}.sh
+    equals(QMAKE_HOST.os, Windows) {
+        SHELLNAME = $${APP_DEPLOY_PWD}\\android-product$${BUILDPOSTFIX}.bat
+        SHELLNAME~=s,/,\\,g
+    }
+    empty_file($${SHELLNAME})
+    ret = $$system(echo @echo off >> $${SHELLNAME})
+    ret = $$system(echo $$RM $${appdeployapk} >> $${SHELLNAME})
+    ret = $$system(echo $$RM $${appdeployunalignedapk} >> $${SHELLNAME})
+    ret = $$system(echo $$COPY $${appbuildapk} $${appdeployapk} >> $${SHELLNAME})
+    ret = $$system(echo $$COPY $${appbuildunalignedapk} $${appdeployunalignedapk} >> $${SHELLNAME})
+
+    #拷贝apk的SHELL在%{buildDir}处，方便Qt Creator添加自定义构建步骤。android-product.sh android-product-debug.sh [.bat]
+    SHELLNAME = $${OUT_PWD}/android-product$${BUILDPOSTFIX}.sh
+    equals(QMAKE_HOST.os, Windows) {
+        SHELLNAME = $${OUT_PWD}\\android-product$${BUILDPOSTFIX}.bat
+        SHELLNAME~=s,/,\\,g
+    }
+    empty_file($${SHELLNAME})
+    ret = $$system(echo @echo off >> $${SHELLNAME})
+    ret = $$system(echo $$RM $${appdeployapk} >> $${SHELLNAME})
+    ret = $$system(echo $$RM $${appdeployunalignedapk} >> $${SHELLNAME})
+    ret = $$system(echo $$COPY $${appbuildapk} $${appdeployapk} >> $${SHELLNAME})
+    ret = $$system(echo $$COPY $${appbuildunalignedapk} $${appdeployunalignedapk} >> $${SHELLNAME})
+
     return ($$command)
 }
 
@@ -217,18 +265,30 @@ defineTest(add_deploy) {
         message("$${TARGET} has deployed some app files")
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_on_windows()
     } else: contains(QSYS_PRIVATE, macOS) {
         #发布苹果版本，iOS版本也是这个？
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_on_mac()
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
-        #Qt做了
+        #Qt做了。Qt自动生成apk，自动拷贝添加依赖库到apk
+        #启动链接和拷贝依赖库步骤的代码在add_deploy_library.pri里，不再这里。
+        #这个命令启动了链接依赖库
         #ANDROID_EXTRA_LIBS += $$get_add_deploy_on_android()
+
+        #虽然Qt已经给做好了apk，可是，我需要把它从build位置拷贝到deploy位置，这里做这个事情。
+        #这个事情存在一定的难度，用户编译完成以后，到产品目录里看到 android-product，运行一下，拿到apk文件。
+        #QMAKE_POST_LINK Qt Creator内部给来早了，在androiddeployqt之前来了，所以只好用户手动获取下了。无奈之举。
+        #原理：从build处，使用脚本，拷贝apk到产品处。脚本在产品处。
+        #这里返回的的command是空的，所以isEmpty判断去一下。
+        #!isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
+        QMAKE_POST_LINK += $$get_add_deploy_on_android()
     } else {
         #发布linux、e-linux，这个是一样的。
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_on_linux()
     }
 

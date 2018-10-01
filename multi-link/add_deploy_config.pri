@@ -88,8 +88,8 @@ defineTest(add_deploy_config) {
         message("$${TARGET} has deployed some config files")
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*")
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         #分为Host为Windows和类Unix两种情况。
@@ -99,6 +99,7 @@ defineTest(add_deploy_config) {
         }
     } else {
         #macOS linux都走这里
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}/*")
     }
 
@@ -147,8 +148,8 @@ defineTest(add_deploy_config_to) {
         message("$${TARGET} has deployed some config files")
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*", $${APP_TARGET_PWD})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         #分为Host为Windows和类Unix两种情况。
@@ -158,6 +159,7 @@ defineTest(add_deploy_config_to) {
         }
     } else {
         #macOS linux都走这里
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}/*", $${APP_TARGET_PWD})
     }
 
@@ -207,8 +209,8 @@ defineTest(add_deploy_config_to_group) {
         message("$${TARGET} has deployed some config files")
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*")
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         #分为Host为Windows和类Unix两种情况。
@@ -218,6 +220,7 @@ defineTest(add_deploy_config_to_group) {
         }
     } else {
         #macOS linux都走这里
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}/*")
     }
 

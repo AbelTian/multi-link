@@ -27,7 +27,7 @@ equals(QMAKE_HOST.os, Windows) {
     empty_file($${CONFIG_FILE})
     ret = $$system(echo APP_BUILD_ROOT = >> $${CONFIG_FILE})
     ret = $$system(echo APP_DEPLOY_ROOT = >> $${CONFIG_FILE})
-    ret = $$system(echo LIB_SDK_ROOT = > $${CONFIG_FILE})
+    ret = $$system(echo LIB_SDK_ROOT = >> $${CONFIG_FILE})
 }
 
 #your must config this file! following readme!

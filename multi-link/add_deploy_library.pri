@@ -444,18 +444,21 @@ defineTest(add_deploy_library) {
         LIB_LIB_PWD~=s,/,\\,g
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_library_on_windows($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, macOS) {
         #发布苹果版本，iOS版本也是这个？
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_library_on_mac($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+        #Qt做了。Qt自动生成apk，自动拷贝添加依赖库
         ANDROID_EXTRA_LIBS += $$get_add_deploy_library_on_android($${libgroupname}, $${libname}, $${librealname})
         export(ANDROID_EXTRA_LIBS)
     } else {
         ##发布linux、e-linux，这个是一样的。GG
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_library_on_linux($${libgroupname}, $${libname}, $${librealname})
     }
 
@@ -505,18 +508,20 @@ defineTest(add_deploy_library_bundle) {
         LIB_LIB_PWD~=s,/,\\,g
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_library_on_windows($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, macOS) {
         #发布苹果版本，iOS版本也是这个？
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_library_bundle_on_mac($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         ANDROID_EXTRA_LIBS += $$get_add_deploy_library_on_android($${libgroupname}, $${libname}, $${librealname})
         export(ANDROID_EXTRA_LIBS)
     } else {
         ##发布linux、e-linux，这个是一样的。GG
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_library_on_linux($${libgroupname}, $${libname}, $${librealname})
     }
 
@@ -567,18 +572,20 @@ defineTest(add_deploy_libraryes) {
         LIB_LIB_PWD~=s,/,\\,g
     }
 
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         #发布windows版本
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_libraryes_on_windows($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, macOS) {
         #发布苹果版本，iOS版本也是这个？
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_libraryes_on_mac($${libgroupname}, $${libname}, $${librealname})
     } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
         ANDROID_EXTRA_LIBS += $$get_add_deploy_libraryes_on_android($${libgroupname}, $${libname}, $${librealname})
         export(ANDROID_EXTRA_LIBS)
     } else {
         ##发布linux、e-linux，这个是一样的。GG
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_libraryes_on_linux($${libgroupname}, $${libname}, $${librealname})
     }
 
