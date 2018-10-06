@@ -176,10 +176,16 @@ win32 {
 ##删除干涉?
 ##用户注意：(done in app_base_manager), 首先include(app_link_lib_library.pri)，然后做app的工作，和include其他pri，包括LibLib提供的其他pri，保证这个顺序就不会出错了。
 ##对编译目标目录进行干涉管理，显得更加细腻。
+
 ##用户注意：这里相当于给编译中间目录加了一个自动校准，属于校正范畴。
 ##这样做保持了App工程和LibLib工程中间目录的一致性，但是并不必要。
 ##升级后的多链接技术，省略了BuildType目录，这个设置有必要了。
 ##默认，就分开了，无论Debug/Debug 还是Windows/Debug，就分开了。
+
+##这里的设置已经不同于最初的目的了，开始的时候是为了目录的美观，进行分类划分，
+##后来，BUILD目录有的同学不设置编译类型，这里进行强制Fix，分开编译，
+##再后来，为了能够实现qmake build_all配置，这里强制Debug和Release分开，也就是无论IDE设置Debug模式还是Release模式，只要qmake build_all, Debug和Release都会被正确编译出来。
+##现在的目的兼容过去的目的，目的变复杂了。
 ################################################################
 defineTest(add_build_dir_struct){
     BUILD_DIR =
