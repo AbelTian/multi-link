@@ -38,9 +38,13 @@
 ################################################
 #add_sdk
 #add_sdk_to_Qt
+#add_sdk_to_Qt_plugins
 #add_sdk_header
-#clean_sdk
 #add_export (= add_sdk)
+#add_header_dir (=add_source_dir)
+#add_build_dir
+
+#clean_sdk
 
 ADD_SDK_PRI_PWD = $${PWD}
 
@@ -731,6 +735,11 @@ APP_PROJECT_NAME =
 #这个目录用于读取sdk头文件进行发布
 #这个目录可选设置
 #如果调用这个函数的文件所在不是在源代码目录下，比如$${PWD}/../src，可以通过这里修正
+defineTest(add_header_dir){
+    APP_SOURCE_PWD = $$1
+    export(APP_SOURCE_PWD)
+    return (1)
+}
 defineTest(add_source_dir){
     APP_SOURCE_PWD = $$1
     export(APP_SOURCE_PWD)

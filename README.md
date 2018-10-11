@@ -25,7 +25,7 @@ Multi-link技术位于全自动化构建技术的最关键的位置，即源代�
 
 经过发布的App直接点击就可以运行，*大的省去了用户手动发布App的劳烦过程。  
 *Multi-link提供ProductExecTool，可以对产品集中查看、调用运行。*  
-*Multi-link提供AddLibraryTool，方便用户通过准备好的SDK自动生成add_library_xxx.pri的链接环。生成链接环容易了就不必担心app-lib里面提供的链接环不够用了。*  
+*Multi-link提供AddLibraryTool，方便用户通过准备好的SDK自动生成add_library_xxx.pri链接环。*    
 *Multi-link提供AddLibraryTool-Multiple，可以同时对多套SDK进行生成链接环。*  
 *Multi-link提供Multi-linkConfigTool，方便用户配置Multi-link v2必需的三大路径，build/sdk/deploy root。*  
 *Multi-link提供SdkListTool，方便用户查看已经准备好的SDK在各个平台准备情况的表格。*  
@@ -61,11 +61,29 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 
 [详细使用说明](usage.md)  
 
+
+## 使用截图  
+一边编辑App源代码，一边编辑依赖库源代码，却不用管理任何应用和库的位置。   
+
+编辑App的源代码。    
+![a](screenshot/19.PNG "一边编辑App VegeTablesPrice源代码")  
+编辑依赖库的源代码。    
+![a](screenshot/23.PNG "一边编辑Lib QQt源代码")  
+![a](screenshot/20.PNG "一边编辑Lib QQtExquisite源代码")  
+却不用管理库和软件的位置。    
+![a](screenshot/25.PNG "软件位置 编译室")   
+![a](screenshot/24.PNG "软件位置 SDK仓")   
+![a](screenshot/21.PNG "软件位置 SDK仓")    
+不经过手搬运软件，Multi-link技术帮助用户自动获得可以点击运行的产品。  
+![a](screenshot/22.PNG "软件位置 产品库")    
+使App开发者真正成为一名码工，而不是软件（链接库）搬运工。     
+
+
 ## 约束  
 
 1. 源代码目录里multi-link目录有必要和代码目录平级。不应当把multi-link文件夹放到src目录里。  
 2. macOS下，一切被依赖的Library不可以和依赖者App或者Library共同编译。免于触发first-time bug。 
-    - 已经修复.   
+    - 已经修复。修改了搬运软件的时机。   
     
 ## 联系我  
 邮箱： tianduarnui@163.com  

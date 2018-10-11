@@ -31,8 +31,6 @@
 #add_post_link()
 #add_pre_link()
 #add_include_path()
-#add_source_dir()
-#add_build_dir()
 #add_project_name()
 #add_host_path()
 #add_host_name()
