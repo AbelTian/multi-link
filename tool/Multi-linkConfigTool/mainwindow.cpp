@@ -112,4 +112,6 @@ void MainWindow::on_pushButton_clicked()
     file.write ( "QQT_SDK_ROOT=$${LIB_SDK_ROOT}\n" );
 
     file.close();
+
+    ui->statusBar->showMessage ( "O.K.", 3000 );
 }
