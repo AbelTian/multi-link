@@ -113,5 +113,5 @@ void MainWindow::on_pushButton_clicked()
 
     file.close();
 
-    ui->statusBar->showMessage ( "O.K.", 3000 );
+    ui->statusBar->showMessage ( "O.K.", 2200 );
 }
