@@ -75,7 +75,6 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(Python)
     add_dependent_manager(Python36)
     add_dependent_manager(QQt)
-    add_dependent_manager(quazip)
     add_dependent_manager(Qwt)
     add_dependent_manager(QwtPlot3d)
     add_dependent_manager(SDL)
@@ -87,4 +86,6 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(VLC)
     add_dependent_manager(VTK630)
     add_dependent_manager(zlib)
+    add_dependent_manager(QuaZip)
+
 }
