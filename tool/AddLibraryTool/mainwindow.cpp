@@ -212,8 +212,8 @@ void MainWindow::on_pushButton_clicked()
             //但是通常状况下，都是去SDK标准目录下寻找，所以这个空判断显得，没什么用。
             //根据multi-link的设计，这个路径的空判断毫无作用，但是功能保留下来。
             ui->textBrowser->append ( "" );//blank line 第一行会为空？不知为何。
-            ui->textBrowser->append ( "#header_path = $$1" );//tip
-            ui->textBrowser->append ( QString ( "isEmpty(1):header_path=$$get_add_include%1(%2, %3)" )
+            //ui->textBrowser->append ( "#header_path = $$1" );//tip
+            ui->textBrowser->append ( QString ( "header_path=$$get_add_include%1(%2, %3)" )
                                       .arg ( bundle )
                                       .arg ( ui->lineEdit_2->text() )
                                       .arg ( mfi.baseName() ) );
@@ -233,12 +233,12 @@ void MainWindow::on_pushButton_clicked()
 
     enum
     {
-        SUFFIX_LA = 1,
-        SUFFIX_DLL_A,
-        SUFFIX_A,
-        SUFFIX_LIB,     //LIB DYLIB
+        SUFFIX_LA = 1,  //.LA
+        SUFFIX_DLL_A,   //.DLL.A
+        SUFFIX_A,       //.A
+        SUFFIX_LIB,     //.LIB .DYLIB
         SUFFIX_SO,      //.SO .X.X.SO .SO.X.X.X
-        SUFFIX_DLL,
+        SUFFIX_DLL,     //.DLL
 
         SUFFIX_MAX
     };

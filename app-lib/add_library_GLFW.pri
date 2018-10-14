@@ -16,10 +16,10 @@
 #修改
 defineTest(add_include_GLFW){
     #不为空，肯定是源码里的路径。 用于导出头文件
-    header_path = $$1
+    #header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    isEmpty(header_path):header_path=$$get_add_include(GLFW, GLFW)
+    header_path=$$get_add_include(GLFW, GLFW)
 
     command =
     #basic

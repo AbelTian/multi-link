@@ -16,17 +16,17 @@
 #修改
 defineTest(add_include_FFmpeg3){
     #不为空，肯定是源码里的路径。 用于导出头文件
-    header_path = $$1
+    #header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    #isEmpty(header_path):header_path=$$get_add_include(FFmpeg3, FFmpeg3)
+    #isEmpty(1):header_path=$$get_add_include(FFmpeg3, FFmpeg3)
 
     command =
     #basic
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    isEmpty(header_path):header_path=$$get_add_include(FFmpeg3, FFmpeg3)
+    header_path=$$get_add_include(FFmpeg3, FFmpeg3)
     command += $${header_path}
     #这里需要引起猛烈的注意
     #如果包含了这些目录，gcc会检测到和系统头文件重名的冲突而无法编译通过。

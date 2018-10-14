@@ -16,17 +16,17 @@
 #修改
 defineTest(add_include_FFmpeg2){
     #不为空，肯定是源码里的路径。 用于导出头文件
-    header_path = $$1
+    #header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    #isEmpty(header_path):header_path=$$get_add_include(FFmpeg2, FFmpeg2)
+    #isEmpty(1):header_path=$$get_add_include(FFmpeg2, FFmpeg2)
 
     command =
     #basic
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    isEmpty(header_path):header_path=$$get_add_include(FFmpeg2, FFmpeg2)
+    header_path=$$get_add_include(FFmpeg2, FFmpeg2)
     command += $${header_path}
     #command += $${header_path}/libavcodec
     #command += $${header_path}/libavdevice

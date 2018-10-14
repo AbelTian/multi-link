@@ -55,6 +55,8 @@ defineTest(add_dependent_manager){
     !equals(TARGET_NAME, $${libname}){
         exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri) {
             include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri)
+            #这个位置调用肯定是SDK里的路径，但是qmake v3.1有个bug，e-linux目标，这里$${libname}有一定的概率被解析成参数1，函数名倒是还是正确的，多了个参数。
+            #fix:由于library的header有是否为bundle的区别，这里无法照顾区别，不方便传参，所以，在add_library_$${libgroupname}.pri里，删除这个函数的参数，这个函数以后无参了。
             #添加头文件 参数为空，为SDK里的路径。
             add_include_$${libname}()
             #添加宏定义
@@ -90,6 +92,8 @@ defineTest(add_custom_dependent_manager){
     !equals(TARGET_NAME, $${libname}){
         exists($${pripath}/add_library_$${libgroupname}.pri) {
             include ($${pripath}/add_library_$${libgroupname}.pri)
+            #这个位置调用肯定是SDK里的路径，但是qmake v3.1有个bug，e-linux目标，这里$${libname}有一定的概率被解析成参数1，函数名倒是还是正确的，多了个参数。
+            #fix:由于library的header有是否为bundle的区别，这里无法照顾区别，不方便传参，所以，在add_library_$${libgroupname}.pri里，删除这个函数的参数，这个函数以后无参了。
             #添加头文件 参数为空，为SDK里的路径。
             add_include_$${libname}()
             #添加宏定义
@@ -404,7 +408,7 @@ defineTest(add_pre_link){
 
 defineTest(add_include_path) {
     header_path = $$1
-    isEmpty(header_path):header_path=$$PWD
+    isEmpty(1):header_path=$${PWD}
 
     INCLUDEPATH += $$header_path
     export(INCLUDEPATH)

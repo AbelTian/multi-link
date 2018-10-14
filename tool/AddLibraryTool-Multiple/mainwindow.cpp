@@ -247,8 +247,8 @@ void MainWindow::outputWrokflow ( QString sdkName )
             //遍历成功，所有的子文件夹已经深度优先遍历。
             //subdir name
             textAddInclude->append ( "" );//blank line
-            textAddInclude->append ( "#header_path = $$1" );
-            textAddInclude->append ( QString ( "isEmpty(1):header_path=$$get_add_include%1(%2, %3)" )
+            //textAddInclude->append ( "#header_path = $$1" );
+            textAddInclude->append ( QString ( "header_path=$$get_add_include%1(%2, %3)" )
                                      .arg ( bundle )
                                      .arg ( sdkName )
                                      .arg ( mfi.baseName() ) );
@@ -268,13 +268,12 @@ void MainWindow::outputWrokflow ( QString sdkName )
 
     enum
     {
-        SUFFIX_LA = 1,
-        SUFFIX_DLL_A,
-        SUFFIX_A,
-        SUFFIX_LIB,     //LIB DYLIB
+        SUFFIX_LA = 1,  //.LA
+        SUFFIX_DLL_A,   //.DLL.A
+        SUFFIX_A,       //.A
+        SUFFIX_LIB,     //.LIB .DYLIB
         SUFFIX_SO,      //.SO .X.X.SO .SO.X.X.X
-        SUFFIX_DLL,
-
+        SUFFIX_DLL,     //.DLL
         SUFFIX_MAX
     };
 
