@@ -38,10 +38,11 @@ defineTest(add_include_zlib){
 defineTest(add_defines_zlib){
     #添加这个SDK里的defines
     #add_defines()
-    #zlib动态库 app也需要ZLIB_DLL宏
-    contains(DEFINES, LIB_LIBRARY):DEFINES += ZLIB_DLL
+    #这些坑爹的二宏库，导入导出不好用，它没有静态库。
     #如果定义编译静态库，那么开启，zlib不需要这个宏。
     contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += ZLIB_STATIC_LIBRARY
+    #zlib动态库 app也需要ZLIB_DLL宏
+    else:!contains(DEFINES, LIB_LIBRARY):DEFINES += ZLIB_DLL
 
     return (1)
 }

@@ -85,6 +85,33 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 2. macOS下，一切被依赖的Library不可以和依赖者App或者Library共同编译。免于触发first-time bug。 
     - 已经修复。修改了搬运软件的时机。   
     
+## 总结  
+看起来挺巨大的？工程量的确不小。  
+初学者注意看：  
+1. 第一次使用，拿到Multi-link技术的仓库，使用Multi-link.pro编译Multi-linkConfigTool，配置三个主要路径。
+    - 在这台电脑上，Multi-link Technology（qmake）开始臣服于你。  
+2. 顺便配置好Qt Creator吧，这两步只需要配置一次，这一步还是optional，配置下比较美观，反正就一次。  
+    - 菜单栏-工具-选项-构建和运行
+        - 概要，设置你喜欢的，我建议的默认编译路径。
+        - 构建套件，对每个Kit设置你喜欢，我建议的File system name。SDK路径、Deploy路径下面，肯定是使用我的建议的File system name。  
+        
+初学者，可以拿依赖Multi-link技术的LIB工程和APP工程。  
+1. 用Qt Creator打开工程.pro。
+    - 选择几个目标configure project。(.pro.user)。这是最开始。
+    - 左侧菜单-项目-Build&Run-Build-构建设置-构建环境-详情  
+        - 批量编辑，添加QSYS=Windows/macOS/Linux64/Android/Armhf32/iOS等选一，targetName就是上边我建议的File system name，在add_platform.pri里边能找到。  
+2. 用Qt Creator编译源代码工程
+    - 工程树-工程名-鼠标右键
+        - 执行qmake。 =qmake
+        - 构建。 =make
+    - 到SDK仓，产品库看看吧，有产品了。
+        - SDKListTool，可以帮助查看SDK仓。
+        - ProductExecTool，可以帮助运行产品库里的软件。
+3. 用Qt Creator编辑源代码工程  
+    - 这个没什么可说的，按照常规使用Qt Creator编辑源代码的习惯编辑即可。  
+    - 切记，使用Multi-link技术，只要使用其提供的qmake函数，千万不要去手动触碰SDK，甚至App。这是Multi-link技术的初衷。  
+
+
 ## 联系我  
 邮箱： tianduarnui@163.com  
 QQ: 2657635903  

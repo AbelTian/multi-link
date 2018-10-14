@@ -34,8 +34,12 @@ defineTest(add_include_Qwt){
 defineTest(add_defines_Qwt){
     #添加这个SDK里的defines
     #add_defines()
+
+    #这些坑爹的二宏库，导入导出不好用，它没有静态库。
+    #如果定义编译静态库，那么开启，zlib不需要这个宏。
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QWT_STATIC_LIBRARY
     #Qwt比较特殊，使用QWT_DLL约束动态编译和链接。这里不定义QWT_MAKEDLL代表导入。
-    DEFINES += QT_DLL QWT_DLL
+    else:!contains(DEFINES, LIB_LIBRARY):DEFINES += QT_DLL QWT_DLL
 
     return (1)
 }

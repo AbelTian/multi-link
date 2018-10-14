@@ -35,9 +35,10 @@
 #add_host_path()
 #add_host_name()
 #add_xplatform_name()
-#clean_target()
-#get_app_deploy_path()
+#add_file()
 
+#get_app_deploy_path()
+#clean_target()
 
 #################################################################
 #这是一个强大的函数
@@ -478,6 +479,7 @@ defineTest(clean_target) {
     return (1)
 }
 
+#不存在就创建，存在就返回。
 #create file
 defineTest(add_file){
     file_name = $$1

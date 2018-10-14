@@ -55,6 +55,7 @@ defineReplace(get_mkdir) {
     #message($${command})
     return ($${command})
 }
+
 defineReplace(get_errcode) {
     cmd_exec = $$1
     isEmpty(1): error("get_errcode(command) requires one argument")
@@ -66,6 +67,7 @@ defineReplace(get_errcode) {
     #message($$command)
     return ($$command)
 }
+
 defineReplace(get_empty_file) {
     filename = $$1
     isEmpty(1): error("get_empty_file(filename) requires one argument")
@@ -80,6 +82,7 @@ defineReplace(get_empty_file) {
     }
     return ($$command)
 }
+
 defineReplace(get_write_file) {
     filename = $$1
     variable = $$2
@@ -171,6 +174,7 @@ defineReplace(get_md5_command) {
     }
     return ($$command)
 }
+
 defineReplace(get_user_home) {
     command =
     equals(QMAKE_HOST.os, Windows) {

@@ -82,7 +82,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(Sequence)
     add_dependent_manager(simbody)
     add_dependent_manager(ta-lib)
-    add_dependent_manager(TinyXML)
+    add_dependent_manager(tinyxml2)
     add_dependent_manager(VLC)
     add_dependent_manager(VTK630)
     add_dependent_manager(zlib)
