@@ -39,3 +39,20 @@ defineTest(add_setting_deploy){
     export(APP_DEPLOY_TARGET_NAME)
     return(true)
 }
+
+##########################################
+#lib对发布函数的设置命令 （实际上和上边这个函数功能一样）
+#这个函数会影响add_sdk系列功能函数，迫使改变add_sdk函数群发布位置。
+#默认就是工程目标的位置。可以强制改变为其他目标的位置。
+#这个函数主要用于集中发布各个不同工程目标到相同工程组目标的时候。
+#不会影响到build室的发布。
+##########################################
+LIB_SDK_TARGET_NAME=$${TARGET_NAME}
+defineTest(add_setting_sdk){
+    isEmpty(1): error("add_setting_sdk(libgroupname) requires one argument")
+    !isEmpty(2): error("add_setting_sdk(libgroupname) requires one argument")
+    libgroupname = $$1
+    LIB_SDK_TARGET_NAME = $${libgroupname}
+    export(LIB_SDK_TARGET_NAME)
+    return(true)
+}

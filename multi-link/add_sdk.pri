@@ -395,6 +395,9 @@ defineTest(add_sdk){
     libgroupname = $$TARGET_NAME
     !isEmpty(1):libgroupname=$$1
 
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
     #这个设置是强力的，直接改变了发布的lib的名字，编译处的目标名字也改变了。强大。
     #如果用户对TARGET名不满意，用这个参数改变，
     #关系：
@@ -477,6 +480,7 @@ defineTest(add_sdk){
 }
 
 
+#未实现。
 #if you want to use QQt with QT += qqt please open this feature
 defineTest(add_sdk_to_Qt){
     #isEmpty(1): error("add_sdk_to_Qt(libgroupname, libname, librealname) requires at least one argument")
@@ -487,6 +491,9 @@ defineTest(add_sdk_to_Qt){
     #主目录名
     libgroupname = $$TARGET_NAME
     !isEmpty(1):libgroupname=$$1
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
 
     #这个设置是强力的，直接改变了发布的lib的名字，编译处的目标名字也改变了。强大。
     #如果用户对TARGET名不满意，用这个参数改变，
@@ -580,6 +587,9 @@ defineTest(clean_sdk){
     libgroupname = $$TARGET_NAME
     !isEmpty(1):libgroupname=$$1
 
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
     #不依赖libgroupname
     libname = $$TARGET_NAME
     !isEmpty(2): libname = $$2
@@ -643,13 +653,16 @@ defineTest(clean_sdk){
 #保存位置 相对路径 不写则为头文件根目录。
 #头文件 不设置 为空 则为类名小写。头文件里包含的.h头
 defineTest(add_sdk_header){
-    isEmpty(3):error(add_sdk_header(libgroupname, libname, classname, headerdir, headername) need at least one argument)
+    isEmpty(3):error(add_sdk_header(libgroupname, libname, classname, headerdir, headername) need at least three argument)
 
     libgroupname = $$1
     libname = $$2
     classname = $$3
     headerdir = $$4
     headername = $$5
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
 
     #不依赖libgroupname
     isEmpty(libname):libname = $$TARGET_NAME
