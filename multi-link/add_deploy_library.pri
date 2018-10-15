@@ -421,9 +421,13 @@ defineTest(add_deploy_library) {
     APP_BUILD_PWD=$${DESTDIR}
     isEmpty(APP_BUILD_PWD):APP_BUILD_PWD=.
 
+    appgroupname=$${TARGET_NAME}
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QAPP_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${appgroupname}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {
@@ -485,9 +489,13 @@ defineTest(add_deploy_library_bundle) {
     APP_BUILD_PWD=$${DESTDIR}
     isEmpty(APP_BUILD_PWD):APP_BUILD_PWD=.
 
+    appgroupname=$${TARGET_NAME}
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QAPP_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${appgroupname}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {
@@ -549,9 +557,13 @@ defineTest(add_deploy_libraryes) {
     APP_BUILD_PWD=$${DESTDIR}
     isEmpty(APP_BUILD_PWD):APP_BUILD_PWD=.
 
+    appgroupname=$${TARGET_NAME}
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
     #set app deploy pwd
     #APP_DEPLOY_PWD is here.
-    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${TARGET_NAME}/$${QAPP_STD_DIR}
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${appgroupname}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
     #contains(QKIT_PRIVATE, WIN32||WIN64) {

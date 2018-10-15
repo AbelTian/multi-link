@@ -186,6 +186,9 @@ defineTest(add_deploy) {
     appgroupname = $$TARGET_NAME
     !isEmpty(1):appgroupname=$$1
 
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
     #这个设置是强力的，直接改变了发布的app的名字，编译处的目标名字也改变了。强大。
     #如果用户对TARGET名不满意，用这个参数改变，
     #关系：
