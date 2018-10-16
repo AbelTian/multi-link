@@ -26,7 +26,7 @@ defineTest(add_include_zlib){
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    header_path=$$get_add_include(zlib, zlib)
+    header_path=$$get_add_include(zlib, z)
     command += $${header_path}
 
     INCLUDEPATH += $$command
@@ -52,7 +52,7 @@ defineTest(add_library_zlib){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
     #add_library(zlib, zlib)
-    add_library(zlib, zlib)
+    add_library(zlib, z)
 
     return (1)
 }
@@ -65,7 +65,7 @@ defineTest(add_deploy_library_zlib) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(zlib)
     #add_deploy_library(zlib, zlib)
-    add_deploy_library(zlib, zlib)
+    add_deploy_library(zlib, z)
 
     return (1)
 }
