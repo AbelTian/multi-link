@@ -28,6 +28,9 @@ CONFIG(debug, debug|release) {
 
 #mingw要加速编译，make -j20，-j参数是最好的解决办法。
 
+#CONFIG += debug_and_release
+#CONFIG += build_all
+
 #close win32 no using fopen_s warning
 win32:DEFINES += _CRT_SECURE_NO_WARNINGS #fopen fopen_s
 
@@ -57,10 +60,8 @@ msvc {
     #这个功能可用，可是编译问题比较多，不方便，所以默认不开开。
 }
 
-#CONFIG += debug_and_release
-#CONFIG += build_all
 #if some bug occured, maybe this help me, close some warning
-CCFLAG =
+CCFLAGS =
 !win32:CCFLAGS = -Wno-unused-parameter -Wno-reorder -Wno-c++11-extensions -Wno-c++11-long-long -Wno-comment
 QMAKE_CFLAGS +=  $${CCFLAGS}
 QMAKE_CXXFLAGS +=  $${CCFLAGS}

@@ -8,7 +8,7 @@
 #######################################################################################
 #初始化设置
 #######################################################################################
-
+#VER=16
 
 #######################################################################################
 #定义函数
@@ -26,9 +26,8 @@ defineTest(add_include_libpng){
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    header_path=$$get_add_include(libpng, libpng)
+    header_path=$$get_add_include(libpng, png)
     command += $${header_path}
-    command += $${header_path}/libpng16
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
@@ -49,7 +48,6 @@ defineTest(add_library_libpng){
     #添加这个SDK里的library
     #add_library(libpng, libpng)
     add_library(libpng, png)
-    add_library(libpng, png16)
 
     return (1)
 }
@@ -63,7 +61,6 @@ defineTest(add_deploy_library_libpng) {
     #add_deploy_libraryes(libpng)
     #add_deploy_library(libpng, libpng)
     add_deploy_library(libpng, png)
-    add_deploy_library(libpng, png16)
 
     return (1)
 }
