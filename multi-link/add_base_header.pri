@@ -42,9 +42,21 @@ msvc {
 
     #UTF8编码
     DEFINES += __MSVC_UTF8_SUPPORT__
-    msvc:MSVC_CCFLAGS += /execution-charset:utf-8
+    #开上边两个，
+    #vs2015 32bit cl error D8016: /source..和/utf-8冲突；
+    #开单独一个/utf-8，
+    #vs2015 32bit cl error D8016: /utf-8和/execution...冲突；
+    #最后，
+    #仅仅开/source...
+    #msvc:MSVC_CCFLAGS += /execution-charset:utf-8
     msvc:MSVC_CCFLAGS += /source-charset:utf-8
-    #msvc:MSVC_CCFLAGS += /utf-8 #这一个是快捷方式，顶上边两个。
+    #msvc:MSVC_CCFLAGS += /utf-8
+    #/utf-8 这一个是快捷方式，顶上边两个。 这句话有误。
+    #/exec... -> /utf-8 -> /source... 这是引发关系顺序
+    #而vs2015 /utf-8始终和/source...冲突，这个关系和冲突说明/exec.... = /utf-8。弃。
+    #解决方案：开/source...就够了。编译时。
+    #微软在运行的时候还有一个编码环境，可以指定。但是这里无法指定，需要在命令行指定。微软自己搞的/exec /source竟然会冲突的。使用预编译功能的用户更换这个设置后需要rebuild。
+    #LibQQt QQtApplication类，帮助用户进行运行时编码设定，设定为UTF-8。
 
     #指定/mp编译选项，编译器将使用并行编译，同时起多个编译进程并行编译不同的cpp
     msvc:MSVC_CCFLAGS += /MP
