@@ -768,6 +768,8 @@ defineTest(add_sdk_header_from_dir){
     LIB_INC_PWD = $${LIB_SDK_PWD}/$${LIB_INC_DIR}
     !isEmpty(headerdir):LIB_INC_PWD = $${LIB_INC_PWD}/$${headerdir}
 
+    HEADERFILES = $${headerpath}/*
+
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
     #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
@@ -784,12 +786,14 @@ defineTest(add_sdk_header_from_dir){
 
         LIB_INC_DIR~=s,/,\\,g
         LIB_INC_PWD~=s,/,\\,g
+
+        HEADERFILES~=s,/,\\,g
     }
 
-    message($${TARGET} copy header from $${headerpath} to $${LIB_INC_PWD})
+    message($${TARGET} copy header $${HEADERFILES} to $${LIB_INC_PWD})
 
     command =
-    command += $$COPY_DIR $$add_host_path($${headerpath}/*) $${LIB_INC_PWD}
+    command += $$COPY_DIR $${HEADERFILES} $${LIB_INC_PWD}
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
     QMAKE_POST_LINK += $$command
