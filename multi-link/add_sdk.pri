@@ -40,10 +40,14 @@
 #add_sdk_to_Qt
 #add_sdk_to_Qt_plugins
 #add_sdk_header
+#add_sdk_header_from_dir
 #add_export (= add_sdk)
 #add_header_dir (=add_source_dir)
 #add_build_dir
-
+#add_sdk_header_path()
+#add_sdk_library_path()
+#add_sdk_binary_path()
+#add_sdk_libexec_path()
 #clean_sdk
 
 ADD_SDK_PRI_PWD = $${PWD}
