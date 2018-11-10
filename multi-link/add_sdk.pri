@@ -790,7 +790,7 @@ defineTest(add_sdk_header_from_dir){
         HEADERFILES~=s,/,\\,g
     }
 
-    message($${TARGET} copy header $${HEADERFILES} to $${LIB_INC_PWD})
+    message($${TARGET} copy headers $${HEADERFILES} to sdk header path $${LIB_INC_PWD})
 
     command =
     command += $$COPY_DIR $${HEADERFILES} $${LIB_INC_PWD}

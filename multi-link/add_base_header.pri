@@ -89,7 +89,7 @@ QMAKE_TARGET_FILE = "$${TARGET}"
 QMAKE_TARGET_PRODUCT = "$${TARGET}"
 QMAKE_TARGET_COMPANY = "www.$${TARGET}.com"
 QMAKE_TARGET_DESCRIPTION = "$${TARGET} Classes"
-QMAKE_TARGET_COPYRIGHT = "Copyright 2017-2022 $${TARGET} Co., Ltd. All rights reserved"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2017-2022 $${TARGET} Co., Ltd. All rights reserved."
 
 win32 {
     #common to use upload, this can be ignored.
