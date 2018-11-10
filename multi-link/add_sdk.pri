@@ -222,6 +222,7 @@ defineReplace(get_add_Qt_lib_pri){
     command += echo "QT.$${liblowername}.VERSION = $${APP_VERSION}" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.name = $${libname}"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.module = $${libname}"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         command += echo "QT.$${liblowername}.libs = \$$QT_MODULE_LIB_BASE"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.bins = \$$QT_MODULE_BIN_BASE"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
@@ -229,30 +230,40 @@ defineReplace(get_add_Qt_lib_pri){
         command += echo "QT.$${liblowername}.libs = '\$$QT_MODULE_LIB_BASE'"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.bins = '\$$QT_MODULE_BIN_BASE'"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     }
+
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         command += echo "QT.$${liblowername}.includes = \$$QT_MODULE_INCLUDE_BASE \$$QT_MODULE_INCLUDE_BASE/$${libname}" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.frameworks = " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.module_config = v2 " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     }else:equals(QSYS_PRIVATE, macOS) {
-        command += echo "QT.$${liblowername}.includes = '\$$QT_MODULE_LIB_BASE/$${libname}.framework/Headers'"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
-        command += echo "QT.$${liblowername}.frameworks = '\$$QT_MODULE_LIB_BASE'" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
-        command += echo "QT.$${liblowername}.module_config = v2 lib_bundle" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+        contains(CONFIG, lib_bundle){
+            command += echo "QT.$${liblowername}.includes = '\$$QT_MODULE_LIB_BASE/$${libname}.framework/Headers'"  >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+            command += echo "QT.$${liblowername}.frameworks = '\$$QT_MODULE_LIB_BASE'" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+            command += echo "QT.$${liblowername}.module_config = v2 lib_bundle" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+        } else {
+            command += echo "QT.$${liblowername}.includes = '\$$QT_MODULE_INCLUDE_BASE \$$QT_MODULE_INCLUDE_BASE/$${libname}'" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+            command += echo "QT.$${liblowername}.frameworks = " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+            command += echo "QT.$${liblowername}.module_config = v2 " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+        }
     } else {
         command += echo "QT.$${liblowername}.includes = '\$$QT_MODULE_INCLUDE_BASE \$$QT_MODULE_INCLUDE_BASE/$${libname}'" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.frameworks = " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
         command += echo "QT.$${liblowername}.module_config = v2 " >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     }
-    greaterThan(QT_MAJOR_VERSION, 4):{
-        command += echo "QT.$${liblowername}.depends = core sql network gui xml widgets" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
-    } else {
+
+    lessThan(QT_MAJOR_VERSION, 5):{
         command += echo "QT.$${liblowername}.depends = core sql network gui xml" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+    } else {
+        command += echo "QT.$${liblowername}.depends = core sql network gui xml widgets" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     }
+
     command += echo "QT.$${liblowername}.uses =" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.DEFINES = LIB_LIBRARY" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.enabled_features =" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.disabled_features =" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT_CONFIG +=" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT_MODULES += $${liblowername}" >> $${LIB_PRI_FILEPATH}
+
     return ($$command)
 }
 
