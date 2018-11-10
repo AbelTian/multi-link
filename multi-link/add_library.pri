@@ -152,12 +152,12 @@ defineReplace(get_add_library_path) {
         CUR_LIB_PWD~=s,/,\\,g
     }
 
-    librarypath =
-    librarypath += $${CUR_LIB_PWD}
+    LIBRARYPATH =
+    LIBRARYPATH += $${CUR_LIB_PWD}
 
-    message($${TARGET} add library path $${librarypath})
+    message($${TARGET} add library path $${LIBRARYPATH})
 
-    return ($${LINK})
+    return ($${LIBRARYPATH})
 }
 
 ################################################################################
