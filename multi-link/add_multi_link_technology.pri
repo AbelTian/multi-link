@@ -66,5 +66,5 @@ isEmpty(LIB_SDK_ROOT){
     error(please check $$CONFIG_FILE under add_multi_link_technology.pri)
 }
 
-MULTI_LINK_VERSION = 2.1
+MULTI_LINK_VERSION = 2.2
 DEFINES += MULTI_LINK_VERSION=$${MULTI_LINK_VERSION}

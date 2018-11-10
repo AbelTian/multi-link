@@ -40,15 +40,15 @@
 #add_sdk_to_Qt
 #add_sdk_to_Qt_plugins
 #add_sdk_header
-#add_sdk_header_from_dir
+#add_sdk_header_no_postfix
 #add_export (= add_sdk)
 #add_header_dir (=add_source_dir)
 #add_build_dir
-#add_sdk_header_path()
-#add_sdk_library_path()
-#add_sdk_binary_path()
-#add_sdk_libexec_path()
 #clean_sdk
+
+#2018-11-10 11:32:35
+#add_sdk_header 从发布没有后缀的头文件改为发布指定目录的头文件
+#add_sdk_header_no_postfix 帮助用户删除头文件后缀，按照指定名称，发布到指定位置
 
 ADD_SDK_PRI_PWD = $${PWD}
 
@@ -651,13 +651,14 @@ defineTest(clean_sdk){
 }
 
 #发布没有后缀名的头文件
+#帮助用户把头文件后缀去掉，按照指定的名字，发布到指定的位置。
 #sdkroot下，主目录名 lib组
 #库名字 没有修饰的库名字 保存头文件的地方
 #类名 头文件的名称
 #保存位置 相对路径 不写则为头文件根目录。
 #头文件 不设置 为空 则为类名小写。头文件里包含的.h头
-defineTest(add_sdk_header){
-    isEmpty(3):error(add_sdk_header(libgroupname, libname, classname, headerdir, headername) need at least three argument)
+defineTest(add_sdk_header_no_postfix){
+    isEmpty(3):error(add_sdk_header_no_postfix(libgroupname, libname, classname, headerdir, headername) need at least three argument)
 
     libgroupname = $$1
     libname = $$2
@@ -729,14 +730,13 @@ defineTest(add_sdk_header){
     return(1)
 }
 
-#发布没有后缀名的头文件
-#发布用户放置在指定目录里的头文件，不一定没有后缀。
+#发布用户放置在指定目录里的头文件。
 #组名字 sdkroot下，lib组的名字
 #库名字 没有修饰的库名字 保存头文件的地方
 #头文件路径 头文件所在的特定目录
 #保存位置 相对路径 不写则为SDK ROOT下LIB的头文件根目录 （optional）
-defineTest(add_sdk_header_from_dir){
-    isEmpty(3):error(add_sdk_header_from_dir(libgroupname, libname, headerpath, headerdir) need at least three argument)
+defineTest(add_sdk_header){
+    isEmpty(3):error(add_sdk_header(libgroupname, libname, headerpath, headerdir) need at least three argument)
 
     libgroupname = $$1
     libname = $$2
@@ -840,6 +840,7 @@ defineTest(add_source_dir){
     return (1)
 }
 
+#废弃函数 内部使用了OUT_PWD
 #这个目录用于读取sdk库文件进行发布
 #这个目录可选设置
 #如果用户更改了编译目录DEST_DIR_TARGET，比如src/$$DEST_DIR，可以通过这里改变，当然这种设置不科学，内部依赖DEST_DIR，为什么还要用DESTDIR_TARGET。
