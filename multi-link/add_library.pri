@@ -14,6 +14,9 @@
 #add_link_library
 #add_link_library_bundle
 #add_library_path
+#add_header_path
+#add_binary_path
+#add_libexec_path
 
 #固定SDK结构！请参照add_sdk.pri
 
@@ -139,6 +142,23 @@ defineReplace(get_add_include) {
     return ($${INCLUDE})
 }
 
+#添加链接库路径 Only 路径
+defineReplace(get_add_library_path) {
+    isEmpty(1)|!isEmpty(2): error("get_add_library_path(libgroupname) requires one argument")
+
+    libgroupname = $$1
+    CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/lib
+    equals(QMAKE_HOST.os, Windows) {
+        CUR_LIB_PWD~=s,/,\\,g
+    }
+
+    LIBRARYPATH =
+    LIBRARYPATH += $${CUR_LIB_PWD}
+
+    message($${TARGET} add library path $${LIBRARYPATH})
+
+    return ($${LIBRARYPATH})
+}
 
 ################################################################################
 #公开给外部用函数
@@ -224,39 +244,24 @@ defineTest(add_include) {
     return (1)
 }
 
-
-#提供方便
-#添加链接库路径 Only 路径
-defineReplace(get_add_library_path) {
-    isEmpty(1)|!isEmpty(2): error("get_add_library_path(libgroupname) requires one argument")
-
-    libgroupname = $$1
-    CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/lib
-    equals(QMAKE_HOST.os, Windows) {
-        CUR_LIB_PWD~=s,/,\\,g
-    }
-
-    LINK =
-    contains(DEFINES, __DARWIN__) {
-        LINK += -F$${CUR_LIB_PWD}
-    }
-
-    LINK += -L$${CUR_LIB_PWD}
-    message($${TARGET} add library path $$CUR_LIB_PWD)
-
-    return ($${LINK})
-}
-
 defineTest(add_library_path) {
     isEmpty(1)|!isEmpty(2): error("add_library_path(libgroupname) requires one argument")
 
     libgroupname = $$1
-    command = $$get_add_library_path($${libgroupname})
+    librarypath = $$get_add_library_path($${libgroupname})
+
+    command =
+    contains(DEFINES, __DARWIN__) {
+        command += -F$${librarypath}
+    }
+    command += -L$${librarypath}
+
     LIBS += $$command
     export(LIBS)
 
-    return ($${LINK})
+    return (1)
 }
+
 
 #链接标准SDK
 defineTest(add_link_library) {
