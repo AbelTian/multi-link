@@ -72,6 +72,8 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 1. 源代码目录里multi-link目录有必要和代码目录平级。不应当把multi-link文件夹放到src目录里。  
 2. macOS下，一切被依赖的Library不可以和依赖者App或者Library共同编译。免于触发first-time bug。 
     - 已经修复。修改了搬运软件的时机。   
+3. macOS下，工程的CONFIG，从+lib_bundle变化到-lib_bundle，需要手动删除工程编译目录里的所有framework。
+    - cp命令的行为，我至今不明确。
     
 ## 总结  
 看起来挺巨大的？工程量的确不小。  
