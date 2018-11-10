@@ -725,6 +725,79 @@ defineTest(add_sdk_header){
     return(1)
 }
 
+#发布没有后缀名的头文件
+#发布用户放置在指定目录里的头文件，不一定没有后缀。
+#组名字 sdkroot下，lib组的名字
+#库名字 没有修饰的库名字 保存头文件的地方
+#头文件路径 头文件所在的特定目录
+#保存位置 相对路径 不写则为SDK ROOT下LIB的头文件根目录 （optional）
+defineTest(add_sdk_header_from_dir){
+    isEmpty(3):error(add_sdk_header_from_dir(libgroupname, libname, headerpath, headerdir) need at least three argument)
+
+    libgroupname = $$1
+    libname = $$2
+    headerpath = $$3
+    headerdir = $$4
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
+    #不依赖libgroupname
+    isEmpty(libname):libname = $$TARGET_NAME
+
+    #headerpath 为空
+    isEmpty(headerpath):headerpath = $${PWD}
+
+    #headerdir 为空
+    isEmpty(headerdir):headerdir =
+
+    #LIB std dir is not same to app std dir
+    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+
+    #sdk path
+    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
+    #message(QQt sdk install here:$${LIB_SDK_PWD})
+
+    LIB_INC_DIR = include/$${libname}
+    contains(QMAKE_HOST.os, Darwin){
+        contains(CONFIG, lib_bundle) {
+            LIB_INC_DIR = lib/$${libname}.framework/Headers
+        }
+    }
+
+    LIB_INC_PWD = $${LIB_SDK_PWD}/$${LIB_INC_DIR}
+    !isEmpty(headerdir):LIB_INC_PWD = $${LIB_INC_PWD}/$${headerdir}
+
+    #这里不仅仅目标为windows的时候，才会转换，
+    #开发Host为Windows的时候，都要转换。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_BUILD_ROOT~=s,/,\\,g
+        LIB_SDK_ROOT~=s,/,\\,g
+        APP_DEPLOY_ROOT~=s,/,\\,g
+
+        QSYS_STD_DIR~=s,/,\\,g
+        LIB_STD_DIR~=s,/,\\,g
+        LIB_DST_DIR~=s,/,\\,g
+        LIB_BUILD_PWD~=s,/,\\,g
+        LIB_SDK_PWD~=s,/,\\,g
+
+        LIB_INC_DIR~=s,/,\\,g
+        LIB_INC_PWD~=s,/,\\,g
+    }
+
+    message($${TARGET} copy header from $${headerpath} to $${LIB_INC_PWD})
+
+    command =
+    command += $$COPY_DIR $$add_host_path($${headerpath}/*) $${LIB_INC_PWD}
+
+    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
+    QMAKE_POST_LINK += $$command
+    export(QMAKE_POST_LINK)
+
+    return(1)
+}
+
 #add_sdk
 defineTest(add_export){
     libgroupname = $$1
