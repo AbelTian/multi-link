@@ -45,13 +45,6 @@ HEADERS += \
     $$PWD/core/qqtdictionary.h \
     $$PWD/core/qqtobjectmanager.h
 
-#后台进程支持，这个只有ios不支持，这个支持在源文件pri里处理。
-DEFINES += __PROCESSMODULE__
-#ios has no backend process
-contains(QKIT_PRIVATE, iOS||iOSSimulator) {
-    DEFINES -= __PROCESSMODULE__
-}
-
 #sql
 SOURCES += \
     $$PWD/sql/qqtsql.cpp
@@ -189,10 +182,8 @@ FORMS += \
 #TODO: video +wince +android +ios +macOS +win +linux
 contains (DEFINES, __MULTIMEDIA__) {
     #mplayer
-    contains (DEFINES, __PROCESSMODULE__){
-        SOURCES += $$PWD/multimedia/qqtmplayer.cpp
-        HEADERS += $$PWD/multimedia/qqtmplayer.h
-    }
+    SOURCES += $$PWD/multimedia/qqtmplayer.cpp
+    HEADERS += $$PWD/multimedia/qqtmplayer.h
 
     #audio
     SOURCES += \
