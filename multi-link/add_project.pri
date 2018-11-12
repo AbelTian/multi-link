@@ -45,50 +45,21 @@
 #调用这一个函数就可以调用add_library_XXX.pri里实现的函数
 #################################################################
 #这个函数，如果为app工程，则包含deploy过程，如果是lib工程则不包括。
-#函数不可缺席，否则会影响整个工程管理的正常运行。
+#相应pri内函数不可缺席，否则会影响整个工程管理的正常运行。
+#lib工程，动态链接、静态链接都可以实现。
+#app工程，动态链接全都能完成，静态链接也会拷贝，存在问题。
+#从默认路径加载add_library_<libgroupname>.pri
+#参数1 libgroupname
+#参数2 libname
+#参数3 加载路径 为空则默认在multi-link/app-lib 可以自定义，比如$$PWD $${LIB_SDK_ROOT}/app-lib
 defineTest(add_dependent_manager){
-    libgroupname = $$1
-    libname = $$2
-    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
-    isEmpty(libgroupname):return(0)
-    isEmpty(libname):libname = $$libgroupname
-
-    !equals(TARGET_NAME, $${libname}){
-        exists($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri) {
-            include ($${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri)
-            #这个位置调用肯定是SDK里的路径，但是qmake v3.1有个bug，e-linux目标，这里$${libname}有一定的概率被解析成参数1，函数名倒是还是正确的，多了个参数。
-            #fix:由于library的header有是否为bundle的区别，这里无法照顾区别，不方便传参，所以，在add_library_$${libgroupname}.pri里，删除这个函数的参数，这个函数以后无参了。
-            #添加头文件 参数为空，为SDK里的路径。
-            add_include_$${libname}()
-            #添加宏定义
-            add_defines_$${libname}()
-            #链接Library
-            add_library_$${libname}()
-            contains(TEMPLATE, app) {
-                #发布Library
-                add_deploy_library_$${libname}()
-            }
-        } else {
-            message(please check is $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_$${libgroupname}.pri existed?)
-            return (0)
-        }
-    } else {
-        message(please check your target name $$TARGET_NAME and lib name $$libname)
-        return (0)
-    }
-    return (1)
-}
-
-#从自定义路径加载add_library_<libname>.pri
-#第二个参数为空，则从调用处添加。默认路径是调用处，当前路径
-defineTest(add_custom_dependent_manager){
     libgroupname = $$1
     libname = $$2
     pripath = $$3
     #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
     isEmpty(libgroupname):return(0)
-    isEmpty(libname):libname = $$libgroupname
-    isEmpty(pripath):pripath = $${PWD}
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
     !equals(TARGET_NAME, $${libname}){
         exists($${pripath}/add_library_$${libgroupname}.pri) {
@@ -101,7 +72,10 @@ defineTest(add_custom_dependent_manager){
             add_defines_$${libname}()
             #链接Library
             add_library_$${libname}()
+            #lib project全都不发布依赖库。
+            #app工程
             contains(TEMPLATE, app) {
+                #需要排除静态链接，静态链接不发布。
                 #发布Library
                 add_deploy_library_$${libname}()
             }
@@ -116,14 +90,15 @@ defineTest(add_custom_dependent_manager){
     return (1)
 }
 
-#默认路径是 multi-link里app-lib
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
 defineTest(add_create_dependent_manager){
     libgroupname = $$1
     libname = $$2
     pripath = $$3
     #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
     isEmpty(libgroupname):return(0)
-    isEmpty(libname):libname = $$libgroupname
+    isEmpty(libname):libname = $${libgroupname}
+    equals(libname, Template):return(0)
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
     !exists($${pripath}/add_library_$${libgroupname}.pri) {
@@ -137,21 +112,74 @@ defineTest(add_create_dependent_manager){
         system_errcode($$COPY $${srcFile} $${dstFile}){
             message(create $$dstFile success.)
         }
+
+        #添加自动替换的功能
     }
 
-    add_custom_dependent_manager($$libgroupname, $$libname, $$pripath)
+    add_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
 
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#参数3 为空则为当前路径 $$PWD 调用处
+defineTest(add_custom_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${PWD}
+    add_create_dependent_manager($$libgroupname, $$libname, $$pripath)
+    return(1)
+}
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
 #默认路径是SDK ROOT下app-lib
-defineTest(add_create_dependent_manager){
+defineTest(add_custom_dependent_manager2){
     libgroupname = $$1
     libname = $$2
     pripath = $$3
     isEmpty(libgroupname):return(0)
     isEmpty(libname):libname = $$libgroupname
     isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
-    add_custom_dependent_manager($$libgroupname, $$libname, $$pripath)
+    add_create_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#只有在加载静态库的时候使用，不发布库，仅链接
+#用于帮助排除 add_dependent_manager()函数里无法处理静态链接时发布的问题。
+#用户可以在确定条件下使用这个函数辅助 add_dependent_manager()，比如iOS目标 静态编译的时候。
+defineTest(add_link_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
+
+    !equals(TARGET_NAME, $${libname}){
+        exists($${pripath}/add_library_$${libgroupname}.pri) {
+            include ($${pripath}/add_library_$${libgroupname}.pri)
+            #这个位置调用肯定是SDK里的路径，但是qmake v3.1有个bug，e-linux目标，这里$${libname}有一定的概率被解析成参数1，函数名倒是还是正确的，多了个参数。
+            #fix:由于library的header有是否为bundle的区别，这里无法照顾区别，不方便传参，所以，在add_library_$${libgroupname}.pri里，删除这个函数的参数，这个函数以后无参了。
+            #添加头文件 参数为空，为SDK里的路径。
+            add_include_$${libname}()
+            #添加宏定义
+            add_defines_$${libname}()
+            #链接Library
+            add_library_$${libname}()
+        } else {
+            message(please check is $${pripath}/add_library_$${libgroupname}.pri existed?)
+            return (0)
+        }
+    } else {
+        message(please check your target name $$TARGET_NAME and lib name $$libname)
+        return (0)
+    }
+    return (1)
+}
+
 
 #开启app工程
 defineTest(add_app_project) {

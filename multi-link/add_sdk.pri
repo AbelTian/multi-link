@@ -318,6 +318,7 @@ defineReplace(get_add_sdk_work_flow){
             #判定条件：不仅仅iOS需要，所有类Unix系统都需要，仅仅针对.a。
             #谁做了谁没做？iOS iOSSimulator没做。macOS? linux e-linux android应该不需要。
             #iOS 8 以后给开发者开放动态库了？企业开发者？好吧，+static
+            #好像只有苹果下动态库和静态库生成有一些复杂工作做。苹果操作复杂啊。
             command += $$get_add_linux_sdk() $$CMD_SEP
             #在这里，增加ranlib命令。SDK ROOT里的iOS .a可以用了。
             command += ranlib -s $${LIB_LIB_DIR}/lib$${librealname}.a $$CMD_SEP
