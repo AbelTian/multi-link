@@ -311,6 +311,17 @@ defineReplace(get_add_sdk_work_flow){
             command += $$CD ../../ $$CMD_SEP
             #create prl
             contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}/$${librealname}.framework/$${librealname}.prl lib/$${libname}.framework/$${librealname}.prl $$CMD_SEP
+        } else:contains(QSYS_PRIVATE, iOS|iOSSimulator):contains(CONFIG, static) {
+            #iOS的.a文件，需要ranlib -s。
+            #macOS .a 都需要吗? dylib似乎不需要。framework似乎也不需要。bundle似乎也不需要。app似乎也不需要。
+            #经过查询，ranlib = ar -s，是所有类Unix系统都需要的。
+            #判定条件：不仅仅iOS需要，所有类Unix系统都需要，仅仅针对.a。
+            #谁做了谁没做？iOS iOSSimulator没做。macOS? linux e-linux android应该不需要。
+            #iOS 8 以后给开发者开放动态库了？企业开发者？好吧，+static
+            command += $$get_add_linux_sdk() $$CMD_SEP
+            #在这里，增加ranlib命令。SDK ROOT里的iOS .a可以用了。
+            command += ranlib -s $${LIB_LIB_DIR}/lib$${librealname}.a $$CMD_SEP
+            contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}/*.prl lib $$CMD_SEP
         } else {
             #Android在linux开发机下也会走这里，Android目标，Lib可以发布Win和Linux两种格式的SDK。
             #message(create lib linux struct library)
@@ -328,7 +339,8 @@ defineReplace(get_add_sdk_work_flow){
         MULTI_LINK_DIR~=s,/,\\,g
     }
     #用户需要注意，APP_SOURCE_DIR目录不能包括multi-link目录，建议multi-link和src目录平行放置。
-    #这样可以避免SDK里面出现multi-link文件夹的bug。
+    #这样可以避免SDK里面出现multi-link文件夹。
+    #用户应当自行注意工程目录的排布。
     #command += $$RM_DIR $${MULTI_LINK_DIR} $$CMD_SEP
 
     command += $$get_add_Qt_lib_pri()
