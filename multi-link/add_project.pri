@@ -30,7 +30,8 @@
 #add_defines()
 #add_post_link()
 #add_pre_link()
-#add_include_path()
+#add_headers_path()
+#add_include_path() = (add_headers_path)
 #add_project_name()
 #add_host_path()
 #add_host_name()
@@ -400,7 +401,20 @@ defineTest(add_headers) {
     return (1)
 }
 
-#<2.2时，曾用名add_include_path，现在改名
+#<2.2时。
+#帮助用户在 本地工程内部 local位置 添加头文件路径
+#注意与链接第三方库的函数名称区分。
+defineTest(add_include_path) {
+    header_path = $$1
+    isEmpty(1):header_path=$${PWD}
+
+    INCLUDEPATH += $$header_path
+    export(INCLUDEPATH)
+
+    return (1)
+}
+
+#>=2.2时，add_include_path改名
 #帮助用户在 本地工程内部 local位置 添加头文件路径
 #注意与链接第三方库的函数名称区分。
 defineTest(add_headers_path) {

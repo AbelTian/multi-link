@@ -43,6 +43,7 @@
 #add_sdk_header_no_postfix
 #add_export (= add_sdk)
 #add_header_dir (=add_source_dir)
+#add_source_dir
 #add_build_dir
 #clean_sdk
 
