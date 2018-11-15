@@ -19,16 +19,16 @@ QSYS_PRIVATE = $$(QSYS)
 #结论，等吧，等Qt Creator升级，输出SysName给qmake了，就可以使用了。
 
 isEmpty(QSYS_PRIVATE):message(Multi-link detect platform automatically.)
-#message(mkspec: $$[QMAKE_SPEC])
-#message(xmkspec: $$[QMAKE_XSPEC])
-#message(Qt install prefix: $$[QT_INSTALL_PREFIX])
-#message(qmake mkspec: $${QMAKESPEC})
-#message(compiler: $${QMAKE_CC})
-#message(compiler: $${QMAKE_CXX})
-#message(compiler: $${QMAKE_CFLAGS})
-#message(compiler: $${QMAKE_CXXFLAGS})
-#message(pro: $${_PRO_FILE_})
-#message(pro: $${_PRO_FILE_PWD_})
+message(mkspec: $$[QMAKE_SPEC])
+message(xmkspec: $$[QMAKE_XSPEC])
+message(Qt install prefix: $$[QT_INSTALL_PREFIX])
+message(qmake mkspec: $${QMAKESPEC})
+message(compiler: $${QMAKE_CC})
+message(compiler: $${QMAKE_CXX})
+message(compiler: $${QMAKE_CFLAGS})
+message(compiler: $${QMAKE_CXXFLAGS})
+message(pro: $${_PRO_FILE_})
+message(pro: $${_PRO_FILE_PWD_})
 QMAKEXSPEC = $$[QMAKE_XSPEC]
 
 #win32
