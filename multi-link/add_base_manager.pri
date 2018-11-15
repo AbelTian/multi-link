@@ -124,7 +124,8 @@ contains(TEMPLATE, app) {
 include ($${PWD}/add_base_header.pri)
 
 
-#message($$TARGET config $$CONFIG)
-#message($$TARGET define $$DEFINES)
+message($$TARGET qt $$QT)
+message($$TARGET config $$CONFIG)
+message($$TARGET define $$DEFINES)
 #message($$TARGET pre link $$QMAKE_PRE_LINK)
 #message($$TARGET post link $$QMAKE_POST_LINK)
