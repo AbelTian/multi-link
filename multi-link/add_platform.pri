@@ -60,13 +60,13 @@ else: linux:!cross_compile {
 else: android {
     QSYS_PRIVATE = Android
 }
-else: contains(QMAKEXSPEC, eabihf) {
+else: contains(QMAKEXSPEC, *eabihf*) {
     QSYS_PRIVATE = Armhf32
 }
-else: contains(QMAKEXSPEC, arm) {
+else: contains(QMAKEXSPEC, *arm*) {
     QSYS_PRIVATE = Arm32
 }
-else: contains(QMAKEXSPEC, mips) {
+else: contains(QMAKEXSPEC, *mips*) {
     QSYS_PRIVATE = Mips32
 }
 
