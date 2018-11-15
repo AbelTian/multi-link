@@ -43,7 +43,7 @@ else: mingw {
 }
 
 #macOS
-else:mac {
+else: mac {
     QSYS_PRIVATE = macOS
 }
 else: iossimulator {
@@ -54,7 +54,7 @@ else: ios {
 }
 
 #linux
-else: linux!cross_compile {
+else: linux:!cross_compile {
     QSYS_PRIVATE = Linux64
 }
 else: android {
