@@ -6,11 +6,77 @@
 #-----------------------------------------------------------------------------
 #注释：在这里系统的支持平台的类型
 #注释：放弃使用mkspecs。
-#使用方法：在工程编译配置页面配置环境变量QSYS，从以下选，linkSDK也从这个值的文件夹里link，发布App也发布到这个值的文件夹下，跟随app发布的sdk也从这个值文件夹下拷贝，强大吧。Multi-link把基于Qt开发的程序全部自动化从build发布到产品库和链接库(SDK仓)，一切从build室开始。
+#使用：在工程编译配置页面配置环境变量QSYS，从以下选，linkSDK也从这个值的文件夹里link，发布App也发布到这个值的文件夹下，跟随app发布的sdk也从这个值文件夹下拷贝，强大吧。Multi-link把基于Qt开发的程序全部自动化从build发布到产品库和链接库(SDK仓)，一切从build室开始。
 
 #从环境变量读取QSYS保存为qmake变量QSYS_PRIVATE
 QSYS_PRIVATE = $$(QSYS)
 #由于主流开发目标为一种操作系统配一种硬件指令集架构系统，一配一的模式，所以我把操作系统和CPU指令集，糅合在一种变量里，名称为QSYS。
+
+#注释：如果使用CONFIG里的平台配置来区分QSYS呢？到达这个文件的时候CONFIG平台配置已经有了。所以，试试。
+#现在，假设用户没有设置QSYS，我期望用户不设置QSYS，Multi-link就能正常分辨平台。
+#探测的主要内容：平台名称 位数
+#写个位宽检测程序呢？$$system()一下？那是不可能的，编译不过。
+#结论，等吧，等Qt Creator升级，输出SysName给qmake了，就可以使用了。
+
+isEmpty(QSYS_PRIVATE):message(Multi-link detect platform automatically.)
+#message(mkspec: $$[QMAKE_SPEC])
+#message(xmkspec: $$[QMAKE_XSPEC])
+#message(Qt install prefix: $$[QT_INSTALL_PREFIX])
+#message(qmake mkspec: $${QMAKESPEC})
+#message(compiler: $${QMAKE_CC})
+#message(compiler: $${QMAKE_CXX})
+#message(compiler: $${QMAKE_CFLAGS})
+#message(compiler: $${QMAKE_CXXFLAGS})
+#message(pro: $${_PRO_FILE_})
+#message(pro: $${_PRO_FILE_PWD_})
+QMAKEXSPEC = $$[QMAKE_XSPEC]
+
+#win32
+winrt {
+    QSYS_PRIVATE = WinRT
+}
+else: msvc {
+    QSYS_PRIVATE = MSVC32
+}
+else: mingw {
+    QSYS_PRIVATE = Win32
+}
+
+#macOS
+else:mac {
+    QSYS_PRIVATE = macOS
+}
+else: iossimulator {
+    QSYS_PRIVATE = iOSSimulator
+}
+else: ios {
+    QSYS_PRIVATE = iOS
+}
+
+#linux
+else: linux!cross_compile {
+    QSYS_PRIVATE = Linux64
+}
+else: android {
+    QSYS_PRIVATE = Android
+}
+else: contains(QMAKEXSPEC, eabihf) {
+    QSYS_PRIVATE = Armhf32
+}
+else: contains(QMAKEXSPEC, arm) {
+    QSYS_PRIVATE = Arm32
+}
+else: contains(QMAKEXSPEC, mips) {
+    QSYS_PRIVATE = Mips32
+}
+
+#这里给用户开放了对比，如果用户发现自动检测出错了，在工程编译配置页面设置QSYS还是有效的。
+QSYS_USERSETTING=$$(QSYS)
+#如果用户设置，那么（自动检测）和用户设置对比，一样则依照Multi-link分辨平台，不一样则依照用户设置分辨平台。
+!isEmpty(QSYS_USERSETTING):!equals(QSYS_PRIVATE, $${QSYS_USERSETTING}):QSYS_PRIVATE=$${QSYS_USERSETTING}
+#如果用户不设置，那么按照detect继续下去，依照Multi-link分辨平台。
+message(Multi-link detect platform: $${QSYS_PRIVATE}.)
+
 #e-linux linux
 contains(QSYS_PRIVATE, Embedded) {
     #embedded common macro
@@ -122,7 +188,7 @@ QSYS_STD_DIR = $${QSYS_PRIVATE}
 #App生产使用这个路径。App的debug版和release版合在一个文件夹里是不合理的。
 QAPP_STD_DIR = $${QSYS_PRIVATE}
 
-message(add_platform.pri)
+#message(add_platform.pri)
 message(Build $${TARGET} to $${QSYS_PRIVATE} \(QSYS=$${QSYS_PRIVATE} is configed in project build page.\) )
 message(Build $${TARGET} at $${QSYS_STD_DIR} \(Qt Kit page FileSystem Name=$${QSYS_PRIVATE}"," optional\) )
 message(Build $${TARGET} on $${QMAKE_HOST.os} \(Operating System=$${QMAKE_HOST.os}\) )
