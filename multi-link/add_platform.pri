@@ -41,7 +41,6 @@ else: msvc {
 else: mingw {
     QSYS_PRIVATE = Win32
 }
-
 #macOS
 else: mac {
     QSYS_PRIVATE = macOS
@@ -52,7 +51,6 @@ else: iossimulator {
 else: ios {
     QSYS_PRIVATE = iOS
 }
-
 #linux
 else: linux:!cross_compile {
     QSYS_PRIVATE = Linux64
@@ -60,14 +58,8 @@ else: linux:!cross_compile {
 else: android {
     QSYS_PRIVATE = Android
 }
-else: contains(QMAKEXSPEC, *eabihf*) {
+else: linux: cross_compile {
     QSYS_PRIVATE = Armhf32
-}
-else: contains(QMAKEXSPEC, *arm*) {
-    QSYS_PRIVATE = Arm32
-}
-else: contains(QMAKEXSPEC, *mips*) {
-    QSYS_PRIVATE = Mips32
 }
 
 #这里给用户开放了对比，如果用户发现自动检测出错了，在工程编译配置页面设置QSYS还是有效的。
