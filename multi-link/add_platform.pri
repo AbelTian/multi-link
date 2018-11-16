@@ -36,10 +36,10 @@ winrt {
     QSYS_PRIVATE = WinRT
 }
 else: msvc {
-    QSYS_PRIVATE = MSVC32
+    QSYS_PRIVATE = MSVC
 }
 else: mingw {
-    QSYS_PRIVATE = Win32
+    QSYS_PRIVATE = Windows
 }
 #macOS
 else: mac {
