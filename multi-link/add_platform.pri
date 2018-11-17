@@ -18,17 +18,18 @@ QSYS_PRIVATE = $$(QSYS)
 #写个位宽检测程序呢？$$system()一下？那是不可能的，编译不过。
 #结论，等吧，等Qt Creator升级，输出SysName给qmake了，就可以使用了。
 
-isEmpty(QSYS_PRIVATE):message(Multi-link detect platform automatically.)
-message(mkspec: $$[QMAKE_SPEC])
-message(xmkspec: $$[QMAKE_XSPEC])
-message(Qt install prefix: $$[QT_INSTALL_PREFIX])
-message(qmake mkspec: $${QMAKESPEC})
-message(compiler: $${QMAKE_CC})
-message(compiler: $${QMAKE_CXX})
-message(compiler: $${QMAKE_CFLAGS})
-message(compiler: $${QMAKE_CXXFLAGS})
-message(pro: $${_PRO_FILE_})
-message(pro: $${_PRO_FILE_PWD_})
+#debug ...
+#isEmpty(QSYS_PRIVATE):message(Multi-link detect platform automatically.)
+#message(mkspec: $$[QMAKE_SPEC])
+#message(xmkspec: $$[QMAKE_XSPEC])
+#message(Qt install prefix: $$[QT_INSTALL_PREFIX])
+#message(qmake mkspec: $${QMAKESPEC})
+#message(compiler: $${QMAKE_CC})
+#message(compiler: $${QMAKE_CXX})
+#message(compiler: $${QMAKE_CFLAGS})
+#message(compiler: $${QMAKE_CXXFLAGS})
+#message(pro: $${_PRO_FILE_})
+#message(pro: $${_PRO_FILE_PWD_})
 QMAKEXSPEC = $$[QMAKE_XSPEC]
 
 #win32
@@ -62,12 +63,13 @@ else: linux: cross_compile {
     QSYS_PRIVATE = Armhf32
 }
 
+#message(Multi-link detect platform: $${QSYS_PRIVATE}.)
 #这里给用户开放了对比，如果用户发现自动检测出错了，在工程编译配置页面设置QSYS还是有效的。
 QSYS_USERSETTING=$$(QSYS)
 #如果用户设置，那么（自动检测）和用户设置对比，一样则依照Multi-link分辨平台，不一样则依照用户设置分辨平台。
 !isEmpty(QSYS_USERSETTING):!equals(QSYS_PRIVATE, $${QSYS_USERSETTING}):QSYS_PRIVATE=$${QSYS_USERSETTING}
 #如果用户不设置，那么按照detect继续下去，依照Multi-link分辨平台。
-message(Multi-link detect platform: $${QSYS_PRIVATE}.)
+message(Multi-link make sure that the x-platform: $${QSYS_PRIVATE}.)
 
 #e-linux linux
 contains(QSYS_PRIVATE, Embedded) {
@@ -181,8 +183,8 @@ QSYS_STD_DIR = $${QSYS_PRIVATE}
 QAPP_STD_DIR = $${QSYS_PRIVATE}
 
 #message(add_platform.pri)
-message(Build $${TARGET} to $${QSYS_PRIVATE} \(QSYS=$${QSYS_PRIVATE} is configed in project build page.\) )
-message(Build $${TARGET} at $${QSYS_STD_DIR} \(Qt Kit page FileSystem Name=$${QSYS_PRIVATE}"," optional\) )
+message(Build $${TARGET} to $${QSYS_PRIVATE} \(QSYS=$${QSYS_PRIVATE} is configed in project building page.\) )
+message(Build $${TARGET} at $${QSYS_STD_DIR} \(Qt Kit page"," FileSystem Name=$${QSYS_PRIVATE}"," optional\) )
 message(Build $${TARGET} on $${QMAKE_HOST.os} \(Operating System=$${QMAKE_HOST.os}\) )
 message(Build $${TARGET} in $${OUT_PWD})
 isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name \(optionaled\) is decided by env variable QSYS. Please set it. )
