@@ -43,24 +43,22 @@ else: mingw {
     QSYS_PRIVATE = Windows
 }
 #macOS
-else: mac {
-    QSYS_PRIVATE = macOS
-}
-else: iossimulator {
-    QSYS_PRIVATE = iOSSimulator
-}
+#auto detect:iOSSimulator=iOS
 else: ios {
     QSYS_PRIVATE = iOS
 }
-#linux
-else: linux:!cross_compile {
-    QSYS_PRIVATE = Linux64
+else: mac {
+    QSYS_PRIVATE = macOS
 }
+#linux
 else: android {
     QSYS_PRIVATE = Android
 }
 else: linux: cross_compile {
     QSYS_PRIVATE = Armhf32
+}
+else: linux {
+    QSYS_PRIVATE = Linux64
 }
 
 #message(Multi-link detect platform: $${QSYS_PRIVATE}.)
