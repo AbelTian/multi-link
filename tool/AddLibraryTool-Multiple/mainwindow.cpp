@@ -454,6 +454,8 @@ void MainWindow::outputWrokflow ( QString sdkName )
 
     QByteArray fBytes = fileBytes;
     fBytes.replace ( "Template", sdkName.toLocal8Bit() );
+    fBytes.replace ( "template", sdkName.toLower().toLocal8Bit() );
+    fBytes.replace ( "TEMPLATE", sdkName.toUpper().toLocal8Bit() );
 
     QString addIncStr = textAddInclude->toPlainText();
     QString addLibStr = textAddLibrary->toPlainText();

@@ -422,6 +422,8 @@ void MainWindow::on_pushButton_clicked()
 
     QByteArray fBytes = fileBytes;
     fBytes.replace ( "Template", ui->lineEdit_2->text().toLocal8Bit() );
+    fBytes.replace ( "template", ui->lineEdit_2->text().toLower().toLocal8Bit() );
+    fBytes.replace ( "TEMPLATE", ui->lineEdit_2->text().toUpper().toLocal8Bit() );
 
     QString addIncStr = ui->textBrowser->toPlainText();
     QString addLibStr = ui->textBrowser_2->toPlainText();

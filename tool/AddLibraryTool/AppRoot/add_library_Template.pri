@@ -36,6 +36,8 @@ defineTest(add_include_Template){
 defineTest(add_defines_Template){
     #添加这个SDK里的defines
     #add_defines()
+    #如果定义编译静态库，那么开启
+    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += TEMPLATE_STATIC_LIBRARY
 
     return (1)
 }
