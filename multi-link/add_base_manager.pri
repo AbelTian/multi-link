@@ -69,6 +69,9 @@ include ($${PWD}/add_language.pri)
 #program icons (app only)
 include ($${PWD}/add_icons.pri)
 
+#support autotool project
+include ($${PWD}/add_autoconf.pri)
+
 ####################################################################################
 #工程常用的函数
 ####################################################################################
