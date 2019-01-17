@@ -244,10 +244,12 @@ add_build_dir_struct($${BUILD})
 
 ################################################################
 ##Lib Share Export Macro
+##Multi-link提供的导出宏，受LIB_LIBRARY/LIB_STATIC_LIBRARY宏控制。
+##LIB_LIBRARY，LIB_STATIC_LIBRARY，使用判定很复杂，请参考add_lib_project()函数。
 ################################################################
 #这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
 #win32目标下，这个宏的意义非常深远。
-#Multi-link提供的共享库导出宏，默认关闭。
+#写在函数、类的合理位置，表示导出，默认开启。
 #每次调用dynamic/static变换的函数，这个函数有必要调用。
 defineTest(add_library_export_macro) {
     win32 {
@@ -269,5 +271,10 @@ defineTest(add_library_export_macro) {
         DEFINES += LIBRARYSHARED_EXPORT=
     }
 
+    export(DEFINES)
+
     return (1)
 }
+
+#默认给用户提供导出宏，动、静态已经判断好了，受LIB_LIBRARY/LIB_STATIC_LIBRARY决定。
+add_library_export_macro()

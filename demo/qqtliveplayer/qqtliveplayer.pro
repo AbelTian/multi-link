@@ -47,7 +47,7 @@ add_deploy()
 add_dependent_manager(QQt)
 #添加其他library
 #libVLCQt从sdk仓到deploy(+到build室，用户调试需要。)
-add_dependent_manager(VLC)
+add_dependent_manager(VLCQt)
 
 #给程序增加一种语言（自动增加zh_CN语言(.ts)，用户打开生成的ts文件翻译，自动发布zh_CN语言(.qm)。）
 add_language($$PWD/qqtliveplayer.pro, $$PWD/AppRoot/lang, zh_CN)
