@@ -286,6 +286,9 @@ defineTest(add_dynamic_library_project) {
         DEFINES += LIB_LIBRARY
         message(Build $${TARGET} LIB_LIBRARY is defined. build)
     }
+    export(CONFIG)
+    export(DEFINES)
+    return(1)
 }
 
 #强制更换为静态库 （Only lib project）
@@ -297,6 +300,9 @@ defineTest(add_static_library_project) {
     CONFIG += static staticlib
     DEFINES += LIB_STATIC_LIBRARY
     message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+    export(CONFIG)
+    export(DEFINES)
+    return(1)
 }
 
 #app想要静态链接library，那么可以从这里强制静态链接。
@@ -304,6 +310,8 @@ defineTest(add_static_link_library) {
     #添加静态设置
     DEFINES += LIB_STATIC_LIBRARY
     message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+    export(DEFINES)
+    return(1)
 }
 
 #获取target的确切的名字

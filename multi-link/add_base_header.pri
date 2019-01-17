@@ -247,21 +247,26 @@ add_build_dir_struct($${BUILD})
 ################################################################
 #这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
 #win32目标下，这个宏的意义非常深远。
-win32 {
-    contains(DEFINES, LIB_LIBRARY){
-        #build dynamic
-        DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
-    } else: contains(DEFINES, LIB_STATIC_LIBRARY){
+#用户如果决定使用Multi-link提供的共享库导出宏，那么调用这个函数即可。
+defineTest(add_library_export_macro) {
+    win32 {
+        contains(DEFINES, LIB_LIBRARY){
+            #build dynamic
+            DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
+        } else: contains(DEFINES, LIB_STATIC_LIBRARY){
+            #build and link
+            DEFINES += LIBRARYSHARED_EXPORT=
+        } else {
+            #link dynamic
+            DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
+        }
+    }
+
+    #类Unix系统下这个宏没有意义。
+    unix {
         #build and link
         DEFINES += LIBRARYSHARED_EXPORT=
-    } else {
-        #link dynamic
-        DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
     }
-}
 
-#类Unix系统下这个宏没有意义。
-unix {
-    #build and link
-    DEFINES += LIBRARYSHARED_EXPORT=
+    return (1)
 }
