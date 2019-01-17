@@ -247,7 +247,8 @@ add_build_dir_struct($${BUILD})
 ################################################################
 #这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
 #win32目标下，这个宏的意义非常深远。
-#用户如果决定使用Multi-link提供的共享库导出宏，那么调用这个函数即可。
+#Multi-link提供的共享库导出宏，默认关闭。
+#每次调用dynamic/static变换的函数，这个函数有必要调用。
 defineTest(add_library_export_macro) {
     win32 {
         contains(DEFINES, LIB_LIBRARY){
