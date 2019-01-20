@@ -1,5 +1,7 @@
 #-------------------------------------------------------------
-#add_autoconf.pri
+#add_support_autoconf.pri
+#对autotools工具管理的工程提供支持
+
 #系统层的开源C库通常使用autoconf工具管理，
 #制作Qt Wrapper的时候，直接迁移源代码比较困难，
 #这里对config.h提供兼容，提供丰富的宏定义，帮助用户配置工程。
@@ -9,8 +11,8 @@
 #依赖add_function.pri
 #依赖add_platform.pri
 #-------------------------------------------------------------
-defineTest(add_autoconf){
-    !isEmpty(1): error("add_autoconf() requires no argument")
+defineTest(add_support_autoconf){
+    !isEmpty(1): error("add_support_autoconf() requires no argument")
 
     #e-linux linux
     contains(QSYS_PRIVATE, Embedded) {

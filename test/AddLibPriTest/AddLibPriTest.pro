@@ -89,5 +89,6 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(libpng)
     add_dependent_manager(tinyxml2)
     add_dependent_manager(protobuf)
+    add_dependent_manager(libmad)
 
 }

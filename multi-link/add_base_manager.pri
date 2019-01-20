@@ -70,7 +70,7 @@ include ($${PWD}/add_language.pri)
 include ($${PWD}/add_icons.pri)
 
 #support autotool project
-include ($${PWD}/add_autoconf.pri)
+include ($${PWD}/add_support_autoconf.pri)
 
 ####################################################################################
 #工程常用的函数
