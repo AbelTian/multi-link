@@ -41,8 +41,6 @@ defineTest(add_defines_libmad){
     #如果定义编译静态库，那么开启
     contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LIBMAD_STATIC_LIBRARY
 
-    DEFINES += USE_ASYNC
-
     cross_compile{
         android{
             DEFINES += FPM_DEFAULT
