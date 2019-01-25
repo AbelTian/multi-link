@@ -38,7 +38,8 @@ Multi-link技术位于全自动化构建技术的最关键的位置，即源代�
 Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的版本，Qt4 qmake版本太低，不便于开发。      
 
 ## 安装教程
-
+1. Windows平台，拷贝extra里的md5.exe和touch.exe到C:\Windows里
+    - 如果用户自备有touch.exe也可以。
 1. 在用户主目录/.qmake/app_configure.pri里面配置三个变量(Only Once)  
     - LIB_SDK_ROOT = /home/abel/Develop/b1-sdk
     - APP_BUILD_ROOT = /home/abel/Develop/c0-buildstation
