@@ -41,6 +41,10 @@ defineTest(add_defines_libmp3lame){
     #如果定义编译静态库，那么开启
     contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LIBMP3LAME_STATIC_LIBRARY
 
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
+
     return (1)
 }
 

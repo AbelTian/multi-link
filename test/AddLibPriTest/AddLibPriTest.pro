@@ -90,5 +90,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(tinyxml2)
     add_dependent_manager(protobuf)
     add_dependent_manager(libmad)
+    add_dependent_manager(libmp3lame)
+    add_dependent_manager(libspeex)
 
 }

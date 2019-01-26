@@ -47,6 +47,7 @@ defineTest(add_defines_libmad){
         } else: contains(DEFINES, __ARM_LINUX__){
         } else: contains(DEFINES, __MIPS_LINUX__){
         } else: ios{
+            DEFINES += FPM_DEFAULT
         }
     }
     else:win32{
@@ -58,7 +59,9 @@ defineTest(add_defines_libmad){
     }
     else:unix{
         linux{
+            DEFINES += FPM_DEFAULT
         } else:mac {
+            DEFINES += FPM_DEFAULT
         }
     }
 

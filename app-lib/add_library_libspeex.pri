@@ -41,6 +41,13 @@ defineTest(add_defines_libspeex){
     #如果定义编译静态库，那么开启
     contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LIBSPEEX_STATIC_LIBRARY
 
+    DEFINES += FLOATING_POINT
+    DEFINES += EXPORT=
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
+
     return (1)
 }
 
