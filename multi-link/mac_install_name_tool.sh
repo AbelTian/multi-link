@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+﻿#!/bin/sh
 libpwd=$1
 libname=$2
 librealname=$3
