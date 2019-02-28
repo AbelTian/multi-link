@@ -47,8 +47,8 @@
 #################################################################
 #这个函数，如果为app工程，则包含deploy过程，如果是lib工程则不包括。
 #相应pri内函数不可缺席，否则会影响整个工程管理的正常运行。
-#lib工程，动态链接、静态链接都可以实现。
-#app工程，动态链接全都能完成，静态链接也会拷贝，存在问题。
+#lib工程，动态链接正常，静态链接导致全静态，存在问题。
+#app工程，动态链接正常，静态链接也会拷贝，存在问题。
 #从默认路径加载add_library_<libgroupname>.pri
 #参数1 libgroupname
 #参数2 libname
@@ -146,11 +146,38 @@ defineTest(add_custom_dependent_manager2){
     add_create_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
 
-#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
-#只有在加载静态库的时候使用，不发布库，仅链接
-#用于帮助排除 add_dependent_manager()函数里无法处理静态链接时发布的问题。
-#用户可以在确定条件下使用这个函数辅助 add_dependent_manager()，比如iOS目标 静态编译的时候。
-defineTest(add_link_dependent_manager){
+#以上函数，存在以下问题。
+#应用链接动态库，没问题。
+#应用链接静态库，有问题。
+    #发布过程无法判断是否为静态链接，所以上述函数不能用。过去提出使用add_link_dependent_mananger()来解决，不发布了。
+    #无法针对确定的链接库提供确定的静态宏。过去提出使用add_static_link_library()来解决，全部库都静态连接了，不行。
+
+#动态库链接动态库，没问题。
+#动态库链接静态库，有问题。
+    #链接静态库需要给链接库添加准确对应的STATIC宏，使用LIB_STATIC_LIBRARY导致全部库静态链接了。
+    #LIB_STATIC_LIBRARY把当前库变成了静态库。
+
+#静态库链接动态库，有问题。
+    #LIB_STATIC_LIBRARY把链接库变成静态链接方式。
+#静态库链接静态库，有问题。
+    #链接静态库需要给链接库添加准确对应的STATIC宏，使用LIB_STATIC_LIBRARY导致全部库静态链接了。
+
+#所以，Multi-link 2.2对静态库支持还不好，现在更新到Multi-link 2.3，修复这个问题。
+    #约束
+    #1. 只要链接库使用自定义的动态工程宏、静态工程宏就没有问题。
+        #比如，QQT_LIBRARY，不要使用LIB_LIBRARY。
+        #比如，QQT_STATIC_LIBRARY，不要使用LIB_STATIC_LIBRARY。
+    #2. 链接库的自定义工程状态宏，必须被Multi-link提供的这两个工程状态宏决定。
+    #3. 静态库链接动态库的问题也被解决了，在链接环模板里解决的。
+
+#这个函数解决全部静态链接库
+#lib工程，不发布库，要求链接库静态宏，不会改变当前工程的属性。
+#app工程，不发布库，要求链接库静态宏，不会改变当前工程的属性。
+#从默认路径加载add_library_<libgroupname>.pri
+#参数1 libgroupname
+#参数2 libname
+#参数3 加载路径 为空则默认在multi-link/app-lib 可以自定义，比如$$PWD $${LIB_SDK_ROOT}/app-lib
+defineTest(add_static_dependent_manager){
     libgroupname = $$1
     libname = $$2
     pripath = $$3
@@ -167,7 +194,7 @@ defineTest(add_link_dependent_manager){
             #添加头文件 参数为空，为SDK里的路径。
             add_include_$${libname}()
             #添加宏定义
-            add_defines_$${libname}()
+            add_static_defines_$${libname}()
             #链接Library
             add_library_$${libname}()
         } else {
@@ -181,7 +208,64 @@ defineTest(add_link_dependent_manager){
     return (1)
 }
 
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+defineTest(add_create_static_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    equals(libname, Template):return(0)
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
+    !exists($${pripath}/add_library_$${libgroupname}.pri) {
+        srcFile = $${pripath}/add_library_Template.pri
+        dstFile = $${pripath}/add_library_$${libgroupname}.pri
+        contains(QMAKE_HOST.os, Windows) {
+            srcFile = $$add_host_path($$srcFile)
+            dstFile = $$add_host_path($$dstFile)
+        }
+
+        system_errcode($$COPY $${srcFile} $${dstFile}){
+            message(create $$dstFile success.)
+        }
+
+        #添加自动替换的功能
+    }
+
+    add_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#参数3 为空则为当前路径 $$PWD 调用处
+defineTest(add_custom_static_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${PWD}
+    add_create_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+    return(1)
+}
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#默认路径是SDK ROOT下app-lib
+defineTest(add_custom_static_dependent_manager2){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
+    add_create_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+############################################################
+#Multi-link内部默认的链接逻辑。
+############################################################
 #开启app工程
 defineTest(add_app_project) {
     #add base manager对App的处理很少，App通过函数基本上能解决所有的事情
@@ -305,14 +389,6 @@ defineTest(add_static_library_project) {
     return(1)
 }
 
-#app想要静态链接library，那么可以从这里强制静态链接。
-defineTest(add_static_link_library) {
-    #添加静态设置
-    DEFINES += LIB_STATIC_LIBRARY
-    message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
-    export(DEFINES)
-    return(1)
-}
 
 #获取target的确切的名字
 #区分debug和release用的。

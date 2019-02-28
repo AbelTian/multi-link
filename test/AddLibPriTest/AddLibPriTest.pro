@@ -92,5 +92,6 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(libmad)
     add_dependent_manager(libmp3lame)
     add_dependent_manager(libspeex)
+    add_dependent_manager(Template)
 
 }

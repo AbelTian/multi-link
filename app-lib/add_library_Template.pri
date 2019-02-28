@@ -19,11 +19,11 @@ defineTest(add_include_Template){
     #header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    header_path=$$get_add_include(Template, Template)
+    #isEmpty(1):header_path=$$get_add_include(Template, Template)
 
     command =
     #basic
-    command += $${header_path}
+    #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
 
@@ -37,14 +37,29 @@ defineTest(add_defines_Template){
     #添加这个SDK里的defines
     #add_defines()
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_Template){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += TEMPLATE_STATIC_LIBRARY
+
+    add_defines_Template()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_Template){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    add_library(Template, Template)
+    #add_library(Template, Template)
 
     return (1)
 }
@@ -52,11 +67,12 @@ defineTest(add_library_Template){
 
 #发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
-#修改
+#留意
 defineTest(add_deploy_library_Template) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(Template)
-    add_deploy_library(Template, Template)
+    #add_deploy_library(Template, Template)
 
     return (1)
 }
+
