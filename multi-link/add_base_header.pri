@@ -232,7 +232,6 @@ defineTest(add_build_dir_struct){
 #所以，这个地方，编译目录，无论如何debug和release要分开
 add_build_dir_struct($${BUILD})
 
-
 ################################################################
 ##Lib Functions Macro
 ################################################################
@@ -241,54 +240,3 @@ add_build_dir_struct($${BUILD})
 #Default: macroes is configed, some open, some close, compatibled to special accotation.
 ##App希望裁剪LibLib，开关这个文件里的组件宏，用户有必要读懂这个头文件。up to so.
 #应用于Library header.pri
-
-################################################################
-##Lib Share Export Macro
-################################################################
-#LIBRARY_SHARED_EXPORT 写在函数、类的合理位置，表示导出。
-#win32目标下，这个宏的意义非常深远。
-
-#build DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_EXPORT
-#link DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_IMPORT
-#build and link DEFINES += LIBRARY_SHARED_EXPORT=
-#这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
-
-#如果需要Multi-link技术提供这个宏，请参照README的使用说明，在用户工程中自行添加。
-#一共两处，libname_header.pri，add_library_libname.pri。
-#此处提供一个函数，方便用户添加LIBRARY_SHARED_EXPORT宏。
-
-#原理，动态宏、静态宏，共同控制API导出宏的值
-#参数1 API导出宏名称 这个宏在源代码里使用
-#参数2 动态宏名称 控制1 可选 LIB_LIBRARY
-#参数3 静态宏名称 控制2 可选 LIB_STATIC_LIBRARY
-defineTest(add_library_export_macro) {
-    APIMACRO = $$1
-    DYMACRO = $$2
-    STMACRO = $$3
-    isEmpty(1): error("add_library_export_macro(dymacro, stmacro, apimacro) requires at least one argument")
-    isEmpty(2): DYMACRO = LIB_LIBRARY
-    isEmpty(3): STMACRO = LIB_STATIC_LIBRARY
-
-    win32 {
-        contains(DEFINES, $${DYMACRO}){
-            #build dynamic
-            DEFINES += $${APIMACRO}=Q_DECL_EXPORT
-        } else: contains(DEFINES, $${STMACRO}){
-            #build and link
-            DEFINES += $${APIMACRO}=
-        } else {
-            #link dynamic
-            DEFINES += $${APIMACRO}=Q_DECL_IMPORT
-        }
-    }
-
-    #类Unix系统下这个宏没有意义。
-    unix {
-        #build and link
-        DEFINES += $${APIMACRO}=
-    }
-
-    export(DEFINES)
-
-    return (1)
-}

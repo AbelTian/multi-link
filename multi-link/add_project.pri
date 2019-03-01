@@ -1,8 +1,7 @@
 #---------------------------------------------------------------------------------
-#add_base_manager.pri
+#add_project.pri
 #2018年6月30日 22点04分
-#工程很常用的函数，一般在manager里会用。
-
+#工程很常用的函数。
 #---------------------------------------------------------------------------------
 
 #工程层级介绍：
@@ -15,9 +14,14 @@
 #定义外部函数
 #################################################################
 #add_dependent_manager()
-#add_custom_dependent_manager()
 #add_create_dependent_manager()
-#add_from_sdk_dependent_manager()
+#add_custom_dependent_manager()
+#add_custom_dependent_manager2()
+#add_static_dependent_manager()
+#add_create_static_dependent_manager()
+#add_custom_static_dependent_manager()
+#add_custom_static_dependent_manager2()
+
 #add_app_project()
 #add_lib_project()
 #add_decorate_target_name()
@@ -261,6 +265,58 @@ defineTest(add_custom_static_dependent_manager2){
     isEmpty(libname):libname = $$libgroupname
     isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
     add_create_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+################################################################
+##Lib Share Export Macro
+################################################################
+#LIBRARY_SHARED_EXPORT 写在函数、类的合理位置，表示导出。
+#win32目标下，这个宏的意义非常深远。
+
+#build DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_EXPORT
+#link DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_IMPORT
+#build and link DEFINES += LIBRARY_SHARED_EXPORT=
+#这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
+
+#如果需要Multi-link技术提供这个宏，请参照README的使用说明，在用户工程中自行添加。
+#一共两处，libname_header.pri，add_library_libname.pri。
+#此处提供一个函数，方便用户添加LIBRARY_SHARED_EXPORT宏。
+
+#原理，动态宏、静态宏，共同控制API导出宏的值
+#参数1 API导出宏名称 这个宏在源代码里使用
+#参数2 动态宏名称 控制1 可选 LIB_LIBRARY
+#参数3 静态宏名称 控制2 可选 LIB_STATIC_LIBRARY
+defineTest(add_library_export_macro) {
+    APIMACRO = $$1
+    DYMACRO = $$2
+    STMACRO = $$3
+    isEmpty(1): error("add_library_export_macro(dymacro, stmacro, apimacro) requires at least one argument")
+    #默认，API导出宏受到Multi-link提供的动态、静态宏控制。编译时一般不会有问题；链接时，不要用这两个默认的。
+    isEmpty(2): DYMACRO = LIB_LIBRARY
+    isEmpty(3): STMACRO = LIB_STATIC_LIBRARY
+
+    win32 {
+        contains(DEFINES, $${DYMACRO}){
+            #build dynamic
+            DEFINES += $${APIMACRO}=Q_DECL_EXPORT
+        } else: contains(DEFINES, $${STMACRO}){
+            #build and link
+            DEFINES += $${APIMACRO}=
+        } else {
+            #link dynamic
+            DEFINES += $${APIMACRO}=Q_DECL_IMPORT
+        }
+    }
+
+    #类Unix系统下这个宏没有意义。
+    unix {
+        #build and link
+        DEFINES += $${APIMACRO}=
+    }
+
+    export(DEFINES)
+
+    return (1)
 }
 
 ############################################################
@@ -616,4 +672,3 @@ defineTest(add_file){
     empty_file($${file_name})
     return(1)
 }
-

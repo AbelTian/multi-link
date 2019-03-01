@@ -93,4 +93,54 @@ Multi-link 2主要应用于App和App Framework层的多关系链接工作。
 
 ![Multi-link的地位](screenshot/15.jpg "Multi-link 2的地位")    
 
+# Multi-link v2.3    
+
+Multi-link v2.3又增加了新特性，即新的函数。  
+
+##针对链接库1进行编译和链接  
+
+|链接库1|动态|静态|  
+|-----|------|-------|  
+|编译库1|add_dynamic_library_project()|add_static_library_project()|
+|链接库1|add_dependent_manager(Lib1-Name)|add_static_dependent_manager(Lib1-Name)|
+
+1. 编译时
+    - add_dynamic_library_project()
+    - add_static_library_project()
+    - 这两个函数可以强制改变工程动态、静态编译，默认是动态编译的。  
+2. 链接时
+    - add_dependent_manager(Lib1-Name)
+    - add_static_dependent_manager(Lib1-Name)
+    - 这两个函数可以强制改变库1的动态、静态链接，当然编译时必须配合。  
+
+##针对链接库1的导出宏的设置  
+
+|链接库1|动态|静态|  
+|-----|------|-------|  
+|编译库1|add_library_export_macro()|add_library_export_macro()|
+|链接库1|add_library_export_macro()|add_library_export_macro()|
+
+Multi-link v2.3使用一个函数，为用户提供API导出宏（可选）。  
+- API导出宏被库1的自有动态宏、自有静态宏控制。  
+    - 链接库1，编译时，这个函数可以帮助用户省略global.h源文件。
+    - 链接库1，链接时，如果库1没有global.h文件，在链接环的add_defines函数里使用这个函数，可以帮助用户控制库1的符号导出。 
+
+链接库1在编译和链接时的导出宏状态  
+
+|链接库1|动态|静态|  
+|-----|------|-------|  
+|编译库1|导出宏为EXPORT|导出宏为空值|
+|链接库1|导出宏为IMPORT|导出宏为空值| 
+
+*Windows平台下才有意义，类Unix平台下导出宏都是空值。*  
+
+
+##Multi-link v2.3的原理截图  
+链接库动态工程、静态工程切换原理图
+![Multi-link](screenshot/26.png "Multi-link 2.3 工程切换")    
+链接库库1编译、链接的宏控制关系原理图
+![Multi-link](screenshot/27.png "Multi-link 2的地位")    
+
+
+
 [返回](.)  
