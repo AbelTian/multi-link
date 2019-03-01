@@ -34,12 +34,28 @@ defineTest(add_include_QwtPlot3d){
 defineTest(add_defines_QwtPlot3d){
     #添加这个SDK里的defines
     #add_defines()
+    
     #Qwt3D比较特殊，使用QWT3D_DLL约束动态编译和链接。这里不定义QWT3D_MAKEDLL代表导入。
     DEFINES += QT_DLL QWT3D_DLL
-    
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
+#留意
+defineTest(add_static_defines_QwtPlot3d){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += QWTPLOT3D_STATIC_LIBRARY
+
+    add_defines_QwtPlot3d()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_QwtPlot3d){
     #链接Library
     add_library(QwtPlot3d, QwtPlot3d$${LIBRARYVER})

@@ -38,9 +38,25 @@ defineTest(add_defines_log4cpp){
     #添加这个SDK里的defines
     #add_defines()
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
+#留意
+defineTest(add_static_defines_log4cpp){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += LOG4CPP_STATIC_LIBRARY
+
+    add_defines_log4cpp()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_log4cpp){
     add_library(log4cpp, log4cpp$${LIBRARYVER})
 

@@ -49,9 +49,25 @@ defineTest(add_defines_OpenCV){
     #添加这个SDK里的defines
     #add_defines()
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
+#留意
+defineTest(add_static_defines_OpenCV){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += OPENCV_STATIC_LIBRARY
+
+    add_defines_OpenCV()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_OpenCV){
     #链接Library
     add_library(OpenCV, opencv_calib3d$${LIBRARYVER})

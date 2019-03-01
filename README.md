@@ -59,6 +59,29 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 5. 如果希望添加自定义模块，如果希望添加自己使用的其他的app-lib没支持的库，
     - 那么从multi-link/app-lib里拷贝add_custom_manager.pri到工程目录（optional，Multi-link 1.0）。   
     - 使用AddLibraryTool写自定义的add_library_XXX.pri（Multi-link 2.0），然后拷贝这个pri到工程目录，或者到Multi-link的app-lib目录，使用add_custom_dependent_manager(XXX)/add_dependent_manager(XXX)调用.   
+3. 如果用户库工程的源代码里没有global.h文件，multi-link可以提供支持。
+    - 编译库时，没有global文件。
+        - 在库工程的header.pri里，defines函数里添加DEFINES+=TEMPLATE_SHARED_EXPORT=Q_DECL_EXPORT
+        - 在static defines函数里添加DEFINES+=TEMPLATE_SHARED_EXPORT=
+        - 这样，没有global.h，也可以为源代码提供符号导出宏，并且能够任意在动态、静态之间转换。
+    - 链接库时，add_defines_Template 还有一个作用。
+        - add_defines_Template 添加 DEFINES+=TEMPLATE_SHARED_EXPORT=Q_DECL_IMPORT
+        - add_static_defines_Template 添加 DEFINES+=TEMPLATE_SHARED_EXPORT=
+        - 这样便可以兼容没有global文件的库工程的动态、静态链接
+    - unix，全部定义为空即可。 
+6. 用户在使用Multi-link编译、链接库的时候，应该注意到Multi-link提供了编译环和链接环
+    - 编译环，libname_header.pri
+    - 链接环，add_library_libname.pri
+    - 这两个环，第一个环，受到LIB_LIBRARY LIB_STATIC_LIBRARY控制动态、静态编译。
+    - 第二个环，库的动态、静态链接受到专用宏的控制。
+7. Multi-link管理库工程的动态、静态编译要点
+    - 编译时
+        - 可以强制动态、静态工程切换
+        - 动态宏为主、为默认，分布在工程各处，静态宏主要在header.pri里，有所体现。
+    - 链接时
+        - 链接环的配置和链接库的header.pri大同小异。
+        - 静态链接只是提供静态头，动态链接几乎提供动态链接宏控制主体，可复用到静态链接过程。
+
 
 [详细使用说明](usage.md)  
 

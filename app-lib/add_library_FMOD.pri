@@ -35,10 +35,25 @@ defineTest(add_defines_FMOD){
     #添加这个SDK里的defines
     #add_defines()
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#这个地方add_library_no_bundle代表包括macOS下，都不使用bundle，只是动态库或者静态库。
+#留意
+defineTest(add_static_defines_FMOD){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += FMOD_STATIC_LIBRARY
+
+    add_defines_FMOD()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_FMOD){
     #链接Library
     add_library(FMOD, fmod$${LIBRARYVER})

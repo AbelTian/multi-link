@@ -39,12 +39,26 @@ defineTest(add_include_QtXlsx){
 defineTest(add_defines_QtXlsx){
     #添加这个SDK里的defines
     #add_defines()
-    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += XLSX_NO_LIB
-    
+
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_QtXlsx){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += XLSX_NO_LIB
+
+    add_defines_QtXlsx()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_QtXlsx){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

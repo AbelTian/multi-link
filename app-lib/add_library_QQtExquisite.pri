@@ -39,8 +39,6 @@ defineTest(add_include_QQtExquisite){
 defineTest(add_defines_QQtExquisite){
     #添加这个SDK里的defines
     #add_defines()
-    #如果定义编译静态库，那么开启
-    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTEXQUISITE_STATIC_LIBRARY
 
     #预估
     #QQtMessageQueue - libzmq
@@ -50,11 +48,21 @@ defineTest(add_defines_QQtExquisite){
     export(QT)
     export(DEFINES)
     export(CONFIG)
-
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_QQtExquisite){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += QQTEXQUISITE_STATIC_LIBRARY
+
+    add_defines_QQtExquisite()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_QQtExquisite){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

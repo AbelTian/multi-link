@@ -39,8 +39,6 @@ defineTest(add_include_QQtCrashReport){
 defineTest(add_defines_QQtCrashReport){
     #添加这个SDK里的defines
     #add_defines()
-    #如果定义编译静态库，那么开启
-    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += QQTCRASHREPORT_STATIC_LIBRARY
 
     contains(DEFINES, __MSVC__){
         LIBS += -lDbgHelp
@@ -59,11 +57,21 @@ defineTest(add_defines_QQtCrashReport){
     export(QT)
     export(DEFINES)
     export(CONFIG)
-    
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_QQtCrashReport){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += QQTCRASHREPORT_STATIC_LIBRARY
+
+    add_defines_QQtCrashReport()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_QQtCrashReport){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

@@ -41,13 +41,26 @@ defineTest(add_include_Log4Qt){
 defineTest(add_defines_Log4Qt){
     #添加这个SDK里的defines
     #add_defines()
-    #肯定是动态的
-    #contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LOG4QT_STATIC
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_Log4Qt){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += LOG4QT_STATIC_LIBRARY
+
+    add_defines_Log4Qt()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_Log4Qt){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

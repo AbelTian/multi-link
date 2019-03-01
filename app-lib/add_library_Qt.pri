@@ -395,6 +395,17 @@ defineTest(add_defines_Qt){
     return (1)
 }
 
+#留意
+defineTest(add_static_defines_Qt){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += QT_STATIC_LIBRARY
+
+    add_defines_Qt()
+
+    export(DEFINES)
+    return (1)
+}
+
 #修改
 defineTest(add_library_Qt){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意

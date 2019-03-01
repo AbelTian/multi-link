@@ -244,37 +244,12 @@ add_build_dir_struct($${BUILD})
 
 ################################################################
 ##Lib Share Export Macro
-##Multi-link提供的导出宏，受LIB_LIBRARY/LIB_STATIC_LIBRARY宏控制。
-##LIB_LIBRARY，LIB_STATIC_LIBRARY，使用判定很复杂，请参考add_lib_project()函数。
+#LIBRARY_SHARED_EXPORT 写在函数、类的合理位置，表示导出。
+#win32目标下，这个宏的意义非常深远。
+#如果需要Multi-link技术提供这个宏，请参照README的使用说明，在用户工程中自行添加。
+#一共两处，libname_header.pri，add_library_libname.pri。
 ################################################################
 #这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
-#win32目标下，这个宏的意义非常深远。
-#写在函数、类的合理位置，表示导出，默认开启。
-#每次调用dynamic/static变换的函数，这个函数有必要调用。
-defineTest(add_library_export_macro) {
-    win32 {
-        contains(DEFINES, LIB_LIBRARY){
-            #build dynamic
-            DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
-        } else: contains(DEFINES, LIB_STATIC_LIBRARY){
-            #build and link
-            DEFINES += LIBRARYSHARED_EXPORT=
-        } else {
-            #link dynamic
-            DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
-        }
-    }
-
-    #类Unix系统下这个宏没有意义。
-    unix {
-        #build and link
-        DEFINES += LIBRARYSHARED_EXPORT=
-    }
-
-    export(DEFINES)
-
-    return (1)
-}
-
-#默认给用户提供导出宏，动、静态已经判断好了，受LIB_LIBRARY/LIB_STATIC_LIBRARY决定。
-add_library_export_macro()
+#build DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_EXPORT
+#link DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_IMPORT
+#build and link DEFINES += LIBRARY_SHARED_EXPORT=

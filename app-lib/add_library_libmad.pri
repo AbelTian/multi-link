@@ -38,8 +38,6 @@ defineTest(add_include_libmad){
 defineTest(add_defines_libmad){
     #添加这个SDK里的defines
     #add_defines()
-    #如果定义编译静态库，那么开启
-    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LIBMAD_STATIC_LIBRARY
 
     cross_compile{
         android{
@@ -68,11 +66,21 @@ defineTest(add_defines_libmad){
     export(QT)
     export(DEFINES)
     export(CONFIG)
-
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_libmad){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += LIBMAD_STATIC_LIBRARY
+
+    add_defines_libmad()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_libmad){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

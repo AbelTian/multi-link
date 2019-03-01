@@ -41,13 +41,26 @@ defineTest(add_include_VLCQt){
 defineTest(add_defines_VLCQt){
     #添加这个SDK里的defines
     #add_defines()
-    #如果定义编译静态库，那么开启
-    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += VLCQT_STATIC_LIBRARY
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_VLCQt){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += VLCQT_STATIC_LIBRARY
+
+    add_defines_VLCQt()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_VLCQt){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

@@ -38,8 +38,6 @@ defineTest(add_include_libspeex){
 defineTest(add_defines_libspeex){
     #添加这个SDK里的defines
     #add_defines()
-    #如果定义编译静态库，那么开启
-    contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += LIBSPEEX_STATIC_LIBRARY
 
     DEFINES += FLOATING_POINT
     DEFINES += EXPORT=
@@ -47,7 +45,17 @@ defineTest(add_defines_libspeex){
     export(QT)
     export(DEFINES)
     export(CONFIG)
+    return (1)
+}
 
+#留意
+defineTest(add_static_defines_libspeex){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += LIBSPEEX_STATIC_LIBRARY
+
+    add_defines_libspeex()
+
+    export(DEFINES)
     return (1)
 }
 

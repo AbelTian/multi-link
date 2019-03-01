@@ -54,10 +54,25 @@ defineTest(add_defines_Qtilities){
     #添加这个SDK里的defines
     #add_defines()
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_Qtilities){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += QTILITIES_STATIC_LIBRARY
+
+    add_defines_Qtilities()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_Qtilities){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

@@ -38,18 +38,32 @@ defineTest(add_include_zlib){
 defineTest(add_defines_zlib){
     #添加这个SDK里的defines
     #add_defines()
-    contains(DEFINES, __WIN__){
-        #这些坑爹的二宏库，导入导出不好用，它没有静态库。
-        #如果定义编译静态库，那么开启，zlib不需要这个宏。
-        contains(DEFINES, LIB_STATIC_LIBRARY):DEFINES += ZLIB_STATIC_LIBRARY
-        #zlib动态库 app也需要ZLIB_DLL宏
-        else:!contains(DEFINES, LIB_LIBRARY):DEFINES += ZLIB_DLL
-    }
 
+    contains(DEFINES, __WIN__){
+        #zlib动态库 app也需要ZLIB_DLL宏
+        !contains(DEFINES, ZLIB_STATIC_LIBRARY):DEFINES += ZLIB_DLL
+    }
+    
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_zlib){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += ZLIB_STATIC_LIBRARY
+    #这些坑爹的二宏库，导入导出不好用，它没有静态库。
+    #如果定义编译静态库，那么开启，zlib不需要这个宏。
+
+    add_defines_zlib()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_zlib){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

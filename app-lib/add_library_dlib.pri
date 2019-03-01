@@ -26,7 +26,7 @@ defineTest(add_include_dlib){
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    header_path=$$get_add_include_bundle(dlib, dlib)
+    header_path=$$get_add_include(dlib, dlib)
     command += $${header_path}
     command += $${header_path}/all
     command += $${header_path}/any
@@ -157,10 +157,25 @@ defineTest(add_defines_dlib){
     #添加这个SDK里的defines
     #add_defines()
 
+
+    export(QT)
+    export(DEFINES)
+    export(CONFIG)
     return (1)
 }
 
-#修改
+#留意
+defineTest(add_static_defines_dlib){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += DLIB_STATIC_LIBRARY
+
+    add_defines_dlib()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_dlib){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library

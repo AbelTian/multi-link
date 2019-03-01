@@ -100,6 +100,7 @@ defineTest(add_defines_QQt){
 
     #link and build all need this macro
     #现在Multi-link v2里面，已经有LIB_STATIC_LIBRARY，这个宏多余了，可是由于内部逻辑复杂，更改也不简单，所以留着了。用户静态编译LibQQt，记得定义QQT_STATIC_LIBRARY，build and link。
+    #Multi-link v2.3 这个宏作为链接库的独立编译、链接控制宏，必须定义！
     contains(DEFINES, QQT_STATIC_LIBRARY) {
     }
 
@@ -563,6 +564,20 @@ defineTest(add_include_QQt){
     return (1)
 }
 
+
+#留意
+defineTest(add_static_defines_QQt){
+    #如果链接静态库，那么开启。编译也开启。
+    DEFINES += QQT_STATIC_LIBRARY
+    
+    #如果用户更改链接类型，请在编译时更改编译类型。
+    add_defines_QQt()
+
+    export(DEFINES)
+    return (1)
+}
+
+#留意
 defineTest(add_library_QQt){
     #链接QQt
     add_library_bundle(QQt, QQt)
