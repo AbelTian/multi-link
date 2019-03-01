@@ -40,10 +40,21 @@ defineTest(add_defines_zlib){
     #add_defines()
 
     contains(DEFINES, __WIN__){
-        #zlib动态库 app也需要ZLIB_DLL宏
-        !contains(DEFINES, ZLIB_STATIC_LIBRARY):DEFINES += ZLIB_DLL
+        #这些坑爹的二宏库，导入导出不好用。
+        #zlib动态编译。有ZLIB_DLL
+        contains(DEFINES, ZLIB_INTERNAL){
+            message(build zlib dynamic library)
+            DEFINES += ZLIB_DLL #帮助加一次，嘿嘿。
+        }
+        #如果定义编译静态库，那么开启。没有ZLIB_DLL。
+        else:contains(DEFINES, ZLIB_STATIC_LIBRARY):message(build and link zlib static library)
+        #zlib动态链接。 app也需要ZLIB_DLL宏 user-lib也需要ZLIB_DLL宏
+        else:!contains(DEFINES, ZLIB_INTERNAL){
+            message(link zlib dynamic library)
+            DEFINES += ZLIB_DLL #必须加一次，嘿嘿。
+        }
     }
-    
+
     export(QT)
     export(DEFINES)
     export(CONFIG)

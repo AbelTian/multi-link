@@ -36,7 +36,21 @@ defineTest(add_defines_Qwt){
     #add_defines()
 
     #Qwt比较特殊，使用QWT_DLL约束动态编译和链接。这里不定义QWT_MAKEDLL代表导入。
-    !contains(DEFINES, QWT_STATIC_LIBRARY):DEFINES += QT_DLL QWT_DLL
+    contains(DEFINES, __WIN__){
+        #这些坑爹的二宏库，导入导出不好用。
+        #qwt 动态编译。有 QWT_DLL
+        contains(DEFINES, QWT_MAKEDLL){
+            message(build qwt dynamic library)
+            DEFINES += QT_DLL QWT_DLL #帮助加一次，嘿嘿。
+        }
+        #如果定义编译静态库，那么开启。没有ZLIB_DLL。
+        else:contains(DEFINES, QWT_STATIC_LIBRARY):message(build and link qwt static library)
+        #qwt 动态链接。 app也需要 QWT_DLL 宏 user-lib也需要 QWT_DLL 宏
+        else:!contains(DEFINES, QWT_MAKEDLL){
+            message(link qwt dynamic library)
+            DEFINES += QT_DLL QWT_DLL #必须加一次，嘿嘿。
+        }
+    }
 
     export(QT)
     export(DEFINES)
@@ -48,9 +62,7 @@ defineTest(add_defines_Qwt){
 defineTest(add_static_defines_Qwt){
     #如果链接静态库，那么开启。编译也开启。
     DEFINES += QWT_STATIC_LIBRARY
-    #这些坑爹的二宏库，导入导出不好用，它没有静态库。
-    #如果定义编译静态库，那么开启，zlib不需要这个宏。
-    DEFINES += QWT_STATIC_LIBRARY
+
     add_defines_Qwt()
 
     export(DEFINES)

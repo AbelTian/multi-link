@@ -40,10 +40,12 @@ defineTest(add_defines_tinyxml2){
     #add_defines()
 
     contains(DEFINES, __WIN__){
+        contains(DEFINES, TINYXML2_EXPORT):message(tinyxml2 dynamic library)
+        else:contains(DEFINES, TINYXML2_STATIC_LIBRARY):message(tinyxml2 static library)
         #如果使用动态库
-        !contains(DEFINES, TINYXML2_STATIC_LIBRARY):DEFINES += TINYXML2_IMPORT
+        else:!contains(DEFINES, TINYXML2_EXPORT):DEFINES += TINYXML2_IMPORT
     }
-    
+
     export(QT)
     export(DEFINES)
     export(CONFIG)

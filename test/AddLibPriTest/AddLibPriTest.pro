@@ -75,6 +75,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(Python)
     add_dependent_manager(Python36)
     add_dependent_manager(QQt)
+    add_dependent_manager(QQtExquisite)
     add_dependent_manager(Qwt)
     add_dependent_manager(QwtPlot3d)
     add_dependent_manager(SDL)
@@ -93,5 +94,4 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(libmp3lame)
     add_dependent_manager(libspeex)
     add_dependent_manager(Template)
-
 }
