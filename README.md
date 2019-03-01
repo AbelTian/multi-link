@@ -69,6 +69,9 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
         - add_static_defines_Template 添加 DEFINES+=TEMPLATE_SHARED_EXPORT=
         - 这样便可以兼容没有global文件的库工程的动态、静态链接
     - unix，全部定义为空即可。 
+    - 这个步骤太麻烦，我提供一个函数，输入动态宏、静态宏、API宏，API宏在代码里就可以用了。
+        - 编译环，全局用、add_defines里用都可以，影响较大。
+        - 链接环，建议不全局用，影响较大，建议add_defines里用。
 6. 用户在使用Multi-link编译、链接库的时候，应该注意到Multi-link提供了编译环和链接环
     - 编译环，libname_header.pri
     - 链接环，add_library_libname.pri
