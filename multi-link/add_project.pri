@@ -384,13 +384,15 @@ defineTest(add_lib_project) {
             DEFINES += LIB_LIBRARY
             #mingw编译为静态有原因：动态库可以编译成功，但是无法链接成功。
             #终于查清楚原因了，mingw编译app工程，某个原因，不改动调用源代码，工程链接就会提示失败，即便链接上了。可能mingw的bug，也可能是操作系统的bug。
-            message(Build $${TARGET} LIB_LIBRARY is defined. build)
+            #不再打印
+            #message(Build $${TARGET} LIB_LIBRARY is defined. build)
         } else {
             #create dynamic lib (important, only occured at builder pro)
             CONFIG += dll
             #no other one deal this, define it here, right here.
             DEFINES += LIB_LIBRARY
-            message(Build $${TARGET} LIB_LIBRARY is defined. build)
+            #不再打印
+            #message(Build $${TARGET} LIB_LIBRARY is defined. build)
         }
     #*nux platform: no macro
     } else {
@@ -455,11 +457,12 @@ defineTest(add_dynamic_library_project) {
     #添加动态设置
     CONFIG += dll
 
-    #内部状态宏的改变
+    #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
     DEFINES -= LIB_STATIC_LIBRARY
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         DEFINES += LIB_LIBRARY
-        message(Build $${TARGET} LIB_LIBRARY is defined. build)
+        #不再打印
+        #message(Build $${TARGET} LIB_LIBRARY is defined. build)
     }
 
     #链接库自有宏的改变
@@ -499,7 +502,8 @@ defineTest(add_static_library_project) {
     #内部状态宏的改变
     DEFINES -= LIB_LIBRARY
     DEFINES += LIB_STATIC_LIBRARY
-    message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+    #不再打印
+    #message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
 
     #链接库自有宏的改变
     LIBGROUPNAME = $$upper($${libgroupname})
