@@ -136,10 +136,19 @@ Multi-link v2.3使用一个函数，为用户提供API导出宏（可选）。
 
 ##Multi-link v2.3提供的宏  
 
-|Multi-link|内部状态宏|关系|链接库自有状态宏|  
+|Multi-link|内部状态宏 忽略|关系|链接库自有状态宏|  
 |-----|------|--------|-------|  
 |编译库1|LIB_LIBRARY LIB_STATIC_LIBRARY|带出| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY |
 |链接库1|LIB_LIBRARY LIB_STATIC_LIBRARY|使用| LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY LIBG2NAME_LIBRARY LIBG2NAME_STATIC_LIBRARY | 
+
+##Multi-link v2.3提供的宏的工作状态    
+
+|Multi-link|关系|注释|
+|-----|------|-------| 
+|决定者| CONFIG += dll / static staticlib |
+|内部状态宏 （ignore）| LIB_LIBRARY LIB_STATIC_LIBRARY |
+|链接库自有宏| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY |
+|链接库API导出宏| LIBGROUPNAMESHARED_EXPORT |
 
 
 ##Multi-link v2.3的原理截图  

@@ -283,17 +283,38 @@ defineTest(add_custom_static_dependent_manager2){
 #此处提供一个函数，方便用户添加LIBRARY_SHARED_EXPORT宏。
 
 #原理，动态宏、静态宏，共同控制API导出宏的值
-#参数1 API导出宏名称 这个宏在源代码里使用
-#参数2 动态宏名称 控制1 可选 LIB_LIBRARY
-#参数3 静态宏名称 控制2 可选 LIB_STATIC_LIBRARY
+#参数1 libGroupName library所属的library组名字 默认为 TARGET_NAME
+#参数2 API导出宏名称 这个宏在源代码里使用 默认为[TARGET_NAME]SHARED_EXPORT
+#参数3 动态宏名称 控制1 可选 [TARGET_NAME]_LIBRARY
+#参数4 静态宏名称 控制2 可选 [TARGET_NAME]_STATIC_LIBRARY
 defineTest(add_library_export_macro) {
-    APIMACRO = $$1
-    DYMACRO = $$2
-    STMACRO = $$3
-    isEmpty(1): error("add_library_export_macro(dymacro, stmacro, apimacro) requires at least one argument")
-    #默认，API导出宏受到Multi-link提供的动态、静态宏控制。编译时一般不会有问题；链接时，不要用这两个默认的。
-    isEmpty(2): DYMACRO = LIB_LIBRARY
-    isEmpty(3): STMACRO = LIB_STATIC_LIBRARY
+    #isEmpty(1): error("add_library_export_macro(libgroupname, dymacro, stmacro, apimacro) requires at least one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    #Multi-link提供默认的动态编译过程
+    #Multi-link提供内部状态宏 LIB_LIBRARY LIB_STATIC_LIBRARY ，但是没什么用。
+    #Multi-link提供链接库自有状态宏 LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY ，编译时用，链接（依赖库）时，使用依赖库的。
+    #Multi-link提供编译时、链接时，两组，4个控制编译、链接状态的函数，用户手动更改编译、链接状态。
+    #所有这些宏的改变，都跟着qmake的CONFIG里的状态改变。
+
+    #Multi-link提供链接库API导出宏，受到Multi-link提供的链接库自有动态、静态宏控制。
+    #编译时一般不会有问题；链接（依赖库）时，不要用Multi-link的内部状态宏，也不要用这两个自有的。
+
+    LIBGROUPNAME = $$upper($${libgroupname})
+    APIMACRO = $$2
+    isEmpty(2):APIMACRO = $${LIBGROUPNAME}SHARED_EXPORT
+
+    DYMACRO = $$3
+    isEmpty(3):DYMACRO = $${LIBGROUPNAME}_LIBRARY
+
+    STMACRO = $$4
+    isEmpty(4):STMACRO = $${LIBGROUPNAME}_STATIC_LIBRARY
 
     win32 {
         contains(DEFINES, $${DYMACRO}){
