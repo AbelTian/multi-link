@@ -441,6 +441,7 @@ defineTest(add_lib_project) {
 #Multi-link内部默认只有在ios里，才会静态编译和链接library。
 ############################################################
 #Multi-link内部默认为动态链接过程，LIB_LIBRARY LIB_STATIC_LIBRARY是顺便产生的内部状态宏。这个宏只能编译的时候用，对于链接工作，不能用。
+#Multi-link内部状态宏，止步于工程管理，不可以给源代码用，那样不明智。
 #针对本库
 #这个函数以更改链接库自有宏为主，更改内部状态宏为辅。
 #强制更换为动态库 （Only lib project）
