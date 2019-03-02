@@ -78,7 +78,10 @@ defineTest(add_version) {
     } else : contains(TEMPLATE, app) {
         DEFINES += APP_VERSION=$${APP_VERSION}
     }
-    DEFINES += $$upper($${TARGET_NAME})_VERSION=$${APP_VERSION}
+    !equals(APP_VERSION4, 0.0.0.0)|!isEmpty(TARGET_NAME) {
+        APP_NAME = $$upper($${TARGET_NAME})
+        DEFINES += $${APP_NAME}_VERSION=$${APP_VERSION}
+    }
 
     #工程版本设置
     unix:VERSION = $${APP_VERSION}

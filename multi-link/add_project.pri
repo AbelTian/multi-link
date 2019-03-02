@@ -221,6 +221,9 @@ defineTest(add_static_dependent_manager){
         message(please check your target name $$TARGET_NAME and lib name $$libname)
         return (0)
     }
+
+    export(DEFINES)
+
     return (1)
 }
 
