@@ -17,10 +17,23 @@
 #add_create_dependent_manager()
 #add_custom_dependent_manager()
 #add_custom_dependent_manager2()
+
+#v2.4
 #add_static_dependent_manager()
 #add_create_static_dependent_manager()
 #add_custom_static_dependent_manager()
 #add_custom_static_dependent_manager2()
+
+#兼容 v2.3 的链接环
+#add_static_dependent_manager_v23()
+#add_create_static_dependent_manager_v23()
+#add_custom_static_dependent_manager_v23()
+#add_custom_static_dependent_manager2_v23()
+
+#library 编译控制 默认为动态编译
+#add_dynamic_library_project()
+#add_static_library_project()
+#add_library_export_macro()
 
 #add_app_project()
 #add_lib_project()
@@ -51,6 +64,7 @@
 #################################################################
 #这个函数，如果为app工程，则包含deploy过程，如果是lib工程则不包括。
 #相应pri内函数不可缺席，否则会影响整个工程管理的正常运行。
+#仅仅动态链接依赖库。
 #lib工程，动态链接正常，静态链接导致全静态，存在问题。
 #app工程，动态链接正常，静态链接也会拷贝，存在问题。
 #从默认路径加载add_library_<libgroupname>.pri
@@ -77,13 +91,8 @@ defineTest(add_dependent_manager){
             add_defines_$${libname}()
             #链接Library
             add_library_$${libname}()
-            #lib project全都不发布依赖库。
-            #app工程
-            contains(TEMPLATE, app) {
-                #需要排除静态链接，静态链接不发布。
-                #发布Library
-                add_deploy_library_$${libname}()
-            }
+            #app工程发布依赖库，lib project全都不发布依赖库。
+            contains(TEMPLATE, app):add_deploy_library_$${libname}()
         } else {
             message(please check is $${pripath}/add_library_$${libgroupname}.pri existed?)
             return (0)
@@ -190,6 +199,9 @@ defineTest(add_static_dependent_manager){
     isEmpty(libname):libname = $${libgroupname}
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
+    LIBNAME = $$upper($${libname})
+    DEFINES += $${LIBNAME}_STATIC_LIBRARY
+
     !equals(TARGET_NAME, $${libname}){
         exists($${pripath}/add_library_$${libgroupname}.pri) {
             include ($${pripath}/add_library_$${libgroupname}.pri)
@@ -198,7 +210,7 @@ defineTest(add_static_dependent_manager){
             #添加头文件 参数为空，为SDK里的路径。
             add_include_$${libname}()
             #添加宏定义
-            add_static_defines_$${libname}()
+            add_defines_$${libname}()
             #链接Library
             add_library_$${libname}()
         } else {
@@ -267,83 +279,101 @@ defineTest(add_custom_static_dependent_manager2){
     add_create_static_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
 
-################################################################
-##Lib Share Export Macro
-################################################################
-#LIBRARYSHARED_EXPORT 写在函数、类的合理位置，表示导出。
-#win32目标下，这个宏的意义非常深远。
+#这个函数解决全部静态链接库
+#lib工程，不发布库，要求链接库静态宏，不会改变当前工程的属性。
+#app工程，不发布库，要求链接库静态宏，不会改变当前工程的属性。
+#从默认路径加载add_library_<libgroupname>.pri
+#参数1 libgroupname
+#参数2 libname
+#参数3 加载路径 为空则默认在multi-link/app-lib 可以自定义，比如$$PWD $${LIB_SDK_ROOT}/app-lib
+defineTest(add_static_dependent_manager_v23){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
-#build DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
-#link DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
-#build and link DEFINES += LIBRARYSHARED_EXPORT=
-#这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
-
-#如果需要Multi-link技术提供 LIBRARYSHARED_EXPORT，请参照README的使用说明，在用户工程中自行添加。
-#一共两处，libname_header.pri，add_library_libname.pri。
-#此处提供一个函数，方便用户添加LIBRARYSHARED_EXPORT宏。
-
-#目的 解决某些工程没有library_source_global.h的问题。
-#原理 链接库自有动态宏、静态宏，共同控制API导出宏的值。CONFIG - Multi-link内部状态宏/链接库自有宏 - EXPORT
-#参数1 libGroupName library所属的library组名字 默认为 TARGET_NAME
-#参数2 API导出宏名称 这个宏在源代码里使用 默认为[TARGET_NAME]SHARED_EXPORT
-#参数3 动态宏名称 控制1 可选 [TARGET_NAME]_LIBRARY
-#参数4 静态宏名称 控制2 可选 [TARGET_NAME]_STATIC_LIBRARY
-defineTest(add_library_export_macro) {
-    #isEmpty(1): error("add_library_export_macro(libgroupname, dymacro, stmacro, apimacro) requires at least one argument")
-
-    #库组的名
-    libgroupname = $$TARGET_NAME
-    !isEmpty(1):libgroupname=$$1
-
-    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
-    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
-
-    #Multi-link提供默认的动态编译过程
-    #Multi-link提供内部状态宏 LIB_LIBRARY LIB_STATIC_LIBRARY ，但是没什么用。
-    #Multi-link提供链接库自有状态宏 LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY ，编译时用，链接（依赖库）时，使用依赖库的。
-    #Multi-link提供编译时、链接时，两组，4个控制编译、链接状态的函数，用户手动更改编译、链接状态。
-    #所有这些宏的改变，都跟着qmake的CONFIG里的状态改变。
-
-    #Multi-link提供链接库API导出宏，受到Multi-link提供的链接库自有动态、静态宏控制。
-    #编译时一般不会有问题；链接（依赖库）时，不要用Multi-link的内部状态宏，也不要用这两个自有的。
-
-    LIBGROUPNAME = $$upper($${libgroupname})
-
-    APIMACRO = $$2
-    isEmpty(2):APIMACRO = $${LIBGROUPNAME}SHARED_EXPORT
-
-    DYMACRO = $$3
-    isEmpty(3):DYMACRO = $${LIBGROUPNAME}_LIBRARY
-
-    STMACRO = $$4
-    isEmpty(4):STMACRO = $${LIBGROUPNAME}_STATIC_LIBRARY
-
-    win32 {
-        contains(DEFINES, $${DYMACRO}){
-            #build dynamic
-            DEFINES += $${APIMACRO}=Q_DECL_EXPORT
-        } else: contains(DEFINES, $${STMACRO}){
-            #build and link
-            DEFINES += $${APIMACRO}=
+    !equals(TARGET_NAME, $${libname}){
+        exists($${pripath}/add_library_$${libgroupname}.pri) {
+            include ($${pripath}/add_library_$${libgroupname}.pri)
+            #这个位置调用肯定是SDK里的路径，但是qmake v3.1有个bug，e-linux目标，这里$${libname}有一定的概率被解析成参数1，函数名倒是还是正确的，多了个参数。
+            #fix:由于library的header有是否为bundle的区别，这里无法照顾区别，不方便传参，所以，在add_library_$${libgroupname}.pri里，删除这个函数的参数，这个函数以后无参了。
+            #添加头文件 参数为空，为SDK里的路径。
+            add_include_$${libname}()
+            #添加宏定义 参数为空，链接环中多一个这个函数
+            add_static_defines_$${libname}()
+            #链接Library
+            add_library_$${libname}()
         } else {
-            #link dynamic
-            DEFINES += $${APIMACRO}=Q_DECL_IMPORT
+            message(please check is $${pripath}/add_library_$${libgroupname}.pri existed?)
+            return (0)
         }
+    } else {
+        message(please check your target name $$TARGET_NAME and lib name $$libname)
+        return (0)
     }
-
-    #类Unix系统下这个宏没有意义。
-    unix {
-        #build and link
-        DEFINES += $${APIMACRO}=
-    }
-
-    export(DEFINES)
-
     return (1)
 }
 
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+defineTest(add_create_static_dependent_manager_v23){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    equals(libname, Template):return(0)
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
+
+    !exists($${pripath}/add_library_$${libgroupname}.pri) {
+        srcFile = $${pripath}/add_library_Template_v23.pri
+        dstFile = $${pripath}/add_library_$${libgroupname}.pri
+        contains(QMAKE_HOST.os, Windows) {
+            srcFile = $$add_host_path($$srcFile)
+            dstFile = $$add_host_path($$dstFile)
+        }
+
+        system_errcode($$COPY $${srcFile} $${dstFile}){
+            message(create $$dstFile success.)
+        }
+
+        #添加自动替换的功能
+    }
+
+    add_static_dependent_manager_v23($$libgroupname, $$libname, $$pripath)
+}
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#参数3 为空则为当前路径 $$PWD 调用处
+defineTest(add_custom_static_dependent_manager_v23){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${PWD}
+    add_create_static_dependent_manager_v23($$libgroupname, $$libname, $$pripath)
+    return(1)
+}
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#默认路径是SDK ROOT下app-lib
+defineTest(add_custom_static_dependent_manager2_v23){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
+    add_create_static_dependent_manager_v23($$libgroupname, $$libname, $$pripath)
+}
+
 ############################################################
-#Multi-link内部默认的链接逻辑。
+#Multi-link内部固定的编译逻辑。
 ############################################################
 #开启app工程
 defineTest(add_app_project) {
@@ -437,7 +467,7 @@ defineTest(add_lib_project) {
 }
 
 ############################################################
-#Multi-link内部有固定的链接逻辑，但是可以从这里强制改变。
+#Multi-link内部有固定的编译逻辑，可以从这里强制改变。
 #Multi-link内部默认只有在ios里，才会静态编译和链接library。
 ############################################################
 #Multi-link内部默认为动态链接过程，LIB_LIBRARY LIB_STATIC_LIBRARY是顺便产生的内部状态宏。这个宏只能编译的时候用，对于链接工作，不能用。
@@ -521,6 +551,115 @@ defineTest(add_static_library_project) {
     return(1)
 }
 
+
+################################################################
+##Lib Share Export Macro
+################################################################
+#LIBRARYSHARED_EXPORT 写在函数、类的合理位置，表示导出。
+#win32目标下，这个宏的意义非常深远。
+
+#build DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
+#link DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
+#build and link DEFINES += LIBRARYSHARED_EXPORT=
+#这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
+
+#如果需要Multi-link技术提供 LIBRARYSHARED_EXPORT，请参照README的使用说明，在用户工程中自行添加。
+#一共两处，libname_header.pri，add_library_libname.pri。
+#此处提供一个函数，方便用户添加LIBRARYSHARED_EXPORT宏。
+
+#目的 解决某些工程没有library_source_global.h的问题。
+#原理 链接库自有动态宏、静态宏，共同控制API导出宏的值。CONFIG - Multi-link内部状态宏/链接库自有宏 - EXPORT
+#参数1 libGroupName library所属的library组名字 默认为 TARGET_NAME
+#参数2 API导出宏名称 这个宏在源代码里使用 默认为[TARGET_NAME]SHARED_EXPORT
+#参数3 动态宏名称 控制1 可选 [TARGET_NAME]_LIBRARY
+#参数4 静态宏名称 控制2 可选 [TARGET_NAME]_STATIC_LIBRARY
+defineTest(add_library_export_macro) {
+    #isEmpty(1): error("add_library_export_macro(libgroupname, dymacro, stmacro, apimacro) requires at least one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    #Multi-link提供默认的动态编译过程
+    #Multi-link提供内部状态宏 LIB_LIBRARY LIB_STATIC_LIBRARY ，但是没什么用。
+    #Multi-link提供链接库自有状态宏 LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY ，编译时用，链接（依赖库）时，使用依赖库的。
+    #Multi-link提供编译时、链接时，两组，4个控制编译、链接状态的函数，用户手动更改编译、链接状态。
+    #所有这些宏的改变，都跟着qmake的CONFIG里的状态改变。
+
+    #Multi-link提供链接库API导出宏，受到Multi-link提供的链接库自有动态、静态宏控制。
+    #编译时一般不会有问题；链接（依赖库）时，不要用Multi-link的内部状态宏，也不要用这两个自有的。
+
+    LIBGROUPNAME = $$upper($${libgroupname})
+
+    APIMACRO = $$2
+    isEmpty(2):APIMACRO = $${LIBGROUPNAME}SHARED_EXPORT
+
+    DYMACRO = $$3
+    isEmpty(3):DYMACRO = $${LIBGROUPNAME}_LIBRARY
+
+    STMACRO = $$4
+    isEmpty(4):STMACRO = $${LIBGROUPNAME}_STATIC_LIBRARY
+
+    win32 {
+        contains(DEFINES, $${DYMACRO}){
+            #build dynamic
+            DEFINES += $${APIMACRO}=Q_DECL_EXPORT
+        } else: contains(DEFINES, $${STMACRO}){
+            #build and link
+            DEFINES += $${APIMACRO}=
+        } else {
+            #link dynamic
+            DEFINES += $${APIMACRO}=Q_DECL_IMPORT
+        }
+    }
+
+    #类Unix系统下这个宏没有意义。
+    unix {
+        #build and link
+        DEFINES += $${APIMACRO}=
+    }
+
+    export(DEFINES)
+
+    return (1)
+}
+
+#获取链接库动态宏名
+defineReplace(add_library_dynamic_macro_name){
+    #isEmpty(1): error("add_library_dynamic_macro_name(libgroupname) requires one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    LIBGROUPNAME = $$upper($${libgroupname})
+
+    DYLIBNAME = $${LIBGROUPNAME}_LIBRARY
+    return ($${DYLIBNAME})
+}
+
+#获取链接库静态宏名
+defineReplace(add_library_static_macro_name){
+    #isEmpty(1): error("add_library_static_macro_name(libgroupname) requires one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    LIBGROUPNAME = $$upper($${libgroupname})
+
+    STLIBNAME = $${LIBGROUPNAME}_STATIC_LIBRARY
+    return ($${STLIBNAME})
+}
 
 #获取target的确切的名字
 #区分debug和release用的。
