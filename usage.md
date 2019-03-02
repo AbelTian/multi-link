@@ -134,29 +134,45 @@ Multi-link v2.3使用一个函数，为用户提供API导出宏（可选）。
 
 *Windows平台下才有意义，类Unix平台下导出宏都是空值。*  
 
-##Multi-link v2.3提供的宏  
-
-|Multi-link|内部状态宏 忽略|关系|链接库自有状态宏|  
-|-----|------|--------|-------|  
-|编译库1|LIB_LIBRARY LIB_STATIC_LIBRARY|带出| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY |
-|链接库1|LIB_LIBRARY LIB_STATIC_LIBRARY|使用| LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY LIBG2NAME_LIBRARY LIBG2NAME_STATIC_LIBRARY | 
-
-##Multi-link v2.3提供的宏的工作状态    
-
-|Multi-link|关系|注释|
-|-----|------|-------| 
-|决定者| CONFIG += dll / static staticlib |
-|内部状态宏 （ignore）| LIB_LIBRARY LIB_STATIC_LIBRARY |
-|链接库自有宏| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY |
-|链接库API导出宏| LIBGROUPNAMESHARED_EXPORT |
-
-
 ##Multi-link v2.3的原理截图  
 链接库动态工程、静态工程切换原理图
 ![Multi-link](screenshot/26.png "Multi-link 2.3 工程切换")    
 链接库库1编译、链接的宏控制关系原理图
 ![Multi-link](screenshot/27.png "Multi-link 2的地位")    
 
+# Multi-link v2.4    
+
+Multi-link v2.4提供了新的特性，解决v2.3的一些问题。  
+
+- v2.4，相比较于v2.2，在编译环、链接环上基本没有改动。   
+    - v2.3通过在链接环添加函数，在编译环添加函数或者参数的方法实现对静态编译、链接的支持，改动较大。
+- v2.4将STATIC宏移分管理，Multi-link接管了STATIC宏。
+    - v2.4实现了内部状态宏彻底隐藏。
+- v2.4兼容v2.3.
+    - 注意，在链接环上功能兼容，然后提供了兼容的接口。
+    - 在编译环上，功能兼容，代码有出入也兼容。
+    - 用户可以不去理会v2.3的工程，使用v2.4.
+- 链接环、编译环彻底的只需要使用LIBXX_LIBRARY、LIBXX_STATIC_LIBRARY即可，不必再帮助Multi-link管理静态宏。
+    - 用户可以使用这一套链接库的自有宏，兼容第三方二套宏管理编译的工程。
+- v2.4对v2.3的工程有极大的冗余特征
+    - 用户不必担心这些冗余特征，相反可能有更多的兼容。
+    - 比如：编译时，默认动态（Multi-link内部保留宏），内部主动动态（比较全面），外部<v2.4主动动态（链接库自有宏），实现了两次冗余。
+    
+##Multi-link v2.4提供的宏  
+
+|Multi-link|内部状态宏 忽略|关系|链接库自有状态宏|  
+|-----|------|--------|-------|  
+|编译库1|LIB_LIBRARY LIB_STATIC_LIBRARY|带出| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY |
+|链接库1|LIB_LIBRARY LIB_STATIC_LIBRARY|使用| LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY LIBG2NAME_LIBRARY LIBG2NAME_STATIC_LIBRARY | 
+
+##Multi-link v2.4提供的宏的工作状态    
+
+|Multi-link|关系|注释|
+|-----|------|-------| 
+|决定者| CONFIG += dll / static staticlib | qmake提供 |
+|内部状态宏 （ignore）| LIB_LIBRARY LIB_STATIC_LIBRARY | 内部保留宏，对外部控制力量比较大 |
+|链接库自有宏| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY | 链接库常用宏，编译环、链接环，都依赖这个宏 |
+|链接库API导出宏| LIBGROUPNAMESHARED_EXPORT | 用户可选，定义给源代码使用 |
 
 
 [返回](.)  

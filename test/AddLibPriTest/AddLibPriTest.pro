@@ -97,3 +97,4 @@ contains(CONFIG, link_some_libraries) {
 }
 
 message(...... $$DEFINES)
+message(...... $$QT_VERSION)
