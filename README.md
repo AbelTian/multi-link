@@ -61,12 +61,12 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
     - 使用AddLibraryTool写自定义的add_library_XXX.pri（Multi-link 2.0），然后拷贝这个pri到工程目录，或者到Multi-link的app-lib目录，使用add_custom_dependent_manager(XXX)/add_dependent_manager(XXX)调用.   
 3. 如果用户库工程的源代码里没有global.h文件，multi-link可以提供支持。
     - 编译库时，没有global文件。
-        - 在库工程的header.pri里，defines函数里添加DEFINES+=TEMPLATE_SHARED_EXPORT=Q_DECL_EXPORT
-        - 在static defines函数里添加DEFINES+=TEMPLATE_SHARED_EXPORT=
+        - 在库工程的header.pri里，defines函数里添加DEFINES+=TEMPLATESHARED_EXPORT=Q_DECL_EXPORT
+        - 在static defines函数里添加DEFINES+=TEMPLATESHARED_EXPORT=
         - 这样，没有global.h，也可以为源代码提供符号导出宏，并且能够任意在动态、静态之间转换。
     - 链接库时，add_defines_Template 还有一个作用。
-        - add_defines_Template 添加 DEFINES+=TEMPLATE_SHARED_EXPORT=Q_DECL_IMPORT
-        - add_static_defines_Template 添加 DEFINES+=TEMPLATE_SHARED_EXPORT=
+        - add_defines_Template 添加 DEFINES+=TEMPLATESHARED_EXPORT=Q_DECL_IMPORT
+        - add_static_defines_Template 添加 DEFINES+=TEMPLATESHARED_EXPORT=
         - 这样便可以兼容没有global文件的库工程的动态、静态链接
     - unix，全部定义为空即可。 
     - 这个步骤太麻烦，我提供一个函数，输入动态宏、静态宏、API宏，API宏在代码里就可以用了。

@@ -270,19 +270,20 @@ defineTest(add_custom_static_dependent_manager2){
 ################################################################
 ##Lib Share Export Macro
 ################################################################
-#LIBRARY_SHARED_EXPORT 写在函数、类的合理位置，表示导出。
+#LIBRARYSHARED_EXPORT 写在函数、类的合理位置，表示导出。
 #win32目标下，这个宏的意义非常深远。
 
-#build DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_EXPORT
-#link DEFINES += LIBRARY_SHARED_EXPORT=Q_DECL_IMPORT
-#build and link DEFINES += LIBRARY_SHARED_EXPORT=
+#build DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_EXPORT
+#link DEFINES += LIBRARYSHARED_EXPORT=Q_DECL_IMPORT
+#build and link DEFINES += LIBRARYSHARED_EXPORT=
 #这个定义是qmake下专有的，cmake下只需要更改下后边的Q_DECL_EXPORT
 
-#如果需要Multi-link技术提供这个宏，请参照README的使用说明，在用户工程中自行添加。
+#如果需要Multi-link技术提供 LIBRARYSHARED_EXPORT，请参照README的使用说明，在用户工程中自行添加。
 #一共两处，libname_header.pri，add_library_libname.pri。
-#此处提供一个函数，方便用户添加LIBRARY_SHARED_EXPORT宏。
+#此处提供一个函数，方便用户添加LIBRARYSHARED_EXPORT宏。
 
-#原理，动态宏、静态宏，共同控制API导出宏的值
+#目的 解决某些工程没有library_source_global.h的问题。
+#原理 链接库自有动态宏、静态宏，共同控制API导出宏的值。CONFIG - Multi-link内部状态宏/链接库自有宏 - EXPORT
 #参数1 libGroupName library所属的library组名字 默认为 TARGET_NAME
 #参数2 API导出宏名称 这个宏在源代码里使用 默认为[TARGET_NAME]SHARED_EXPORT
 #参数3 动态宏名称 控制1 可选 [TARGET_NAME]_LIBRARY
@@ -307,6 +308,7 @@ defineTest(add_library_export_macro) {
     #编译时一般不会有问题；链接（依赖库）时，不要用Multi-link的内部状态宏，也不要用这两个自有的。
 
     LIBGROUPNAME = $$upper($${libgroupname})
+
     APIMACRO = $$2
     isEmpty(2):APIMACRO = $${LIBGROUPNAME}SHARED_EXPORT
 
