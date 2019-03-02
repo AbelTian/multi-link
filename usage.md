@@ -102,7 +102,7 @@ Multi-link v2.3又增加了新特性，即新的函数。
 |链接库1|动态|静态|  
 |-----|------|-------|  
 |编译库1|add_dynamic_library_project()|add_static_library_project()|
-|链接库1|add_dependent_manager(Lib1-Name)|add_static_dependent_manager(Lib1-Name)|
+|链接库1|add_dependent_manager(LibGroup1Name)|add_static_dependent_manager(LibGroup1Name)|
 
 1. 编译时
     - add_dynamic_library_project()
@@ -125,7 +125,7 @@ Multi-link v2.3使用一个函数，为用户提供API导出宏（可选）。
     - 链接库1，编译时，这个函数可以帮助用户省略global.h源文件。
     - 链接库1，链接时，如果库1没有global.h文件，在链接环的add_defines函数里使用这个函数，可以帮助用户控制库1的符号导出。 
 
-链接库1在编译和链接时的导出宏状态  
+##链接库1在编译和链接时的导出宏状态  
 
 |链接库1|动态|静态|  
 |-----|------|-------|  
@@ -133,6 +133,13 @@ Multi-link v2.3使用一个函数，为用户提供API导出宏（可选）。
 |链接库1|导出宏为IMPORT|导出宏为空值| 
 
 *Windows平台下才有意义，类Unix平台下导出宏都是空值。*  
+
+##Multi-link v2.3提供的宏  
+
+|Multi-link|内部状态宏|关系|链接库自有状态宏|  
+|-----|------|--------|-------|  
+|编译库1|LIB_LIBRARY LIB_STATIC_LIBRARY|带出| LIBGROUPNAME_LIBRARY LIBGROUPNAME_STATIC_LIBRARY |
+|链接库1|LIB_LIBRARY LIB_STATIC_LIBRARY|使用| LIBG1NAME_LIBRARY LIBG1NAME_STATIC_LIBRARY LIBG2NAME_LIBRARY LIBG2NAME_STATIC_LIBRARY | 
 
 
 ##Multi-link v2.3的原理截图  

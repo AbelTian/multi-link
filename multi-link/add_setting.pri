@@ -55,3 +55,19 @@ defineTest(add_setting_sdk){
     export(LIB_SDK_TARGET_NAME)
     return(true)
 }
+
+##########################################
+#lib对编译过程的设置命令
+#这个函数会影响add_x_library_project系列功能函数，迫使改变链接库自有宏的名称。
+#默认就是lib工程目标名。可以强制改变为其他目标名。
+#这个函数主要用于强制一组链接库使用同一组自有宏的时候，用于强制链接库群体以同样的方式编译、链接。
+##########################################
+LIB_BUILD_TARGET_NAME=$${TARGET_NAME}
+defineTest(add_setting_build){
+    isEmpty(1): error("add_setting_build(libgroupname) requires one argument")
+    !isEmpty(2): error("add_setting_build(libgroupname) requires one argument")
+    libgroupname = $$1
+    LIB_BUILD_TARGET_NAME = $${libgroupname}
+    export(LIB_BUILD_TARGET_NAME)
+    return(true)
+}

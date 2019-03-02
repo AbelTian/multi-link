@@ -415,31 +415,79 @@ defineTest(add_lib_project) {
 #Multi-link内部有固定的链接逻辑，但是可以从这里强制改变。
 #Multi-link内部默认只有在ios里，才会静态编译和链接library。
 ############################################################
+#Multi-link内部默认为动态链接过程，LIB_LIBRARY LIB_STATIC_LIBRARY是顺便产生的内部状态宏。这个宏只能编译的时候用，对于链接工作，不能用。
+#针对本库
+#这个函数以更改链接库自有宏为主，更改内部状态宏为辅。
 #强制更换为动态库 （Only lib project）
 defineTest(add_dynamic_library_project) {
+    #isEmpty(1): error("add_dynamic_library_project(libgroupname) requires one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
     #删除静态设置
     CONFIG -= static staticlib
-    DEFINES -= LIB_STATIC_LIBRARY
     #添加动态设置
     CONFIG += dll
+
+    #内部状态宏的改变
+    DEFINES -= LIB_STATIC_LIBRARY
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         DEFINES += LIB_LIBRARY
         message(Build $${TARGET} LIB_LIBRARY is defined. build)
     }
+
+    #链接库自有宏的改变
+    LIBGROUPNAME = $$upper($${libgroupname})
+    LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
+    LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
+    DEFINES -= $${LIBG1STATICLIB}
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        DEFINES += $${LIBG1LIB}
+        message(Build $${TARGET} $${LIBG1LIB} is defined. build)
+    }
+
     export(CONFIG)
     export(DEFINES)
     return(1)
 }
 
+#Multi-link内部默认为动态链接过程，LIB_LIBRARY LIB_STATIC_LIBRARY是顺便产生的内部状态宏。这个宏只能编译的时候用，对于链接工作，不能用。
+#针对本库
+#这个函数以更改链接库自有宏为主，更改内部状态宏为辅。
 #强制更换为静态库 （Only lib project）
 defineTest(add_static_library_project) {
+    #isEmpty(1): error("add_static_library_project(libgroupname) requires one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
     #删除动态设置
     CONFIG -= dll
-    DEFINES -= LIB_LIBRARY
     #添加静态设置
     CONFIG += static staticlib
+
+    #内部状态宏的改变
+    DEFINES -= LIB_LIBRARY
     DEFINES += LIB_STATIC_LIBRARY
     message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+
+    #链接库自有宏的改变
+    LIBGROUPNAME = $$upper($${libgroupname})
+    LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
+    LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
+    DEFINES -= $${LIBG1LIB}
+    DEFINES += $${LIBG1STATICLIB}
+    message(Build $${TARGET} $${LIBG1STATICLIB} is defined. build and link)
+
     export(CONFIG)
     export(DEFINES)
     return(1)
