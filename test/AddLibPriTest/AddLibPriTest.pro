@@ -95,3 +95,5 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(libspeex)
     add_dependent_manager(Template)
 }
+
+message(...... $$DEFINES)
