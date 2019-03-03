@@ -7,7 +7,7 @@
 #工程层级介绍：
 #add_library在基本的链接层
 #add_sdk 出现在library层
-#add_dependent_library add_dependent_manager 出现在app层。在这Multi-link里，用dependent函数，统筹实现。
+#add_dependent_manager 出现在app层。在这Multi-link里，用dependent函数，统筹实现。
 #工程管理层级上是递进关系。在二进制上他们是互相兼容的，平行关系。
 
 #################################################################

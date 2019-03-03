@@ -40,6 +40,9 @@ include($${PWD}/add_multi_link_technology.pri)
 #增加链接库头文件
 #增加SDK (lib用)
 #增加版本信息
+#增加图标
+#增加语言
+#增加第三方支持
 
 #app发布所需要的函数
 include ($${PWD}/add_deploy.pri)
@@ -69,8 +72,8 @@ include ($${PWD}/add_language.pri)
 #program icons (app only)
 include ($${PWD}/add_icons.pri)
 
-#support autotool project
-include ($${PWD}/add_support_autoconf.pri)
+#support 3rdparty tool
+include ($${PWD}/add_support.pri)
 
 ####################################################################################
 #工程常用的函数
@@ -88,6 +91,18 @@ include($${PWD}/add_setting.pri)
 #base manager 都做了以下这些事情
 ####################################################################################
 #执行一些初始工程工作。
+
+#对Windows管理员权限进行支持 用户自主选择
+defineTest(add_authority){
+    win32{
+        #以管理员运行
+        QMAKE_LFLAGS += /MANIFESTUAC:\"level=\'requireAdministrator\' uiAccess=\'false\'\"
+        #VS2013 在XP运行
+        QMAKE_LFLAGS += /SUBSYSTEM:WINDOWS,\"5.01\"
+        export(QMAKE_LFLAGS)
+    }
+    return (1)
+}
 
 #################################################################
 ##definition and configration

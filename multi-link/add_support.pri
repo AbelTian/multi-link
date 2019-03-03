@@ -1,16 +1,16 @@
 #-------------------------------------------------------------
-#add_support_autoconf.pri
-#对autotools工具管理的工程提供支持
-
-#系统层的开源C库通常使用autoconf工具管理，
-#制作Qt Wrapper的时候，直接迁移源代码比较困难，
-#这里对config.h提供兼容，提供丰富的宏定义，帮助用户配置工程。
-#直接迁移源代码，使用qmake生成源代码pri，就可以了，或许需要用户增加一点点的配置，那就简单很多了，这里帮助用户省略了很多重复劳动。
-
+#add_support.pri
+#对第三方工具提供支持
+#
 #依赖add_multi_link_technology.pri
 #依赖add_function.pri
 #依赖add_platform.pri
 #-------------------------------------------------------------
+#对autotools工具管理的工程提供支持
+#系统层的开源C库通常使用autoconf工具管理，
+#制作Qt Wrapper的时候，直接迁移源代码比较困难，
+#这里对config.h提供兼容，提供丰富的宏定义，帮助用户配置工程。
+#直接迁移源代码，使用qmake生成源代码pri，就可以了，或许需要用户增加一点点的配置，那就简单很多了，这里帮助用户省略了很多重复劳动。
 defineTest(add_support_autoconf){
     !isEmpty(1): error("add_support_autoconf() requires no argument")
 

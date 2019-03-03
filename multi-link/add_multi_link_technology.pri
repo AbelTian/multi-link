@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------------------
-#multi_link_technology.pri
+#add_multi_link_technology.pri
 #提供所有multi link技术的功能函数
 #包括设定必需目录的要求
 
