@@ -30,16 +30,19 @@
 #add_custom_static_dependent_manager_v23()
 #add_custom_static_dependent_manager2_v23()
 
-#library 编译控制 默认为动态编译
+#v2.4 library 的编译控制
 #add_dynamic_library_project()
 #add_static_library_project()
 #add_library_export_macro()
 
+#内部默认编译过程
+#add_decorate_target()
 #add_app_project()
 #add_lib_project()
+#add_default_library_project() #dynamic
+
 #add_decorate_target_name()
 #add_target_name()
-#add_decorate_target()
 #add_target()
 #add_template()
 #add_sources()
@@ -466,6 +469,46 @@ defineTest(add_lib_project) {
     export(DEFINES)
 
     return (1)
+}
+
+#默认编译为动态库 （Only lib project）
+defineTest(add_default_library_project) {
+    #isEmpty(1): error("add_default_library_project(libgroupname) requires one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    #删除静态设置
+    CONFIG -= static staticlib
+    #添加动态设置
+    CONFIG += dll
+
+    #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
+    DEFINES -= LIB_STATIC_LIBRARY
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        DEFINES += LIB_LIBRARY
+        #不再打印
+        #message(Build $${TARGET} LIB_LIBRARY is defined. build)
+    }
+
+    #链接库自有宏的改变
+    LIBGROUPNAME = $$upper($${libgroupname})
+    LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
+    LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
+    DEFINES -= $${LIBG1STATICLIB}
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        DEFINES += $${LIBG1LIB}
+        #默认过程 关闭打印。如果用户发现链接库自有宏冗余，不必担心qmake宏冗余、宏删除非常人性化，增一次，加一个，删一次，全删。
+        #message(Build $${TARGET} $${LIBG1LIB} is defined. build)
+    }
+
+    export(CONFIG)
+    export(DEFINES)
+    return(1)
 }
 
 ############################################################
