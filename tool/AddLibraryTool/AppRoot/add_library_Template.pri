@@ -50,15 +50,15 @@ defineTest(add_defines_Template){
     #--------------------------------------------
     #Template 动态编译时
     contains(DEFINES, TEMPLATE_LIBRARY){
-        #message(build Template dynamic library)
+        message(build Template dynamic library)
     }
     #Template 静态编译、链接时
     else:contains(DEFINES, TEMPLATE_STATIC_LIBRARY){
-        #message(build and link Template static library)
+        message(build and link Template static library)
     }
     #Template 动态链接时
     else:!contains(DEFINES, TEMPLATE_LIBRARY){
-        #message(link Template dynamic library)
+        message(link Template dynamic library)
     }
 
     #--------------------------------------------
