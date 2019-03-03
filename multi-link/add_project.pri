@@ -378,23 +378,22 @@ defineTest(add_custom_static_dependent_manager2_v23){
 ############################################################
 #Multi-link内部固定的编译逻辑。
 ############################################################
-#开启app工程
+#开启app工程 默认过程
 defineTest(add_app_project) {
     #add base manager对App的处理很少，App通过函数基本上能解决所有的事情
-    #macOS下必须开开bundle
+
+    #macOS下开开bundle
     contains(QSYS_PRIVATE, macOS){
         CONFIG += app_bundle
     }
 
-    #直到现在，还没有碰到需要静态链接的场合。
-    #如果需要，用户可以自行设定。
     export(CONFIG)
     export(DEFINES)
 
     return (1)
 }
 
-#开启lib工程
+#开启lib工程 默认过程 DLL
 defineTest(add_lib_project) {
     ##base manager 对lib的处理很重要
     ##区分了在不同目标下Qt library的不同形态，其实就是要求lib工程和Qt library保持一样的状态。

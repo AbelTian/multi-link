@@ -49,15 +49,15 @@ defineTest(add_defines_libqwav){
     #--------------------------------------------
     #libqwav 动态编译时
     contains(DEFINES, LIBQWAV_LIBRARY){
-        message(build libqwav dynamic library)
+        message($${TARGET} build libqwav dynamic library)
     }
     #libqwav 静态编译、链接时
     else:contains(DEFINES, LIBQWAV_STATIC_LIBRARY){
-        message(build and link libqwav static library)
+        message($${TARGET} build-link libqwav static library)
     }
     #libqwav 动态链接时
     else:!contains(DEFINES, LIBQWAV_LIBRARY){
-        message(link libqwav dynamic library)
+        message($${TARGET} link libqwav dynamic library)
     }
 
     #--------------------------------------------

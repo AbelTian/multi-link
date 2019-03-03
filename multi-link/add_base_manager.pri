@@ -111,6 +111,7 @@ include($${PWD}/add_setting.pri)
 
 add_decorate_target($${TARGET_NAME})
 
+#Multi-link 内部默认编译步骤，仅仅产生LIB_LIBRARY宏。
 contains(TEMPLATE, app) {
     #启动app工程 APP必要
     add_app_project()
@@ -119,7 +120,8 @@ contains(TEMPLATE, app) {
     add_lib_project()
 }
 
-#Multi-link提供了内部状态宏、链接库自有宏，此处强制调用动态，使自有宏生效。
+#Multi-link提供了内部状态宏、链接库自有宏。
+#此处使用手动接口，强制调用动态，使链接库自有宏生效。同步影响内部状态宏。
 #用户可以手动改变，威力强大。
 contains(TEMPLATE, lib):add_dynamic_library_project($${TARGET_NAME})
 
