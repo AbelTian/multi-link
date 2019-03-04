@@ -40,10 +40,13 @@ defineTest(add_include_QQt){
     command += $${header_path}/core
     command += $${header_path}/gui
     command += $${header_path}/widgets
-    command += $${header_path}/multimedia
     command += $${header_path}/sql
     command += $${header_path}/frame
     command += $${header_path}/printsupport
+
+    #multimedia
+    command += $${header_path}/multimedia
+    command += $${header_path}/multimedia/dmmu
 
     #charts
     command += $${header_path}/charts
@@ -77,7 +80,6 @@ defineTest(add_include_QQt){
     command += $${header_path}/exquisite/colorwidgets
     command += $${header_path}/exquisite/osdwidgets
     command += $${header_path}/exquisite/mathml
-    command += $${header_path}/exquisite/dmmu
 
     ##qr code library
     command += $${header_path}/exquisite/qrcode/qrencode
@@ -179,7 +181,6 @@ defineTest(add_defines_QQt){
 
     #link and build all need this macro
     #现在Multi-link v2里面，已经有LIB_STATIC_LIBRARY，这个宏多余了，可是由于内部逻辑复杂，更改也不简单，所以留着了。用户静态编译LibQQt，记得定义QQT_STATIC_LIBRARY，build and link。
-    #Multi-link v2.3 这个宏作为链接库的独立编译、链接控制宏，必须定义！
     contains(DEFINES, QQT_STATIC_LIBRARY) {
     }
 
@@ -213,6 +214,10 @@ defineTest(add_defines_QQt){
         #lambda also need c++11
     }
 
+    #---------------------------------------------------------------------------
+    #LibQQt系列提供独立的QQtMediaExtention库，作为LibQQt的平级功能扩展，支援大规模的、强大的、多样的多媒体功能。
+    #LibQQt依然能够独立提供完成完整的App所需功能。
+    #请查阅我的工程主页LibQQt系列工程。
     ##################MultiMedia Module###############################
     DEFINES += __MULTIMEDIA__
     #on mac qt4 has no multimedia
@@ -221,6 +226,10 @@ defineTest(add_defines_QQt){
     }
     contains (DEFINES, __MULTIMEDIA__) {
         QT += multimedia
+
+        #LOGIC CAMERA PREVIEW
+        #depend on dmmu
+        DEFINES += __LOGICCAMERAMODULE__
     }
 
     ##################PluginSupport Module###############################
@@ -288,7 +297,18 @@ defineTest(add_defines_QQt){
     }
 
     ##################QQtLogSystem Module###############################
+    #if you use qqtlogsystem, open the annotation
+    #这个宏开关可以保持开着，在软件里设置是否保存日志即可。
     DEFINES += __QQTLOGSYSTEMSUPPORT__
+
+    #---------------------------------------------------------------------------
+    #LibQQt系列提供独立的QQtInput库，作为LibQQt的平级功能扩展，支援App使用多种输入法。
+    #LibQQt依然能够独立提供完成完整的App所需功能。
+    #请查阅我的工程主页LibQQt系列工程。
+    ##################QQtInput Module###############################
+    #LibQQt R3系列版本不再提供输入法，用户可以到LibQQt工程主页查找QQtInput库，支援输入法能力。
+    #这个功能主要应用于嵌入式，如果希望将LibQQt R3使用于嵌入式领域，请约束Qt版本最小V5. (qmake v3)
+    #DEFINES += __QQTINPUTSUPPORT__
 
     ###########################################################################
     ###QQtSocketClient多组功能组件。
@@ -301,13 +321,13 @@ defineTest(add_defines_QQt){
     contains (DEFINES, __NETWORKSUPPORT__) {
         ##################SerialPort Module##################################
         #if you use qextserialport, open the annotation
-        #suggest: Qt5 use factory-packed, Qt4 use forming Qt5, extra use this.
+        #suggest: Qt5 using factory-packed, Qt4 using from Qt5, extra using this.
         #DEFINES += __QEXTSERIALPORT__
         #if compiler QtSerialPort module manual, note this line is a good idea. default: qt4 qextserialport
         lessThan(QT_MAJOR_VERSION, 5): DEFINES += __QEXTSERIALPORT__
         #to ios, use qextserialport
-        #android qt5 support serialport default?
         contains (DEFINES, __IOS__): DEFINES += __QEXTSERIALPORT__
+        #android qt5 has QtSerialport?
         contains (DEFINES, __QEXTSERIALPORT__) {
             CONFIG += thread
             unix:DEFINES += _TTY_POSIX_
@@ -317,8 +337,8 @@ defineTest(add_defines_QQt){
             #message ( __QEXTSERIALPORT__ Defined in $${TARGET})
         } else {
             #message ( __QSERIALPORT__ Defined in $${TARGET})
-            greaterThan(QT_MAJOR_VERSION, 4): QT += serialport
             lessThan(QT_MAJOR_VERSION, 5): CONFIG += serialport
+            else:QT += serialport
             unix {
                 DEFINES += _TTY_POSIX_
             } else {
@@ -412,7 +432,10 @@ defineTest(add_defines_QQt){
 
     }
 
-
+    #---------------------------------------------------------------------------
+    #LibQQt系列提供独立的QQtExquisite库，作为LibQQt的平级功能扩展，支援大规模的、多样的精美控件。
+    #LibQQt依然能够独立提供完成完整的App所需功能。
+    #请查阅我的工程主页LibQQt系列工程。
     ##################Exquisite Widgets Module###############################
     #if you use Exquisite widgets, open this annotation
     #精美模块，包含不少的精美组件，这个模块可以集中开关。
@@ -458,9 +481,6 @@ defineTest(add_defines_QQt){
                 }
             }
         }
-        #LOGIC CAMERA PREVIEW
-        #depend on dmmu
-        DEFINES += __LOGICCAMERAMODULE__
 
         #opengl module
         DEFINES += __OPENGLWIDGETS__
@@ -482,6 +502,10 @@ defineTest(add_defines_QQt){
         DEFINES += __OSDWIDGETS__
     }
 
+    #---------------------------------------------------------------------------
+    #LibQQt系列提供独立的QQtHighGrade库，作为LibQQt的平级功能扩展，支援大规模的、多样的高级特性。
+    #LibQQt依然能够独立提供完成完整的App所需功能。
+    #请查阅我的工程主页LibQQt系列工程。
     ########################################################################
     ###这个模块名为高级模块。
     ###如果初中级工程师能使用这个模块完成App，那么必定是高分实现力学员。
@@ -500,12 +524,18 @@ defineTest(add_defines_QQt){
             DEFINES += __SHAREDMEMORY_SUPPORT__
 
             ##################Message Queue Module###############################
+            #这一块有独立的MQ库。
             DEFINES += __MESSAGEQUEUE_SUPPORT__
 
-            ##################Local RawSocket Module###############################
+            ##################Named Pipe Module###############################
             DEFINES += __NAMEDPIPE_SUPPORT__
             #local socket依赖network support
+            #Qt对这个模块取名为LocalSocket，其实为local named pipe.
             !contains(DEFINES, __NETWORKSUPPORT__):DEFINES-=__NAMEDPIPE_SUPPORT__
+
+            ##################Message Queue (TCP Socket) Module###############################
+            #这个是基于Tcp Socket的，我打算使用TCP Socket实现。允许本地（+回环Socket）、局域网、广域网（服务器）
+            DEFINES += __MQ_SOCKET_SUPPORT__
 
             ##################DBUS Module###############################
             DEFINES += __DBUS_SUPPORT__
