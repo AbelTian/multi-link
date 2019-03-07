@@ -52,6 +52,12 @@
 #add_sdk_header 从发布没有后缀的头文件改为发布指定目录的头文件
 #add_sdk_header_no_postfix 帮助用户删除头文件后缀，按照指定名称，发布到指定位置
 
+#2019年3月7日 11点04分
+#待研究
+#QMAKE_LFLAGS_SONAME = -Wl,-install_name,@rpath/Frameworks/
+#QMAKE_LFLAGS += -Wl,-rpath,@loader_path/../,-rpath,@executable_path/../
+#QMAKE_LFLAGS += -Wl,-Bsymbolic
+
 ADD_SDK_PRI_PWD = $${PWD}
 
 #在build path修复app (macOS专有)
@@ -412,8 +418,9 @@ defineReplace(get_add_sdk_private){
 ##用户调用的函数
 ################################################
 
-#libgroupname<主目录名>
-#libname 这里 libname是内定的 就是用户设置的TARGET 没有修饰的那个 如果想发布成随意的样子就改变这个。这个很重要，建议不要随便改动。
+#发布链接库的SDK到SDK仓
+#libgroupname <主目录名>
+#libname 这里，libname是内定的 就是用户设置的TARGET 没有修饰的那个 如果想发布成随意的样子就改变这个。这个很重要，建议不要随便改动。
 #librealname 用户自定义名称，一般省略 = 修饰名是没有问题的。
 defineTest(add_sdk){
     #isEmpty(1): error("add_sdk(libgroupname, libname, librealname) requires at least one argument")
@@ -510,6 +517,7 @@ defineTest(add_sdk){
 }
 
 
+#发布链接库的SDK到对应平台的Qt库里
 #未实现。
 #if you want to use QQt with QT += qqt please open this feature
 defineTest(add_sdk_to_Qt){
@@ -606,6 +614,7 @@ defineTest(add_sdk_to_Qt){
     return (1)
 }
 
+#清理SDK仓的里的确定的SDK
 #未实现。
 defineTest(clean_sdk){
     #isEmpty(1): error("clean_sdk(libgroupname, libname, librealname) requires at least one argument")
@@ -757,10 +766,10 @@ defineTest(add_sdk_header_no_postfix){
 }
 
 #发布用户放置在指定目录里的头文件。
-#组名字 sdkroot下，lib组的名字
-#库名字 没有修饰的库名字 保存头文件的地方
-#头文件路径 头文件所在的特定目录
-#保存位置 相对路径 不写则为SDK ROOT下LIB的头文件根目录 （optional）
+#LIB组名字  sdkroot下，lib组的名字
+#lib库名字  没有修饰的lib库名字 保存头文件的地方
+#头文件路径  源代码位置，头文件所在的目录
+#保存位置   相对路径，不写则为SDK ROOT下lib库的头文件根目录 （optional）
 defineTest(add_sdk_header){
     isEmpty(3):error(add_sdk_header(libgroupname, libname, headerpath, headerdir) need at least three argument)
 
@@ -798,7 +807,8 @@ defineTest(add_sdk_header){
     LIB_INC_PWD = $${LIB_SDK_PWD}/$${LIB_INC_DIR}
     !isEmpty(headerdir):LIB_INC_PWD = $${LIB_INC_PWD}/$${headerdir}
 
-    HEADERFILES = $${headerpath}/*
+    HEADER_PWD = $${headerpath}
+    HEADER_FILES = $${headerpath}/*.h*
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
@@ -817,13 +827,18 @@ defineTest(add_sdk_header){
         LIB_INC_DIR~=s,/,\\,g
         LIB_INC_PWD~=s,/,\\,g
 
-        HEADERFILES~=s,/,\\,g
+        HEADER_PWD~=s,/,\\,g
+        HEADER_FILES~=s,/,\\,g
     }
 
-    message($${TARGET} copy headers $${HEADERFILES} to sdk header path $${LIB_INC_PWD})
+    message($${TARGET} copy headers $${HEADER_FILES} to sdk header path $${LIB_INC_PWD})
 
     command =
-    command += $$COPY_DIR $${HEADERFILES} $${LIB_INC_PWD}
+    equals(QMAKE_HOST.os, Windows) {
+        command += $${COPY_DIR} $${HEADER_PWD}\\*.h* $${LIB_INC_PWD}
+    else {
+        command = $$get_copy_dir_and_file($${HEADER_PWD}, "*.h*", $${LIB_INC_PWD})
+    }
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
     QMAKE_POST_LINK += $$command
@@ -860,14 +875,15 @@ defineTest(add_header_dir){
     export(APP_SOURCE_PWD)
     return (1)
 }
+
 defineTest(add_source_dir){
     APP_SOURCE_PWD = $$1
     export(APP_SOURCE_PWD)
     return (1)
 }
 
-#废弃函数 内部使用了OUT_PWD
 #这个目录用于读取sdk库文件进行发布
+#废弃函数，内部使用了OUT_PWD
 #这个目录可选设置
 #如果用户更改了编译目录DEST_DIR_TARGET，比如src/$$DEST_DIR，可以通过这里改变，当然这种设置不科学，内部依赖DEST_DIR，为什么还要用DESTDIR_TARGET。
 defineTest(add_build_dir){
