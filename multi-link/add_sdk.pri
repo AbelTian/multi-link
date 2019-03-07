@@ -808,7 +808,7 @@ defineTest(add_sdk_header){
     !isEmpty(headerdir):LIB_INC_PWD = $${LIB_INC_PWD}/$${headerdir}
 
     HEADER_PWD = $${headerpath}
-    HEADER_FILES = $${headerpath}/*.h*
+    HEADER_FILE = $${headerpath}/*.h*
 
     #这里不仅仅目标为windows的时候，才会转换，
     #开发Host为Windows的时候，都要转换。
@@ -828,16 +828,16 @@ defineTest(add_sdk_header){
         LIB_INC_PWD~=s,/,\\,g
 
         HEADER_PWD~=s,/,\\,g
-        HEADER_FILES~=s,/,\\,g
+        HEADER_FILE~=s,/,\\,g
     }
 
-    message($${TARGET} copy headers $${HEADER_FILES} to sdk header path $${LIB_INC_PWD})
+    message($${TARGET} copy headers $${HEADER_FILE} to sdk header path $${LIB_INC_PWD})
 
     command =
     equals(QMAKE_HOST.os, Windows) {
         command += $${COPY_DIR} $${HEADER_PWD}\\*.h* $${LIB_INC_PWD}
     else {
-        command = $$get_copy_dir_and_file($${HEADER_PWD}, "*.h*", $${LIB_INC_PWD})
+        command += $$get_copy_dir_and_file($${HEADER_PWD}, "*.h*", $${LIB_INC_PWD})
     }
 
     !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
