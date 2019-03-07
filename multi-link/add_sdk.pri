@@ -693,7 +693,7 @@ defineTest(clean_sdk){
 #保存位置 相对路径 不写则为头文件根目录。
 #头文件 不设置 为空 则为类名小写。头文件里包含的.h头
 defineTest(add_sdk_header_no_postfix){
-    isEmpty(3):error("add_sdk_header_no_postfix(libgroupname, libname, classname, headerdir, headername) need at least three argument.")
+    isEmpty(3):error("add_sdk_header_no_postfix(libgroupname, libname, classname, headerdir, headername) need at least three arguments.")
 
     libgroupname = $$1
     libname = $$2
@@ -771,7 +771,7 @@ defineTest(add_sdk_header_no_postfix){
 #头文件路径  源代码位置，头文件所在的目录
 #保存位置   相对路径，不写则为SDK ROOT下lib库的头文件根目录 （optional）
 defineTest(add_sdk_header){
-    isEmpty(3):error("add_sdk_header(libgroupname, libname, headerpath, headerdir) need at least three argument.")
+    isEmpty(3):error("add_sdk_header(libgroupname, libname, headerpath, headerdir) need at least three arguments.")
 
     libgroupname = $$1
     libname = $$2
@@ -836,7 +836,7 @@ defineTest(add_sdk_header){
     command =
     equals(QMAKE_HOST.os, Windows) {
         command += $${COPY_DIR} $${HEADER_PWD}\\*.h* $${LIB_INC_PWD}
-    else {
+    } else {
         command += $$get_copy_dir_and_file($${HEADER_PWD}, "*.h*", $${LIB_INC_PWD})
     }
 
