@@ -104,6 +104,18 @@ defineTest(add_authority){
     return (1)
 }
 
+#在Windows MSVC下经常使用，GCC也能用。用户自主选择
+#precompiled header
+defineTest(add_pch){
+    header_file = $$1
+    isEmpty(1):error("add_pch(header_file) need one argument.")
+
+    PRECOMPILED_HEADER = $${header_file}
+    export(PRECOMPILED_HEADER)
+
+    return (1)
+}
+
 #################################################################
 ##definition and configration
 ##need QSYS
