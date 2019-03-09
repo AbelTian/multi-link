@@ -266,7 +266,8 @@ defineReplace(get_add_Qt_lib_pri){
     }
 
     command += echo "QT.$${liblowername}.uses =" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
-    command += echo "QT.$${liblowername}.DEFINES = $${TARGET_NAME}_LIBRARY" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
+    TEMP_TARGET_NAME = $$upper($${TARGET_NAME})
+    command += echo "QT.$${liblowername}.DEFINES = $${TEMP_TARGET_NAME}_LIBRARY" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.enabled_features =" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT.$${liblowername}.disabled_features =" >> $${LIB_PRI_FILEPATH} $$CMD_SEP
     command += echo "QT_CONFIG +=" >> $${LIB_PRI_FILEPATH} $$CMD_SEP

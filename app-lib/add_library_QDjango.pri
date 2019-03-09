@@ -45,30 +45,47 @@ defineTest(add_defines_QDjango){
     #add_defines()
 
 
+    #--------------------------------------------
+    #留意 QDjango 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #根据 QDjango 使用的控制宏，修改 QDjango 编译时、链接时的不同的宏配置
+    #可以用于转换使用不同宏、两套宏控制的链接库
+    #--------------------------------------------
+    #QDjango 动态编译时
+    contains(DEFINES, QDJANGO_LIBRARY){
+        message($${TARGET} build QDjango dynamic library)
+        DEFINES += QDJANGO_SHARED QDJANGO_DB_BUILD
+    }
+    #QDjango 静态编译、链接时
+    else:contains(DEFINES, QDJANGO_STATIC_LIBRARY){
+        message($${TARGET} build-link QDjango static library)
+    }
+    #QDjango 动态链接时
+    else:!contains(DEFINES, QDJANGO_LIBRARY){
+        message($${TARGET} link QDjango dynamic library)
+        DEFINES += QDJANGO_SHARED
+    }
+
+    #--------------------------------------------
+    #添加库的宏配置信息，编译时、链接时通用，需要注意区分不同宏控制
+    #--------------------------------------------
+
     export(QT)
     export(DEFINES)
     export(CONFIG)
     return (1)
 }
 
-#留意
-defineTest(add_static_defines_QDjango){
-    #如果链接静态库，那么开启。编译也开启。
-    DEFINES += QDJANGO_STATIC_LIBRARY
-
-    add_defines_QDjango()
-
-    export(DEFINES)
-    return (1)
-}
 
 #留意
 defineTest(add_library_QDjango){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
     #add_library(QDjango, QDjango)
-    add_library(QDjango, qdjango-dbd0)
-    add_library(QDjango, qdjango-httpd0)
+    add_library(QDjango, qdjango-db)
+    add_library(QDjango, qdjango-http)
 
     return (1)
 }
@@ -81,8 +98,8 @@ defineTest(add_deploy_library_QDjango) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
     #add_deploy_libraryes(QDjango)
     #add_deploy_library(QDjango, QDjango)
-    add_deploy_library(QDjango, qdjango-dbd0)
-    add_deploy_library(QDjango, qdjango-httpd0)
+    add_deploy_library(QDjango, qdjango-db)
+    add_deploy_library(QDjango, qdjango-http)
 
     return (1)
 }
