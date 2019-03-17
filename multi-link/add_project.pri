@@ -84,11 +84,26 @@ defineTest(add_dependent_manager){
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
     #Multi-link v2.4 提供的CONFIG
-    DYCONFIG = link_$${libgroupname}
+    DY0CONFIG =
+    DYCONFIG =
+    DY0CONFIG += link_static_$${libgroupname} build_link_$${libgroupname}
+    DYCONFIG += link_$${libgroupname}
     !equals(libname, $${libgroupname}){
+        DY0CONFIG += link_static_$${libname} build_link_$${libname}
         DYCONFIG += link_$${libname}
     }
+    CONFIG -= $${DY0CONFIG}
     CONFIG += $${DYCONFIG}
+
+    #链接库，去除静态的宏
+    DY0DEFINE =
+    LIBGROUPNAME = $$upper($${libgroupname})
+    DY0DEFINE += $${LIBGROUPNAME}_STATIC_LIBRARY
+    !equals(libname, $${libgroupname}){
+        LIBNAME = $$upper($${libname})
+        DY0DEFINE += $${LIBNAME}_STATIC_LIBRARY
+    }
+    DEFINES -= $${DY0DEFINE}
 
     !equals(TARGET_NAME, $${libname}){
         exists($${pripath}/add_library_$${libgroupname}.pri) {
@@ -214,13 +229,18 @@ defineTest(add_static_dependent_manager){
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
     #Multi-link v2.4 提供的CONFIG
-    STCONFIG = link_static_$${libgroupname} build_link_$${libgroupname}
+    ST0CONFIG =
+    STCONFIG =
+    ST0CONFIG += link_$${libgroupname}
+    STCONFIG += link_static_$${libgroupname} build_link_$${libgroupname}
     !equals(libname, $${libgroupname}){
+        ST0CONFIG += link_$${libname}
         STCONFIG += link_static_$${libname} build_link_$${libname}
     }
+    CONFIG -= $${ST0CONFIG}
     CONFIG += $${STCONFIG}
 
-    #区分链接的库的重点
+    #链接库自有宏，区分链接的库的重点
     LIBGROUPNAME = $$upper($${libgroupname})
     STDEFINE = $${LIBGROUPNAME}_STATIC_LIBRARY
     !equals(libname, $${libgroupname}){
@@ -598,12 +618,16 @@ defineTest(add_dynamic_library_project) {
 
     #Multi-link v2.4 提供的链接库自有CONFIG
     #组
+    DY0CONFIG =
     DYCONFIG =
+    DY0CONFIG += build_static_$${libgroupname} build_link_$${libgroupname}
     DYCONFIG += build_$${libgroupname}
     #TARGET
     !equals(libname, $${libgroupname}){
+        DY0CONFIG += build_static_$${libname} build_link_$${libname}
         DYCONFIG += build_$${libname}
     }
+    CONFIG -= $${DY0CONFIG}
     CONFIG += $${DYCONFIG}
     message(Build $${TARGET} $${DYCONFIG} is configed. build and link)
 
@@ -666,12 +690,16 @@ defineTest(add_static_library_project) {
 
     #Multi-link v2.4 提供的链接库自有CONFIG
     #组
+    ST0CONFIG =
     STCONFIG =
+    ST0CONFIG += build_$${libgroupname}
     STCONFIG += build_static_$${libgroupname} build_link_$${libgroupname}
     #TARGET
     !equals(libname, $${libgroupname}){
+        ST0CONFIG += build_$${libname}
         STCONFIG += build_static_$${libname} build_link_$${libname}
     }
+    CONFIG -= $${ST0CONFIG}
     CONFIG += $${STCONFIG}
     message(Build $${TARGET} $${STCONFIG} is configed. build and link)
 
