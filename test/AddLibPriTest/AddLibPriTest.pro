@@ -98,5 +98,8 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(QDjango)
 }
 
+#在当前目录创建成功。
+#add_custom_dependent_manager(CCCCCCC)
+
 message(...... $$DEFINES)
 message(...... $$QT_VERSION)
