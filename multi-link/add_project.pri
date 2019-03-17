@@ -84,7 +84,10 @@ defineTest(add_dependent_manager){
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
     #Multi-link v2.4 提供的CONFIG
-    DYCONFIG = link_$${libname}
+    DYCONFIG = link_$${libgroupname}
+    !equals(libname, $${libgroupname}){
+        DYCONFIG += link_$${libname}
+    }
     CONFIG += $${DYCONFIG}
 
     !equals(TARGET_NAME, $${libname}){
@@ -211,12 +214,20 @@ defineTest(add_static_dependent_manager){
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
     #Multi-link v2.4 提供的CONFIG
-    STCONFIG = link_static_$${libname} build_link_$${libname}
+    STCONFIG = link_static_$${libgroupname} build_link_$${libgroupname}
+    !equals(libname, $${libgroupname}){
+        STCONFIG += link_static_$${libname} build_link_$${libname}
+    }
     CONFIG += $${STCONFIG}
 
     #区分链接的库的重点
-    LIBNAME = $$upper($${libname})
-    DEFINES += $${LIBNAME}_STATIC_LIBRARY
+    LIBGROUPNAME = $$upper($${libgroupname})
+    STDEFINE = $${LIBGROUPNAME}_STATIC_LIBRARY
+    !equals(libname, $${libgroupname}){
+        LIBNAME = $$upper($${libname})
+        STDEFINE += $${LIBNAME}_STATIC_LIBRARY
+    }
+    DEFINES += $${STDEFINE}
 
     !equals(TARGET_NAME, $${libname}){
         exists($${pripath}/add_library_$${libgroupname}.pri) {
@@ -548,20 +559,28 @@ defineTest(add_default_library_project) {
 #用户一般会用到内部状态宏（已废弃）、链接库自有CONFIG，链接库自有宏，那么，通过以下两个函数就可以获取到。
 #内部，对外部，真正起到控制力的是CONFIG。控制动态编译、静态编译状态的两个CONFIG。
 #Multi-link v2.4 通过以下两个函数，不仅提供链接库自有宏，而且，提供一组CONFIG。
-#编译：build_xxxlibname, build_static_xxxlibname
-#链接：link_xxxlibname, link_static_xxxlibname
+#编译：build_xxxlibname, build_static_xxxlibname build_xxxlibgroupname, build_static_xxxlibgroupname
+#链接：link_xxxlibname, link_static_xxxlibname link_xxxlibgroupname, link_static_xxxlibgroupname
 #链接库自有CONFIG、链接库自有宏同时对链接库的编译状态起到控制作用，最终由Multi-link内部CONFIG、内部状态宏决定。
+#建议使用库CONFIG、库宏，库组CONFIG、库组宏也可以使用。
 
 #强制更换为动态库 （Only lib project）
+#参数1 libgroupname 发布到的组库名称 指导一个链接库自有宏
+#参数2 libname 没有修饰的 TARGET_NAME 指导一个链接库常用自有宏
 defineTest(add_dynamic_library_project) {
-    #isEmpty(1): error("add_dynamic_library_project(libgroupname) requires one argument")
+    #isEmpty(2): error("add_dynamic_library_project(libgroupname, libname) requires two argument")
+
+    libgroupname = $$1
+    libname = $$2
 
     #库组的名
-    libgroupname = $$TARGET_NAME
-    !isEmpty(1):libgroupname=$$1
+    isEmpty(1):libgroupname = $${TARGET_NAME}
 
     #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
     !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    #库的名
+    isEmpty(2):libname = $${libgroupname}
 
     #Multi-link 的内部决定CONFIG
     #删除静态设置
@@ -578,17 +597,35 @@ defineTest(add_dynamic_library_project) {
     }
 
     #Multi-link v2.4 提供的链接库自有CONFIG
-    DYCONFIG = build_$${libgroupname}
+    #组
+    DYCONFIG =
+    DYCONFIG += build_$${libgroupname}
+    #TARGET
+    !equals(libname, $${libgroupname}){
+        DYCONFIG += build_$${libname}
+    }
     CONFIG += $${DYCONFIG}
+    message(Build $${TARGET} $${DYCONFIG} is configed. build and link)
 
     #链接库自有宏的改变
+    DY0DEF =
+    DYDEF =
     LIBGROUPNAME = $$upper($${libgroupname})
     LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
     LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
-    DEFINES -= $${LIBG1STATICLIB}
+    DY0DEF += $${LIBG1STATICLIB}
+    DYDEF += $${LIBG1LIB}
+    !equals(libname, $${libgroupname}){
+        LIBNAME = $$upper($${libname})
+        LIB1LIB = $${LIBNAME}_LIBRARY
+        LIB1STATICLIB = $${LIBNAME}_STATIC_LIBRARY
+        DY0DEF += $${LIB1STATICLIB}
+        DYDEF += $${LIB1LIB}
+    }
+    DEFINES -= $${DY0DEF}
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
-        DEFINES += $${LIBG1LIB}
-        message(Build $${TARGET} $${LIBG1LIB} is defined. build)
+        DEFINES += $${DYDEF}
+        message(Build $${TARGET} $${DYDEF} is defined. build)
     }
 
     export(CONFIG)
@@ -601,14 +638,19 @@ defineTest(add_dynamic_library_project) {
 #这个函数以更改链接库自有宏为主，更改内部状态宏为辅。
 #强制更换为静态库 （Only lib project）
 defineTest(add_static_library_project) {
-    #isEmpty(1): error("add_static_library_project(libgroupname) requires one argument")
+    #isEmpty(2): error("add_static_library_project(libgroupname, libname) requires two argument")
+
+    libgroupname = $$1
+    libname = $$2
 
     #库组的名
-    libgroupname = $$TARGET_NAME
-    !isEmpty(1):libgroupname=$$1
+    isEmpty(1):libgroupname = $${TARGET_NAME}
 
     #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
     !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    #库的名
+    isEmpty(2):libname = $${libgroupname}
 
     #Multi-link 的内部决定CONFIG
     #删除动态设置
@@ -623,16 +665,36 @@ defineTest(add_static_library_project) {
     #message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
 
     #Multi-link v2.4 提供的链接库自有CONFIG
-    STCONFIG = build_static_$${libgroupname} build_link_$${libgroupname}
+    #组
+    STCONFIG =
+    STCONFIG += build_static_$${libgroupname} build_link_$${libgroupname}
+    #TARGET
+    !equals(libname, $${libgroupname}){
+        STCONFIG += build_static_$${libname} build_link_$${libname}
+    }
     CONFIG += $${STCONFIG}
+    message(Build $${TARGET} $${STCONFIG} is configed. build and link)
 
     #链接库自有宏的改变
+    #组
+    ST0DEF =
+    STDEF =
     LIBGROUPNAME = $$upper($${libgroupname})
     LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
     LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
-    DEFINES -= $${LIBG1LIB}
-    DEFINES += $${LIBG1STATICLIB}
-    message(Build $${TARGET} $${LIBG1STATICLIB} is defined. build and link)
+    ST0DEF += $${LIBG1LIB}
+    STDEF += $${LIBG1STATICLIB}
+    #TARGET
+    !equals(libname, $${libgroupname}){
+        LIBNAME = $$upper($${libname})
+        LIB1LIB = $${LIBNAME}_LIBRARY
+        LIB1STATICLIB = $${LIBNAME}_STATIC_LIBRARY
+        ST0DEF += $${LIB1LIB}
+        STDEF += $${LIB1STATICLIB}
+    }
+    DEFINES -= $${ST0DEF}
+    DEFINES += $${STDEF}
+    message(Build $${TARGET} $${STDEF} is defined. build and link)
 
     export(CONFIG)
     export(DEFINES)
