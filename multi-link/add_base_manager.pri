@@ -150,7 +150,7 @@ contains(TEMPLATE, app) {
 #Multi-link提供了内部状态宏、链接库自有宏。
 #此处使用手动接口，强制调用动态，使链接库自有宏生效。同步影响内部状态宏。
 #用户可以手动改变，威力强大。
-contains(TEMPLATE, lib):add_default_library_project($${TARGET_NAME})
+contains(TEMPLATE, lib):add_dynamic_library_project()
 
 #################################################################
 #公共的基础header.pri，这个的作用在于不需要区分app和lib的设置都在这里面。
