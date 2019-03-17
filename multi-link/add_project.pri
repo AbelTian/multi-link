@@ -128,6 +128,7 @@ defineTest(add_dependent_manager){
     }
 
     export(CONFIG)
+    export(DEFINES)
 
     return (1)
 }

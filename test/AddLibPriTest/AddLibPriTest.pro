@@ -102,7 +102,9 @@ contains(CONFIG, link_some_libraries) {
 #add_custom_dependent_manager(CCCCCCC)
 
 add_dependent_manager(QQt)
+add_dependent_manager(zlib, z)
 add_static_dependent_manager(zlib, z)
+add_dependent_manager(zlib, z)
 
 message(...... $$CONFIG)
 message(...... $$DEFINES)
