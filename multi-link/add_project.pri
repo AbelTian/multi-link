@@ -39,6 +39,7 @@
 #add_decorate_target()
 #add_app_project()
 #add_lib_project()
+#add_default_library_project() #dynamic
 
 #add_decorate_target_name()
 #add_target_name()
@@ -82,6 +83,10 @@ defineTest(add_dependent_manager){
     isEmpty(libname):libname = $${libgroupname}
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
+    #Multi-link v2.4 提供的CONFIG
+    DYCONFIG = link_$${libname}
+    CONFIG += $${DYCONFIG}
+
     !equals(TARGET_NAME, $${libname}){
         exists($${pripath}/add_library_$${libgroupname}.pri) {
             include ($${pripath}/add_library_$${libgroupname}.pri)
@@ -103,6 +108,9 @@ defineTest(add_dependent_manager){
         message(please check your target name $$TARGET_NAME and lib name $$libname)
         return (0)
     }
+
+    export(CONFIG)
+
     return (1)
 }
 
@@ -202,6 +210,11 @@ defineTest(add_static_dependent_manager){
     isEmpty(libname):libname = $${libgroupname}
     isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
 
+    #Multi-link v2.4 提供的CONFIG
+    STCONFIG = link_static_$${libname} build_link_$${libname}
+    CONFIG += $${STCONFIG}
+
+    #区分链接的库的重点
     LIBNAME = $$upper($${libname})
     DEFINES += $${LIBNAME}_STATIC_LIBRARY
 
@@ -225,6 +238,7 @@ defineTest(add_static_dependent_manager){
         return (0)
     }
 
+    export(CONFIG)
     export(DEFINES)
 
     return (1)
@@ -473,17 +487,10 @@ defineTest(add_lib_project) {
     return (1)
 }
 
-############################################################
-#Multi-link内部有固定的编译逻辑，可以从这里强制改变。
-#Multi-link内部默认只有在ios里，才会静态编译和链接library。
-############################################################
-#Multi-link内部默认为动态链接过程，LIB_LIBRARY LIB_STATIC_LIBRARY是顺便产生的内部状态宏。这个宏只能编译的时候用，对于链接工作，不能用。
-#Multi-link内部状态宏，止步于工程管理，不可以给源代码用，那样不明智。
-#针对本库
-#这个函数以更改链接库自有宏为主，更改内部状态宏为辅。
-#强制更换为动态库 （Only lib project）
-defineTest(add_dynamic_library_project) {
-    #isEmpty(1): error("add_dynamic_library_project(libgroupname) requires one argument")
+#默认编译为动态库 （Only lib project）
+#仅仅内部状态CONFIG、宏改变，不影响链接库自有CONFIG、宏。
+defineTest(add_default_library_project) {
+    #isEmpty(1): error("add_default_library_project(libgroupname) requires one argument")
 
     #库组的名
     libgroupname = $$TARGET_NAME
@@ -492,6 +499,7 @@ defineTest(add_dynamic_library_project) {
     #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
     !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
 
+    #Multi-link 的内部决定CONFIG
     #删除静态设置
     CONFIG -= static staticlib
     #添加动态设置
@@ -504,6 +512,74 @@ defineTest(add_dynamic_library_project) {
         #不再打印
         #message(Build $${TARGET} LIB_LIBRARY is defined. build)
     }
+
+    #Multi-link 内部编译逻辑，彻底关闭提供链接库自有宏。
+    #链接库自有宏的改变
+    #LIBGROUPNAME = $$upper($${libgroupname})
+    #LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
+    #LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
+    #DEFINES -= $${LIBG1STATICLIB}
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    #    DEFINES += $${LIBG1LIB}
+    #    #默认过程 关闭打印。如果用户发现链接库自有宏冗余，不必担心qmake宏冗余、宏删除非常人性化，增一次，加一个，删一次，全删。
+    #    message(Build $${TARGET} $${LIBG1LIB} is defined. build)
+    #}
+
+    export(CONFIG)
+    export(DEFINES)
+    return(1)
+}
+
+############################################################
+#Multi-link内部有固定的编译逻辑，可以从这里强制改变。
+#Multi-link内部默认只有在ios里，才会静态编译和链接library。
+############################################################
+#Multi-link内部默认为动态链接过程，LIB_LIBRARY LIB_STATIC_LIBRARY是顺便产生的内部状态宏。这个宏只能编译的时候用，对于链接工作，不能用。
+#Multi-link内部状态宏，止步于工程管理，不可以给源代码用，那样不明智。
+#针对本库
+#这个函数以更改链接库自有宏为主，更改内部状态宏为辅。
+#Multi-link v2.4 升级
+#以上说法不准确，
+#v2.4以前，Multi-link 提供内部CONFIG，内部状态宏，链接库自有CONFIG，链接库自有宏，三种编译状态，
+#v2.4以后，由于链接库自有宏存在一个使用问题，内部的默认编译逻辑影响了自有宏的名字，外部有能力出现各种名字，现在，为了规避掉内部对用户设置的影响，我进行了升级。
+#Multi-link v2.4 的默认编译逻辑，仅仅提供内部CONFIG，内部状态宏。
+#链接库自有CONFIG，自有宏由用户调用以下函数产生。
+
+#用户一般会用到内部状态宏（已废弃）、链接库自有CONFIG，链接库自有宏，那么，通过以下两个函数就可以获取到。
+#内部，对外部，真正起到控制力的是CONFIG。控制动态编译、静态编译状态的两个CONFIG。
+#Multi-link v2.4 通过以下两个函数，不仅提供链接库自有宏，而且，提供一组CONFIG。
+#编译：build_xxxlibname, build_static_xxxlibname
+#链接：link_xxxlibname, link_static_xxxlibname
+#链接库自有CONFIG、链接库自有宏同时对链接库的编译状态起到控制作用，最终由Multi-link内部CONFIG、内部状态宏决定。
+
+#强制更换为动态库 （Only lib project）
+defineTest(add_dynamic_library_project) {
+    #isEmpty(1): error("add_dynamic_library_project(libgroupname) requires one argument")
+
+    #库组的名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
+    !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
+
+    #Multi-link 的内部决定CONFIG
+    #删除静态设置
+    CONFIG -= static staticlib
+    #添加动态设置
+    CONFIG += dll
+
+    #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
+    DEFINES -= LIB_STATIC_LIBRARY
+    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        DEFINES += LIB_LIBRARY
+        #不再打印
+        #message(Build $${TARGET} LIB_LIBRARY is defined. build)
+    }
+
+    #Multi-link v2.4 提供的链接库自有CONFIG
+    DYCONFIG = build_$${libgroupname}
+    CONFIG += $${DYCONFIG}
 
     #链接库自有宏的改变
     LIBGROUPNAME = $$upper($${libgroupname})
@@ -534,6 +610,7 @@ defineTest(add_static_library_project) {
     #如果设置了 LIB_BUILD_TARGET_NAME ，那么服从 LIB_BUILD_TARGET_NAME 。
     !equals(LIB_BUILD_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_BUILD_TARGET_NAME}
 
+    #Multi-link 的内部决定CONFIG
     #删除动态设置
     CONFIG -= dll
     #添加静态设置
@@ -544,6 +621,10 @@ defineTest(add_static_library_project) {
     DEFINES += LIB_STATIC_LIBRARY
     #不再打印
     #message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+
+    #Multi-link v2.4 提供的链接库自有CONFIG
+    STCONFIG = build_static_$${libgroupname} build_link_$${libgroupname}
+    CONFIG += $${STCONFIG}
 
     #链接库自有宏的改变
     LIBGROUPNAME = $$upper($${libgroupname})

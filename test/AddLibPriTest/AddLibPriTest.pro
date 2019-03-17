@@ -101,5 +101,9 @@ contains(CONFIG, link_some_libraries) {
 #在当前目录创建成功。
 #add_custom_dependent_manager(CCCCCCC)
 
+add_dependent_manager(QQt)
+add_static_dependent_manager(libqwav)
+
+message(...... $$CONFIG)
 message(...... $$DEFINES)
 message(...... $$QT_VERSION)
