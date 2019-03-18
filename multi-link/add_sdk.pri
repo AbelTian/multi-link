@@ -615,158 +615,7 @@ defineTest(add_sdk_to_Qt){
     return (1)
 }
 
-#清理SDK仓的里的确定的SDK
-#未实现。
-defineTest(clean_sdk){
-    #isEmpty(1): error("clean_sdk(libgroupname, libname, librealname) requires at least one argument")
-    !isEmpty(4): error("clean_sdk(libgroupname, libname, librealname) requires at most three argument")
-
-    #LIB_SDK_ROOT下
-
-    #主目录名
-    libgroupname = $$TARGET_NAME
-    !isEmpty(1):libgroupname=$$1
-
-    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
-    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
-
-    #不依赖libgroupname
-    libname = $$TARGET_NAME
-    !isEmpty(2): libname = $$2
-
-    #依赖libname
-    librealname = $$add_decorate_target_name($$libname)
-    !isEmpty(3): librealname = $$3
-
-    #liblowername依赖librealname
-    liblowername = $$lower($${librealname})
-
-    #LIB std dir is not same to app std dir
-    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
-
-    #sdk path
-    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
-    #message(QQt sdk install here:$${LIB_SDK_PWD})
-
-    LIB_SDK_ALL1 = $${LIB_SDK_PWD}/lib/*$${libname}.*
-    LIB_SDK_ALL2 = $${LIB_SDK_PWD}/lib/*$${librealname}.*
-    LIB_SDK_ALL3 = $${LIB_SDK_PWD}/bin/*$${libname}.*
-    LIB_SDK_ALL4 = $${LIB_SDK_PWD}/bin/*$${librealname}.*
-    LIB_SDK_ALL5 = $${LIB_SDK_PWD}/include/$${libname}/*
-
-    #这里不仅仅目标为windows的时候，才会转换，
-    #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
-    equals(QMAKE_HOST.os, Windows) {
-        LIB_SDK_ROOT~=s,/,\\,g
-
-        QSYS_STD_DIR~=s,/,\\,g
-        LIB_STD_DIR~=s,/,\\,g
-        LIB_SDK_PWD~=s,/,\\,g
-
-        LIB_SDK_ALL1~=s,/,\\,g
-        LIB_SDK_ALL2~=s,/,\\,g
-        LIB_SDK_ALL3~=s,/,\\,g
-        LIB_SDK_ALL4~=s,/,\\,g
-        LIB_SDK_ALL5~=s,/,\\,g
-    }
-
-    command += $$RM_DIR $${LIB_SDK_ALL1} $$CMD_SEP
-    command += $$RM_DIR $${LIB_SDK_ALL2} $$CMD_SEP
-    command += $$RM_DIR $${LIB_SDK_ALL3} $$CMD_SEP
-    command += $$RM_DIR $${LIB_SDK_ALL4} $$CMD_SEP
-    command += $$RM_DIR $${LIB_SDK_ALL5}
-    #message($$command)
-
-    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK += $$CMD_SEP
-    QMAKE_PRE_LINK += $$command
-
-    export(QMAKE_PRE_LINK)
-
-    return (1)
-}
-
-#发布没有后缀名的头文件
-#帮助用户把头文件后缀去掉，按照指定的名字，发布到指定的位置。
-#sdkroot下，主目录名 lib组
-#库名字 没有修饰的库名字 保存头文件的地方
-#类名 头文件的名称
-#保存位置 相对路径 不写则为头文件根目录。
-#头文件 不设置 为空 则为类名小写。头文件里包含的.h头
-defineTest(add_sdk_header_no_postfix){
-    isEmpty(3):error("add_sdk_header_no_postfix(libgroupname, libname, classname, headerdir, headername) need at least three arguments.")
-
-    libgroupname = $$1
-    libname = $$2
-    classname = $$3
-    headerdir = $$4
-    headername = $$5
-
-    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
-    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
-
-    #不依赖libgroupname
-    isEmpty(libname):libname = $$TARGET_NAME
-
-    #依赖classname
-    isEmpty(headername):headername = $$lower($${classname}).h
-
-    #LIB std dir is not same to app std dir
-    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
-
-    #sdk path
-    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
-    #message(QQt sdk install here:$${LIB_SDK_PWD})
-
-    LIB_INC_DIR = include/$${libname}
-    contains(QMAKE_HOST.os, Darwin){
-        contains(CONFIG, lib_bundle) {
-            LIB_INC_DIR = lib/$${libname}.framework/Headers
-        }
-    }
-
-    !isEmpty(headerdir):headerdir=$${headerdir}/
-    HEADER_FILE = $${headerdir}$${classname}
-
-    #这里不仅仅目标为windows的时候，才会转换，
-    #开发Host为Windows的时候，都要转换。
-    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
-    equals(QMAKE_HOST.os, Windows) {
-        APP_BUILD_ROOT~=s,/,\\,g
-        LIB_SDK_ROOT~=s,/,\\,g
-        APP_DEPLOY_ROOT~=s,/,\\,g
-
-        QSYS_STD_DIR~=s,/,\\,g
-        LIB_STD_DIR~=s,/,\\,g
-        LIB_DST_DIR~=s,/,\\,g
-        LIB_BUILD_PWD~=s,/,\\,g
-        LIB_SDK_PWD~=s,/,\\,g
-
-        LIB_INC_DIR~=s,/,\\,g
-        HEADER_FILE~=s,/,\\,g
-    }
-
-    message($${TARGET} add header $${headername} to $${HEADER_FILE})
-
-    command =
-    command += $$CD $${LIB_SDK_PWD} $$CMD_SEP
-    command += $$CD $${LIB_INC_DIR} $$CMD_SEP
-
-    contains(QMAKE_HOST.os, Windows){
-        command += $${ADD_SDK_PRI_PWD}/win_write_header.bat $${headername} $${HEADER_FILE}
-    } else {
-        command += chmod +x $${ADD_SDK_PRI_PWD}/linux_write_header.sh $$CMD_SEP
-        command += $${ADD_SDK_PRI_PWD}/linux_write_header.sh $${headername} $${HEADER_FILE}
-    }
-
-    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
-    QMAKE_POST_LINK += $$command
-    export(QMAKE_POST_LINK)
-
-    return(1)
-}
-
-#发布用户放置在指定目录里的头文件。
+#发布用户放置在指定目录里的头文件，*.h*
 #LIB组名字  sdkroot下，lib组的名字
 #lib库名字  没有修饰的lib库名字 保存头文件的地方
 #头文件路径  源代码位置，头文件所在的目录
@@ -848,7 +697,327 @@ defineTest(add_sdk_header){
     return(1)
 }
 
-#add_sdk
+#发布用户放置在指定目录里的头文件，所有后缀
+#LIB组名字  sdkroot下，lib组的名字
+#lib库名字  没有修饰的lib库名字 保存头文件的地方
+#头文件路径  源代码位置，头文件所在的目录
+#保存位置   相对路径，不写则为SDK ROOT下lib库的头文件根目录 （optional）
+defineTest(add_sdk_header_all){
+    isEmpty(3):error("add_sdk_header_all(libgroupname, libname, headerpath, headerdir) need at least three arguments.")
+
+    libgroupname = $$1
+    libname = $$2
+    headerpath = $$3
+    headerdir = $$4
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
+    #不依赖libgroupname
+    isEmpty(libname):libname = $$TARGET_NAME
+
+    #headerpath 为空
+    isEmpty(headerpath):headerpath = $${PWD}
+
+    #headerdir 为空
+    isEmpty(headerdir):headerdir =
+
+    #LIB std dir is not same to app std dir
+    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+
+    #sdk path
+    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
+    #message(QQt sdk install here:$${LIB_SDK_PWD})
+
+    LIB_INC_DIR = include/$${libname}
+    contains(QMAKE_HOST.os, Darwin){
+        contains(CONFIG, lib_bundle) {
+            LIB_INC_DIR = lib/$${libname}.framework/Headers
+        }
+    }
+
+    LIB_INC_PWD = $${LIB_SDK_PWD}/$${LIB_INC_DIR}
+    !isEmpty(headerdir):LIB_INC_PWD = $${LIB_INC_PWD}/$${headerdir}
+
+    HEADER_PWD = $${headerpath}
+    HEADER_FILE = $${headerpath}/*
+
+    #这里不仅仅目标为windows的时候，才会转换，
+    #开发Host为Windows的时候，都要转换。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_BUILD_ROOT~=s,/,\\,g
+        LIB_SDK_ROOT~=s,/,\\,g
+        APP_DEPLOY_ROOT~=s,/,\\,g
+
+        QSYS_STD_DIR~=s,/,\\,g
+        LIB_STD_DIR~=s,/,\\,g
+        LIB_DST_DIR~=s,/,\\,g
+        LIB_BUILD_PWD~=s,/,\\,g
+        LIB_SDK_PWD~=s,/,\\,g
+
+        LIB_INC_DIR~=s,/,\\,g
+        LIB_INC_PWD~=s,/,\\,g
+
+        HEADER_PWD~=s,/,\\,g
+        HEADER_FILE~=s,/,\\,g
+    }
+
+    message($${TARGET} copy headers $${HEADER_FILE} to sdk header path $${LIB_INC_PWD})
+
+    command =
+    equals(QMAKE_HOST.os, Windows) {
+        command += $${COPY_DIR} $${HEADER_PWD}\\* $${LIB_INC_PWD}
+    } else {
+        command += $$get_copy_dir_and_file($${HEADER_PWD}, "*", $${LIB_INC_PWD})
+    }
+
+    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
+    QMAKE_POST_LINK += $$command
+    export(QMAKE_POST_LINK)
+
+    return(1)
+}
+
+#发布用户放置在指定目录里的头文件，可选后缀
+#LIB组名字  sdkroot下，lib组的名字
+#lib库名字  没有修饰的lib库名字 保存头文件的地方
+#头文件路径  源代码位置，头文件所在的目录
+#头文件后缀  源代码位置，头文件的后缀，通配，默认为*.h*
+#保存位置   相对路径，不写则为SDK ROOT下lib库的头文件根目录 （optional）
+defineTest(add_sdk_header_ex){
+    isEmpty(3):error("add_sdk_header_ex(libgroupname, libname, headerpath, headerpostfix, headerdir) need at least three arguments.")
+
+    libgroupname = $$1
+    libname = $$2
+    headerpath = $$3
+    headerpostfix = $$4
+    headerdir = $$5
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
+    #不依赖libgroupname
+    isEmpty(libname):libname = $$TARGET_NAME
+
+    #headerpath 为空
+    isEmpty(headerpath):headerpath = $${PWD}
+
+    #headerpostfix 为空
+    isEmpty(headerpostfix):headerpostfix = *.h*
+
+    #headerdir 为空
+    isEmpty(headerdir):headerdir =
+
+    #LIB std dir is not same to app std dir
+    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+
+    #sdk path
+    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
+    #message(QQt sdk install here:$${LIB_SDK_PWD})
+
+    LIB_INC_DIR = include/$${libname}
+    contains(QMAKE_HOST.os, Darwin){
+        contains(CONFIG, lib_bundle) {
+            LIB_INC_DIR = lib/$${libname}.framework/Headers
+        }
+    }
+
+    LIB_INC_PWD = $${LIB_SDK_PWD}/$${LIB_INC_DIR}
+    !isEmpty(headerdir):LIB_INC_PWD = $${LIB_INC_PWD}/$${headerdir}
+
+    HEADER_PWD = $${headerpath}
+    HEADER_FILE = $${headerpath}/$${headerpostfix}
+
+    #这里不仅仅目标为windows的时候，才会转换，
+    #开发Host为Windows的时候，都要转换。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_BUILD_ROOT~=s,/,\\,g
+        LIB_SDK_ROOT~=s,/,\\,g
+        APP_DEPLOY_ROOT~=s,/,\\,g
+
+        QSYS_STD_DIR~=s,/,\\,g
+        LIB_STD_DIR~=s,/,\\,g
+        LIB_DST_DIR~=s,/,\\,g
+        LIB_BUILD_PWD~=s,/,\\,g
+        LIB_SDK_PWD~=s,/,\\,g
+
+        LIB_INC_DIR~=s,/,\\,g
+        LIB_INC_PWD~=s,/,\\,g
+
+        HEADER_PWD~=s,/,\\,g
+        HEADER_FILE~=s,/,\\,g
+    }
+
+    message($${TARGET} copy headers $${HEADER_FILE} to sdk header path $${LIB_INC_PWD})
+
+    command =
+    equals(QMAKE_HOST.os, Windows) {
+        command += $${COPY_DIR} $${HEADER_PWD}\\$${headerpostfix} $${LIB_INC_PWD}
+    } else {
+        command += $$get_copy_dir_and_file($${HEADER_PWD}, "$${headerpostfix}", $${LIB_INC_PWD})
+    }
+
+    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
+    QMAKE_POST_LINK += $$command
+    export(QMAKE_POST_LINK)
+
+    return(1)
+}
+
+#发布没有后缀名的头文件
+#帮助用户把头文件后缀去掉，按照指定的名字，发布到指定的位置。
+#主目录名  sdkroot下，lib组
+#库名字   没有修饰的库名字 保存头文件的地方
+#类名     头文件的名称
+#保存位置  相对路径 不写则为头文件根目录。
+#头文件   不设置 为空 则为类名小写。头文件里包含的.h头
+defineTest(add_sdk_header_no_postfix){
+    isEmpty(3):error("add_sdk_header_no_postfix(libgroupname, libname, classname, headerdir, headername) need at least three arguments.")
+
+    libgroupname = $$1
+    libname = $$2
+    classname = $$3
+    headerdir = $$4
+    headername = $$5
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
+    #不依赖libgroupname
+    isEmpty(libname):libname = $$TARGET_NAME
+
+    #依赖classname
+    isEmpty(headername):headername = $$lower($${classname}).h
+
+    #LIB std dir is not same to app std dir
+    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+
+    #sdk path
+    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
+    #message(QQt sdk install here:$${LIB_SDK_PWD})
+
+    LIB_INC_DIR = include/$${libname}
+    contains(QMAKE_HOST.os, Darwin){
+        contains(CONFIG, lib_bundle) {
+            LIB_INC_DIR = lib/$${libname}.framework/Headers
+        }
+    }
+
+    !isEmpty(headerdir):headerdir=$${headerdir}/
+    HEADER_FILE = $${headerdir}$${classname}
+
+    #这里不仅仅目标为windows的时候，才会转换，
+    #开发Host为Windows的时候，都要转换。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_BUILD_ROOT~=s,/,\\,g
+        LIB_SDK_ROOT~=s,/,\\,g
+        APP_DEPLOY_ROOT~=s,/,\\,g
+
+        QSYS_STD_DIR~=s,/,\\,g
+        LIB_STD_DIR~=s,/,\\,g
+        LIB_DST_DIR~=s,/,\\,g
+        LIB_BUILD_PWD~=s,/,\\,g
+        LIB_SDK_PWD~=s,/,\\,g
+
+        LIB_INC_DIR~=s,/,\\,g
+        HEADER_FILE~=s,/,\\,g
+    }
+
+    message($${TARGET} add header $${headername} to $${HEADER_FILE})
+
+    command =
+    command += $$CD $${LIB_SDK_PWD} $$CMD_SEP
+    command += $$CD $${LIB_INC_DIR} $$CMD_SEP
+
+    contains(QMAKE_HOST.os, Windows){
+        command += $${ADD_SDK_PRI_PWD}/win_write_header.bat $${headername} $${HEADER_FILE}
+    } else {
+        command += chmod +x $${ADD_SDK_PRI_PWD}/linux_write_header.sh $$CMD_SEP
+        command += $${ADD_SDK_PRI_PWD}/linux_write_header.sh $${headername} $${HEADER_FILE}
+    }
+
+    !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK+=$$CMD_SEP
+    QMAKE_POST_LINK += $$command
+    export(QMAKE_POST_LINK)
+
+    return(1)
+}
+
+#清理SDK仓的里的确定的SDK
+#未实现。
+defineTest(clean_sdk){
+    #isEmpty(1): error("clean_sdk(libgroupname, libname, librealname) requires at least one argument")
+    !isEmpty(4): error("clean_sdk(libgroupname, libname, librealname) requires at most three argument")
+
+    #LIB_SDK_ROOT下
+
+    #主目录名
+    libgroupname = $$TARGET_NAME
+    !isEmpty(1):libgroupname=$$1
+
+    #如果设置了LIB_SDK_TARGET_NAME，那么服从LIB_SDK_TARGET_NAME。
+    !equals(LIB_SDK_TARGET_NAME, $${TARGET_NAME}):libgroupname=$${LIB_SDK_TARGET_NAME}
+
+    #不依赖libgroupname
+    libname = $$TARGET_NAME
+    !isEmpty(2): libname = $$2
+
+    #依赖libname
+    librealname = $$add_decorate_target_name($$libname)
+    !isEmpty(3): librealname = $$3
+
+    #liblowername依赖librealname
+    liblowername = $$lower($${librealname})
+
+    #LIB std dir is not same to app std dir
+    LIB_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+
+    #sdk path
+    LIB_SDK_PWD = $${LIB_SDK_ROOT}/$${LIB_STD_DIR}
+    #message(QQt sdk install here:$${LIB_SDK_PWD})
+
+    LIB_SDK_ALL1 = $${LIB_SDK_PWD}/lib/*$${libname}.*
+    LIB_SDK_ALL2 = $${LIB_SDK_PWD}/lib/*$${librealname}.*
+    LIB_SDK_ALL3 = $${LIB_SDK_PWD}/bin/*$${libname}.*
+    LIB_SDK_ALL4 = $${LIB_SDK_PWD}/bin/*$${librealname}.*
+    LIB_SDK_ALL5 = $${LIB_SDK_PWD}/include/$${libname}/*
+
+    #这里不仅仅目标为windows的时候，才会转换，
+    #开发Host为Windows的时候，都要转换。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    equals(QMAKE_HOST.os, Windows) {
+        LIB_SDK_ROOT~=s,/,\\,g
+
+        QSYS_STD_DIR~=s,/,\\,g
+        LIB_STD_DIR~=s,/,\\,g
+        LIB_SDK_PWD~=s,/,\\,g
+
+        LIB_SDK_ALL1~=s,/,\\,g
+        LIB_SDK_ALL2~=s,/,\\,g
+        LIB_SDK_ALL3~=s,/,\\,g
+        LIB_SDK_ALL4~=s,/,\\,g
+        LIB_SDK_ALL5~=s,/,\\,g
+    }
+
+    command += $$RM_DIR $${LIB_SDK_ALL1} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL2} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL3} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL4} $$CMD_SEP
+    command += $$RM_DIR $${LIB_SDK_ALL5}
+    #message($$command)
+
+    !isEmpty(QMAKE_PRE_LINK):QMAKE_PRE_LINK += $$CMD_SEP
+    QMAKE_PRE_LINK += $$command
+
+    export(QMAKE_PRE_LINK)
+
+    return (1)
+}
+
+# = add_sdk
 defineTest(add_export){
     libgroupname = $$1
     libname = $$2
