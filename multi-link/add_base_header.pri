@@ -59,8 +59,10 @@ msvc {
     #LibQQt QQtApplication类，帮助用户进行运行时编码设定，设定为UTF-8。
 
     #指定/mp编译选项，编译器将使用并行编译，同时起多个编译进程并行编译不同的cpp
-    msvc:MSVC_CCFLAGS += /MP
+    #msvc:MSVC_CCFLAGS += /MP
     #指出：这个FLAG只能用于MSVC
+    #这个功能可用，可是MSVC并行编译卡死IDE，不方便，所以默认不开开。
+    #add_support.pri里面对MSVC特有的诸多选项进行了支持。
 
     msvc:QMAKE_CFLAGS += $${MSVC_CCFLAGS}
     msvc:QMAKE_CXXFLAGS += $${MSVC_CCFLAGS}
@@ -68,8 +70,8 @@ msvc {
     #指定stable.h这个头文件作为编译预处理文件，MFC里这个文件一般叫stdafx.h 然后在 stable.h里 包含你所用到的所有 Qt 头文件
     #在.pro 文件中加入一行, 加在这里，加速编译。
     #msvc:PRECOMPILED_HEADER = $${PWD}/lib-qt.h
-    #指出：precompiler header只能用于MSVC
-    #这个功能可用，可是编译问题比较多，不方便，所以默认不开开。
+    #指出：precompiler header经常在MSVC中使用，gcc也可以使用。
+    #这个功能可用，可是MSVC PCH编译问题比较多，不方便，所以默认不开开。
 }
 
 #if some bug occured, maybe this help me, close some warning

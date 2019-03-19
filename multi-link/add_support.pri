@@ -192,3 +192,89 @@ defineTest(add_support_autoconf){
 
     return (1)
 }
+
+#静态链接MultiThread库 LIBCMT[D].LIB
+#link_static_mt, release:/MT debug:/MTd
+#动态链接MultiThread库 MSVCRT[D].LIB MSVCRT[D].DLL
+#link_mt, release:/MD debug:/MDd
+
+#在内存管理方面，link_mt 有优势，用户DLL、LIB、APP只使用同一套MT-DLL的代码。
+#用户程序体积小
+#用户不必携带VS运行库，安装VS2015 VS2017运行时库即可。
+#二选一，一般选择 link_mt
+
+#link_mt
+defineTest(add_support_msvc_link_mt){
+
+    LINKFLAG =
+    CONFIG(debug, debug|release|profile){
+        #动态链接 MSVCRTD.LIB MSVCRTD.DLL
+        LINKFLAG += /MDd /O2 /Zi
+    } else:CONFIG(release, debug|release|profile){
+        #动态链接 MSVCRT.LIB MSVCRT.DLL
+        LINKFLAG += /MD /O2 /Zi
+    } else {
+        #动态链接 MSVCRT.LIB MSVCRT.DLL
+        LINKFLAG += /MD /O2 /Zi
+    }
+
+    #/MD[d] 必须要这个宏
+    DEFINES += _AFXDLL
+
+    QMAKE_CFLAGS += $${LINKFLAG}
+    QMAKE_CXXFLAGS += $${LINKFLAG}
+
+    #清理静态链接的FLAG
+    LINK0FLAG = /MT /MTd
+    QMAKE_CFLAGS -= $${LINK0FLAG}
+    QMAKE_CXXFLAGS -= $${LINK0FLAG}
+
+    export(QMAKE_CFLAGS)
+    export(QMAKE_CXXFLAGS)
+    export(DEFINES)
+
+    return (1)
+}
+
+#link_static_mt
+defineTest(add_support_msvc_link_static_mt){
+
+    LINKFLAG =
+    CONFIG(debug, debug|release|profile){
+        #静态链接 LIBCMTD.LIB
+        LINKFLAG += /MTd /O2 /Zi
+    } else:CONFIG(release, debug|release|profile){
+        #静态链接 LIBCMT.LIB
+        LINKFLAG += /MT /O2 /Zi
+    } else {
+        #静态链接 LIBCMT.LIB
+        LINKFLAG += /MT /O2 /Zi
+    }
+
+    QMAKE_CFLAGS += $${LINKFLAG}
+    QMAKE_CXXFLAGS += $${LINKFLAG}
+
+    #清理动态链接的FLAG
+    LINK0FLAG = /MD /MDd
+    QMAKE_CFLAGS -= $${LINK0FLAG}
+    QMAKE_CXXFLAGS -= $${LINK0FLAG}
+
+    export(QMAKE_CFLAGS)
+    export(QMAKE_CXXFLAGS)
+
+    return (1)
+}
+
+#并行编译
+#/MP
+defineTest(add_support_msvc_parallel){
+    #非并发编译还是有点用的，IDE不至于卡死。
+    LINKFLAG = /MP
+
+    QMAKE_CFLAGS += $${LINKFLAG}
+    QMAKE_CXXFLAGS += $${LINKFLAG}
+    export(QMAKE_CFLAGS)
+    export(QMAKE_CXXFLAGS)
+
+    return (1)
+}

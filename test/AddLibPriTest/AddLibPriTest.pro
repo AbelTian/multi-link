@@ -103,12 +103,12 @@ contains(CONFIG, link_some_libraries) {
 
 add_dependent_manager(QQt)
 
-#test
-add_dependent_manager(zlib, z)
-add_static_dependent_manager(zlib, z)
-add_dependent_manager(zlib, z)
+#test pass
+#add_dependent_manager(zlib, z)
+#add_static_dependent_manager(zlib, z)
+#add_dependent_manager(zlib, z)
 #normal
-#add_dependent_manager(zlib)
+add_dependent_manager(zlib)
 
 message(...... $$CONFIG)
 message(...... $$DEFINES)
