@@ -61,7 +61,9 @@
 #add_sdk_header_all
 
 #2019-03-19 15:59:29
+#发布LIB库的依赖。类似于app工程add_deploy_library的功能，其实只有macOS下有用。
 #add_sdk_3rdparty
+#add_sdk_3rdparty_bundle
 
 ADD_SDK_PRI_PWD = $${PWD}
 
