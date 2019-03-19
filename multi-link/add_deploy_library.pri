@@ -269,8 +269,8 @@ defineReplace(get_add_deploy_library_on_windows) {
 }
 
 defineReplace(get_add_deploy_library_on_linux) {
-    isEmpty(1): error("get_add_deploy_library_on_windows(libgroupname, libname, librealname) requires at least one argument")
-    !isEmpty(4): error("get_add_deploy_library_on_windows(libgroupname, libname, librealname) requires at most three argument")
+    isEmpty(1): error("get_add_deploy_library_on_linux(libgroupname, libname, librealname) requires at least one argument")
+    !isEmpty(4): error("get_add_deploy_library_on_linux(libgroupname, libname, librealname) requires at most three argument")
 
     libgroupname = $$1
     libname = $$2
@@ -297,8 +297,8 @@ defineReplace(get_add_deploy_library_on_linux) {
 }
 
 defineReplace(get_add_deploy_library_on_android) {
-    isEmpty(1): error("get_add_deploy_library_on_windows(libgroupname, libname, librealname) requires at least one argument")
-    !isEmpty(4): error("get_add_deploy_library_on_windows(libgroupname, libname, librealname) requires at most three argument")
+    isEmpty(1): error("get_add_deploy_library_on_android(libgroupname, libname, librealname) requires at least one argument")
+    !isEmpty(4): error("get_add_deploy_library_on_android(libgroupname, libname, librealname) requires at most three argument")
 
     libgroupname = $$1
     libname = $$2
