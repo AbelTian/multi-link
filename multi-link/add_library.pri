@@ -6,6 +6,7 @@
 #依赖add_platform.pri
 #依赖add_project.pri
 
+#please don't modify this pri
 #-------------------------------------------------------------
 #add_include
 #add_include_bundle

@@ -5,6 +5,8 @@
 #依赖add_multi_link_technology.pri
 #依赖add_function.pri
 #依赖add_platform.pri
+#
+#please don't modify this pri
 #-------------------------------------------------------------
 #对autotools工具管理的工程提供支持
 #系统层的开源C库通常使用autoconf工具管理，

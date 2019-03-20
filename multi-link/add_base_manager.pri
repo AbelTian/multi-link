@@ -60,8 +60,11 @@ include ($${PWD}/add_library.pri)
 #注释：提供修改Target名字的函数
 include ($${PWD}/add_sdk.pri)
 
-#lib发布Qt Desinger plugins所需要的函数
+#lib发布Qt Desinger plugins所需要的函数 [集成在add_sdk.pri里]
 #include ($${PWD}/add_plugin.pri)
+
+#lib发布依赖所需要的函数
+include ($${PWD}/add_sdk_3rdparty.pri)
 
 #program version
 include ($${PWD}/add_version.pri)

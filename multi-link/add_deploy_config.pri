@@ -5,6 +5,8 @@
 #依赖add_multi_link_technology.pri
 #依赖add_function.pri
 #依赖add_platform.pri
+
+#please don't modify this pri
 #---------------------------------------------------------------------
 
 #这个目录一般在源代码目录里

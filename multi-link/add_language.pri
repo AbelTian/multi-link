@@ -4,6 +4,8 @@
 #如果需要增加某国语言，add_language(...)即可。
 #
 #依赖 无
+#
+#please don't modify this pri
 #---------------------------------------------------------------------
 #$$APP_SOURCE_PWD on mac TRANSLATIONS error, why?
 #APP_SOURCE_PWD=$${PWD}

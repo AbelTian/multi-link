@@ -2,6 +2,8 @@
 #add_icons.pri
 #为App添加Icons。(app only)
 #用户在固定目录准备好图片就行了。
+#
+#please don't modify this pri
 #---------------------------------------------------------------------------------
 #add_icons()
 

@@ -2,8 +2,10 @@
 #add_function.pri
 #一些拷贝、移动、执行等的命令定义。
 #依赖 无
-#please dont modify this pri
+#
 #2017年12月01日14:05:43
+#
+#please don't modify this pri
 #------------------------------------------------------------------
 contains(QMAKE_HOST.os,Windows) {
     SCRIPT_SUFFIX=bat

@@ -3,6 +3,8 @@
 #project version
 #
 #依赖 无
+#
+#please don't modify this pri
 #################################################################
 
 #Qt4 error parse. qmake v2

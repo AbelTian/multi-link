@@ -5,6 +5,8 @@
 #依赖add_multi_link_technology.pri
 #依赖add_function.pri
 #依赖add_platform.pri
+
+#please don't modify this pri
 #-------------------------------------------------------------
 #Multi-link技术 add_deploy部分只能应用于Qt5，Qt4没有windeployqt程序，如果用户为Qt4编译了windeployqt那么也可以用于Qt4。
 
