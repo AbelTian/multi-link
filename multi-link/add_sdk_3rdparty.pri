@@ -17,6 +17,9 @@
 #2019-03-20 09:53:02
 #如何加入到add_deploy_library()函数里面呢？
 #用户需要在链接环的add_deploy_library_xxxlib()函数里面调用，可是，如果直接写过去，当然可以，可是，那些都是工具生成的，用一个函数最好了。可是，如何合并为一个函数呢？
+#这个功能，我思忖良久，没有合理的想法，
+#所以，我提供add_sdk_3rdparty.pri，还提供mac_install_name_tool2.sh以供用户手动使用。
+#mac，编译dylib、bundle，如果依赖了3rdparty，必须调用这个地方做fix。
 
 ADD_SDK_3RDPARTY_PRI_PWD = $${PWD}
 
