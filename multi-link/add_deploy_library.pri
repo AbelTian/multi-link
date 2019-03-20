@@ -621,12 +621,3 @@ defineTest(add_deploy_libraryes) {
 defineTest(has_deployed_library) {
     return(0)
 }
-
-#app工程
-defineTest(add_deploy_3rdparty){
-    return (1)
-}
-
-defineTest(add_deploy_3rdparty_bundle){
-    return (1)
-}

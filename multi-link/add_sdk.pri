@@ -57,8 +57,10 @@
 #QMAKE_LFLAGS_SONAME = -Wl,-install_name,@rpath/Frameworks/
 #QMAKE_LFLAGS += -Wl,-rpath,@loader_path/../,-rpath,@executable_path/../
 #QMAKE_LFLAGS += -Wl,-Bsymbolic
-#add_sdk_header_ex
-#add_sdk_header_all
+
+#2019年3月20日 16点33分
+#add_sdk_header_ex 发布指定目录的指定通配后缀名的文件
+#add_sdk_header_all 发布指定目录的所有的文件
 
 ADD_SDK_PRI_PWD = $${PWD}
 
