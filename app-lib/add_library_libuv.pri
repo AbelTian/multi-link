@@ -40,21 +40,40 @@ defineTest(add_defines_libuv){
     #添加这个SDK里的defines
     #add_defines()
 
+    #--------------------------------------------
+    #留意 libuv 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #Multi-link 提供 libuv 的自有控制宏，
+    #留意 libuv 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #根据 libuv 使用的控制宏，修改 libuv 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
+    #可以用于转换使用不同宏、两套宏控制的链接库。
+    #--------------------------------------------
+    #libuv 动态编译时
+    contains(DEFINES, LIBUV_LIBRARY){
+        message($${TARGET} build libuv dynamic library)
+    }
+    #libuv 静态编译、链接时
+    else:contains(DEFINES, LIBUV_STATIC_LIBRARY){
+        message($${TARGET} build-link libuv static library)
+    }
+    #libuv 动态链接时
+    else:!contains(DEFINES, LIBUV_LIBRARY){
+        message($${TARGET} link libuv dynamic library)
+    }
+
+    #--------------------------------------------
+    #添加库的宏配置信息，编译时、链接时通用，需要注意区分不同宏控制
+    #建议先写动态编译、链接时的通用配置，然后增加对动态编译、链接，对静态编译、链接时的兼容处理。处理多个子模块时特别好用。
+    #--------------------------------------------
 
     export(QT)
     export(DEFINES)
     export(CONFIG)
-    return (1)
-}
-
-#留意
-defineTest(add_static_defines_libuv){
-    #如果链接静态库，那么开启。编译也开启。
-    DEFINES += LIBUV_STATIC_LIBRARY
-
-    add_defines_libuv()
-
-    export(DEFINES)
     return (1)
 }
 

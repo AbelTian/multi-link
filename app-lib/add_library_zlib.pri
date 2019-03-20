@@ -39,22 +39,42 @@ defineTest(add_defines_zlib){
     #添加这个SDK里的defines
     #add_defines()
 
-    contains(DEFINES, __WIN__){
-        #这些坑爹的二宏库，导入导出不好用，要做转换。
-        contains(DEFINES, ZLIB_LIBRARY){
-            message($$TARGET build zlib dynamic library)
-            #zlib动态编译。有ZLIB_DLL
-            DEFINES += ZLIB_DLL ZLIB_INTERNAL #帮助加一次，嘿嘿。
-        }
-        else:contains(DEFINES, ZLIB_STATIC_LIBRARY){
-            #如果定义编译静态库，那么开启。没有ZLIB_DLL。
-            message($$TARGET build-link zlib static library)
-        } else:!contains(DEFINES, ZLIB_LIBRARY){
-            message($$TARGET link zlib dynamic library)
-            #zlib动态链接。 app也需要ZLIB_DLL宏 user-lib也需要ZLIB_DLL宏
-            DEFINES += ZLIB_DLL #必须加一次，嘿嘿。
-        }
+    #--------------------------------------------
+    #留意 zlib 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #Multi-link 提供 zlib 的自有控制宏，
+    #留意 zlib 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #根据 zlib 使用的控制宏，修改 zlib 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
+    #可以用于转换使用不同宏、两套宏控制的链接库。
+    #--------------------------------------------
+    #这些坑爹的二宏库，导入导出不好用，要做转换。
+    #zlib 动态编译时
+    contains(DEFINES, ZLIB_LIBRARY){
+        message($${TARGET} build zlib dynamic library)
+        #zlib动态编译。有ZLIB_DLL
+        DEFINES += ZLIB_DLL ZLIB_INTERNAL #帮助加一次，嘿嘿。
     }
+    #zlib 静态编译、链接时
+    else:contains(DEFINES, ZLIB_STATIC_LIBRARY){
+        #如果定义编译静态库，那么开启。没有ZLIB_DLL。
+        message($${TARGET} build-link zlib static library)
+    }
+    #zlib 动态链接时
+    else:!contains(DEFINES, ZLIB_LIBRARY){
+        message($${TARGET} link zlib dynamic library)
+        #zlib动态链接。 app也需要ZLIB_DLL宏 user-lib也需要ZLIB_DLL宏
+        DEFINES += ZLIB_DLL #必须加一次，嘿嘿。
+    }
+
+    #--------------------------------------------
+    #添加库的宏配置信息，编译时、链接时通用，需要注意区分不同宏控制
+    #建议先写动态编译、链接时的通用配置，然后增加对动态编译、链接，对静态编译、链接时的兼容处理。处理多个子模块时特别好用。
+    #--------------------------------------------
 
     export(QT)
     export(DEFINES)

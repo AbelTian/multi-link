@@ -39,27 +39,43 @@ defineTest(add_defines_tinyxml2){
     #添加这个SDK里的defines
     #add_defines()
 
-    contains(DEFINES, __WIN__){
-        contains(DEFINES, TINYXML2_EXPORT):message(tinyxml2 dynamic library)
-        else:contains(DEFINES, TINYXML2_STATIC_LIBRARY):message(tinyxml2 static library)
-        #如果使用动态库
-        else:!contains(DEFINES, TINYXML2_EXPORT):DEFINES += TINYXML2_IMPORT
+    #--------------------------------------------
+    #留意 tinyxml2 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #Multi-link 提供 Template 的自有控制宏，
+    #留意 Template 使用的控制宏
+    #--------------------------------------------
+
+    #--------------------------------------------
+    #根据 tinyxml2 使用的控制宏，修改 tinyxml2 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
+    #可以用于转换使用不同宏、两套宏控制的链接库。
+    #--------------------------------------------
+    #tinyxml2 动态编译时
+    contains(DEFINES, TINYXML2_LIBRARY){
+        message($${TARGET} build tinyxml2 dynamic library)
+        DEFINES += TINYXML2_EXPORT
     }
+    #tinyxml2 静态编译、链接时
+    else:contains(DEFINES, TINYXML2_STATIC_LIBRARY){
+        message($${TARGET} build-link tinyxml2 static library)
+    }
+    #tinyxml2 动态链接时
+    else:!contains(DEFINES, TINYXML2_LIBRARY){
+        message($${TARGET} link tinyxml2 dynamic library)
+        DEFINES += TINYXML2_IMPORT
+    }
+
+    #--------------------------------------------
+    #添加库的宏配置信息，编译时、链接时通用，需要注意区分不同宏控制
+    #建议先写动态编译、链接时的通用配置，然后增加对动态编译、链接，对静态编译、链接时的兼容处理。处理多个子模块时特别好用。
+    #--------------------------------------------
+
 
     export(QT)
     export(DEFINES)
     export(CONFIG)
-    return (1)
-}
-
-#留意
-defineTest(add_static_defines_tinyxml2){
-    #如果链接静态库，那么开启。编译也开启。
-    DEFINES += TINYXML2_STATIC_LIBRARY
-
-    add_defines_tinyxml2()
-
-    export(DEFINES)
     return (1)
 }
 
