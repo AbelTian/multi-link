@@ -55,6 +55,8 @@ defineTest(add_defines_libpng){
     #libpng 动态编译时
     contains(DEFINES, LIBPNG_LIBRARY){
         message($${TARGET} build libpng dynamic library)
+        DEFINES += PNG_USE_DLL
+        DEFINES += PNG_IMPEXP=PNG_DLL_EXPORT
     }
     #libpng 静态编译、链接时
     else:contains(DEFINES, LIBPNG_STATIC_LIBRARY){
@@ -63,6 +65,7 @@ defineTest(add_defines_libpng){
     #libpng 动态链接时
     else:!contains(DEFINES, LIBPNG_LIBRARY){
         message($${TARGET} link libpng dynamic library)
+        DEFINES += PNG_USE_DLL
     }
 
     #--------------------------------------------

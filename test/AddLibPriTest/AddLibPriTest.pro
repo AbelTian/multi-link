@@ -119,6 +119,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(Qxt)
     add_dependent_manager(tolua)
     add_dependent_manager(treefrog)
+    add_dependent_manager(mylittleclib)
 }
 
 #在当前目录创建成功。

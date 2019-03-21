@@ -56,6 +56,7 @@ defineTest(add_defines_QLib7z){
     #QLib7z 动态编译时
     contains(DEFINES, QLIB7Z_LIBRARY){
         message($${TARGET} build QLib7z dynamic library)
+        DEFINES += QLIB7Z_LIB
     }
     #QLib7z 静态编译、链接时
     else:contains(DEFINES, QLIB7Z_STATIC_LIBRARY){

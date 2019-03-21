@@ -1,7 +1,7 @@
 #----------------------------------------------------------------
-#add_library_QtPdfium.pri
-#这是给用户提供的方便pri
-#这个比较common，允许拷贝到用户工程中更改。
+#add_library_mylittleclib.pri
+#链接mylittleclib组
+#这是给用户提供的方便pri，这个pri比较common，允许拷贝到用户工程中更改。
 #----------------------------------------------------------------
 #_bundle的取舍，在于macOS系统下，使用的library为bundle形式，还是dylib形式。
 
@@ -14,19 +14,19 @@
 #定义函数
 #######################################################################################
 #修改
-defineTest(add_include_QtPdfium){
+defineTest(add_include_mylittleclib){
     #不为空，肯定是源码里的路径。 用于导出头文件
     #header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    #isEmpty(1):header_path=$$get_add_include(QtPdfium, QtPdfium)
+    #isEmpty(1):header_path=$$get_add_include(mylittleclib, mylittleclib)
 
     command =
     #basic
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    header_path=$$get_add_include_bundle(QtPdfium, QtPdfium)
+    header_path=$$get_add_include(mylittleclib, mylittleclib)
     command += $${header_path}
 
     INCLUDEPATH += $$command
@@ -35,42 +35,39 @@ defineTest(add_include_QtPdfium){
 }
 
 #修改
-defineTest(add_defines_QtPdfium){
-    #添加这个SDK里的defines
+defineTest(add_defines_mylittleclib){
     #add_defines()
+    #添加这个SDK里的 defines
 
     #--------------------------------------------
-    #留意 QtPdfium 使用的控制宏
-    #--------------------------------------------
-
-    #--------------------------------------------
-    #Multi-link 提供 QtPdfium 的自有控制宏，
-    #留意 QtPdfium 使用的控制宏
+    #Multi-link 提供 mylittleclib 的自有控制宏，
+    #留意 mylittleclib 使用的控制宏
     #--------------------------------------------
 
     #--------------------------------------------
-    #根据 QtPdfium 使用的控制宏，修改 QtPdfium 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
+    #根据 mylittleclib 使用的控制宏，修改 mylittleclib 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
     #可以用于转换使用不同宏、两套宏控制的链接库。
     #--------------------------------------------
-    #QtPdfium 动态编译时
-    contains(DEFINES, QTPDFIUM_LIBRARY){
-        message($${TARGET} build QtPdfium dynamic library)
-        DEFINES += QT_BUILD_PDFIUM_LIB
+    #mylittleclib 动态编译时
+    contains(DEFINES, MYLITTLECLIB_LIBRARY){
+        message($${TARGET} build mylittleclib dynamic library)
+        DEFINES += COMMON_EXPORTS
     }
-    #QtPdfium 静态编译、链接时
-    else:contains(DEFINES, QTPDFIUM_STATIC_LIBRARY){
-        message($${TARGET} build-link QtPdfium static library)
-        DEFINES += QT_BUILD_STATIC_PDFIUM_LIB
+    #mylittleclib 静态编译、链接时
+    else:contains(DEFINES, MYLITTLECLIB_STATIC_LIBRARY){
+        message($${TARGET} build-link mylittleclib static library)
+        DEFINES += COMMON_STATIC_EXPORTS
     }
-    #QtPdfium 动态链接时
-    else:!contains(DEFINES, QTPDFIUM_LIBRARY){
-        message($${TARGET} link QtPdfium dynamic library)
+    #mylittleclib 动态链接时
+    else:!contains(DEFINES, MYLITTLECLIB_LIBRARY){
+        message($${TARGET} link mylittleclib dynamic library)
     }
 
     #--------------------------------------------
     #添加库的宏配置信息，编译时、链接时通用，需要注意区分不同宏控制
     #建议先写动态编译、链接时的通用配置，然后增加对动态编译、链接，对静态编译、链接时的兼容处理。处理多个子模块时特别好用。
     #--------------------------------------------
+
 
     export(QT)
     export(DEFINES)
@@ -79,24 +76,23 @@ defineTest(add_defines_QtPdfium){
 }
 
 #留意
-defineTest(add_library_QtPdfium){
+defineTest(add_library_mylittleclib){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    #add_library(QtPdfium, QtPdfium)
-    add_library_bundle(QtPdfium, QtPdfium)
+    #add_library(mylittleclib, mylittleclib)
+    add_library(mylittleclib, mylittleclib)
 
     return (1)
 }
 
-
 #发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
-#修改
-defineTest(add_deploy_library_QtPdfium) {
+#留意
+defineTest(add_deploy_library_mylittleclib) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
-    #add_deploy_libraryes(QtPdfium)
-    #add_deploy_library(QtPdfium, QtPdfium)
-    add_deploy_library_bundle(QtPdfium, QtPdfium)
+    #add_deploy_libraryes(mylittleclib)
+    #add_deploy_library(mylittleclib, mylittleclib)
+    add_deploy_library(mylittleclib, mylittleclib)
 
     return (1)
 }
