@@ -62,6 +62,7 @@ defineTest(add_defines_Log4Qt){
     #Log4Qt 静态编译、链接时
     else:contains(DEFINES, LOG4QT_STATIC_LIBRARY){
         message($${TARGET} build-link Log4Qt static library)
+        DEFINES += LOG4QT_STATIC
     }
     #Log4Qt 动态链接时
     else:!contains(DEFINES, LOG4QT_LIBRARY){

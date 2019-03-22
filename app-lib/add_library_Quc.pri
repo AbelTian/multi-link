@@ -57,6 +57,7 @@ defineTest(add_defines_Quc){
     #Quc 动态编译时
     contains(DEFINES, QUC_LIBRARY){
         message($${TARGET} build Quc dynamic library)
+        DEFINES += QDESIGNER_EXPORT_WIDGETS
     }
     #Quc 静态编译、链接时
     else:contains(DEFINES, QUC_STATIC_LIBRARY){
