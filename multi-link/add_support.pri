@@ -145,6 +145,45 @@ defineTest(add_support_autoconf){
     #ios mac
     } else:contains(QSYS_PRIVATE, macOS) {
         #DEFINES += __DARWIN__
+        DEFINES += HAVE_ASSERT_H=1
+        DEFINES += HAVE_ERRNO_H=1
+
+        DEFINES += HAVE_DLFCN_H=1
+
+        DEFINES += HAVE_FCNTL=1
+        DEFINES += HAVE_FCNTL_H=1
+
+        DEFINES += HAVE_FORK=1
+
+        DEFINES += HAVE_INTTYPES_H=1
+        DEFINES += HAVE_STDINT_H=1
+        DEFINES += HAVE_STDLIB_H=1
+        DEFINES += HAVE_UNISTD_H=1
+        DEFINES += STDC_HEADERS=1
+
+        DEFINES += HAVE_STRING_H=1
+        DEFINES += HAVE_STRINGS_H=1
+
+        DEFINES += HAVE_SYS_STAT_H=1
+        DEFINES += HAVE_SYS_TYPES_H=1
+        DEFINES += HAVE_WAITPID=1
+
+        DEFINES += SIZEOF_SHORT=2
+        DEFINES += SIZEOF_UINT16_T=2
+        DEFINES += SIZEOF_U_INT16_T=2
+
+        DEFINES += SIZEOF_UINT32_T=4
+        DEFINES += SIZEOF_U_INT32_T=4
+        DEFINES += SIZEOF_INT=4
+        DEFINES += SIZEOF_LONG=4
+        DEFINES += SIZEOF_LONG_LONG=8
+
+        DEFINES += HAVE_LIMITS_H=1
+        DEFINES += HAVE_MEMORY_H=1
+        DEFINES += HAVE_PIPE_H=1
+
+        DEFINES += HAVE_GETOPT_H=1
+        DEFINES += HAVE_GETOPT_LONG=1
     } else:contains(QSYS_PRIVATE, iOS) {
         #DEFINES += __IOS__
     } else:contains(QSYS_PRIVATE, iOSSimulator) {
