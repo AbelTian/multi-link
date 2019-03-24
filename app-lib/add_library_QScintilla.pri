@@ -65,6 +65,7 @@ defineTest(add_defines_QScintilla){
     #QScintilla 动态编译时
     contains(DEFINES, QSCINTILLA_LIBRARY){
         message($${TARGET} build QScintilla dynamic library)
+        DEFINES += QSCINTILLA_MAKE_DLL
     }
     #QScintilla 静态编译、链接时
     else:contains(DEFINES, QSCINTILLA_STATIC_LIBRARY){
@@ -73,6 +74,7 @@ defineTest(add_defines_QScintilla){
     #QScintilla 动态链接时
     else:!contains(DEFINES, QSCINTILLA_LIBRARY){
         message($${TARGET} link QScintilla dynamic library)
+        DEFINES += QSCINTILLA_DLL
     }
 
     #--------------------------------------------
