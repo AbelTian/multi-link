@@ -64,7 +64,7 @@ include ($${PWD}/add_sdk.pri)
 #include ($${PWD}/add_plugin.pri)
 
 #lib发布依赖所需要的函数
-#include ($${PWD}/add_sdk_3rdparty.pri)
+#include ($${PWD}/add_deploy_library2.pri)
 
 #program version
 include ($${PWD}/add_version.pri)
