@@ -485,17 +485,25 @@ defineTest(add_lib_project) {
     } else {
         contains(QSYS_PRIVATE, macOS) {
             CONFIG += dll
-            #macOS下必须开开bundle
+            #macOS下开开bundle
             CONFIG += lib_bundle
             #fix plugin bug.
             contains(CONFIG, plugin):CONFIG -= lib_bundle
         } else:contains(QSYS_PRIVATE, iOS|iOSSimulator) {
-            CONFIG += static
+            CONFIG += static staticlib
         } else {
             ##default build dll
             CONFIG += dll
             #*nix no need this macro
             #DEFINES += LIB_LIBRARY
+        }
+
+        #Windows的编译宏控制思路，对类Unix系统也适用，他们是兼容的，所以此处开开编译宏。
+        #原先以为只有Windows用，后来发觉原来是兼容的，所以，开启。
+        contains(QSYS_PRIVATE, iOS|iOSSimulator) {
+            DEFINES += LIB_STATIC_LIBRARY
+        } else {
+            DEFINES += LIB_LIBRARY
         }
     }
 
@@ -523,6 +531,8 @@ defineTest(add_lib_project) {
 
 #默认编译为动态库 （Only lib project）
 #仅仅内部状态CONFIG、宏改变，不影响链接库自有CONFIG、宏。
+#=add_dynamic_library_project
+#~add_lib_project，都增加了对类Unix系统的编译宏支持，和Windows的一样。是兼容的，思路一样。
 defineTest(add_default_library_project) {
     #isEmpty(1): error("add_default_library_project(libgroupname) requires one argument")
 
@@ -541,11 +551,12 @@ defineTest(add_default_library_project) {
 
     #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
     DEFINES -= LIB_STATIC_LIBRARY
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    #不再限制Windows平台，在类Unix平台上也使用一样的宏设置。初步在类Unix平台上还不需要，但是兼容，思路清晰。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         DEFINES += LIB_LIBRARY
         #不再打印
         #message(Build $${TARGET} LIB_LIBRARY is defined. build)
-    }
+    #}
 
     #Multi-link 内部编译逻辑，彻底关闭提供链接库自有宏。
     #链接库自有宏的改变
@@ -553,11 +564,11 @@ defineTest(add_default_library_project) {
     #LIBG1LIB = $${LIBGROUPNAME}_LIBRARY
     #LIBG1STATICLIB = $${LIBGROUPNAME}_STATIC_LIBRARY
     #DEFINES -= $${LIBG1STATICLIB}
-    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    ##contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
     #    DEFINES += $${LIBG1LIB}
     #    #默认过程 关闭打印。如果用户发现链接库自有宏冗余，不必担心qmake宏冗余、宏删除非常人性化，增一次，加一个，删一次，全删。
     #    message(Build $${TARGET} $${LIBG1LIB} is defined. build)
-    #}
+    ##}
 
     export(CONFIG)
     export(DEFINES)
@@ -613,11 +624,12 @@ defineTest(add_dynamic_library_project) {
 
     #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
     DEFINES -= LIB_STATIC_LIBRARY
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    #不再限制Windows平台，在类Unix平台上也使用一样的宏设置。初步在类Unix平台上还不需要，但是兼容，思路清晰。
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         DEFINES += LIB_LIBRARY
         #不再打印
         #message(Build $${TARGET} LIB_LIBRARY is defined. build)
-    }
+    #}
 
     #Multi-link v2.4 提供的链接库自有CONFIG
     #组
@@ -650,10 +662,10 @@ defineTest(add_dynamic_library_project) {
         DYDEF += $${LIB1LIB}
     }
     DEFINES -= $${DY0DEF}
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         DEFINES += $${DYDEF}
         message(Build $${TARGET} $${DYDEF} is defined. build)
-    }
+    #}
 
     export(CONFIG)
     export(DEFINES)
@@ -687,6 +699,7 @@ defineTest(add_static_library_project) {
 
     #内部状态宏的改变
     DEFINES -= LIB_LIBRARY
+    #不再限制Windows平台，在类Unix平台上也使用一样的宏设置。初步在类Unix平台上还不需要，但是兼容，思路清晰。
     DEFINES += LIB_STATIC_LIBRARY
     #不再打印
     #message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)

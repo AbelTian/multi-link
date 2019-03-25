@@ -63,7 +63,7 @@ msvc {
     #msvc:MSVC_CCFLAGS += /MP
     #指出：这个FLAG只能用于MSVC
     #这个功能可用，可是MSVC并行编译卡死IDE，不方便，所以默认不开开。
-    #add_support.pri里面对MSVC特有的诸多选项进行了支持。
+    #add_support.pri 里面对MSVC特有的诸多选项进行了支持，用户可以自主选择开启。
 
     msvc:QMAKE_CFLAGS += $${MSVC_CCFLAGS}
     msvc:QMAKE_CXXFLAGS += $${MSVC_CCFLAGS}
@@ -73,6 +73,7 @@ msvc {
     #msvc:PRECOMPILED_HEADER = $${PWD}/lib-qt.h
     #指出：precompiler header经常在MSVC中使用，gcc也可以使用。
     #这个功能可用，可是MSVC PCH编译问题比较多，不方便，所以默认不开开。
+    #add_base_manager.pri 提供了add_pch()函数，用户可以自主选择预编译头文件。
 }
 
 #if some bug occured, maybe this help me, close some warning
@@ -125,16 +126,22 @@ win32 {
 #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64 || iOS|iOSSimulator)
 #header里不再使用平台进行判定，而是使用工程当中定义的CONFIG static[lib] 和 dll进行判定。
 #理论上mingw编译的Qt library不应该是静态的啊...
-#Qt is static by mingw32 building
-ios{
-    #on my computer, Qt library are all static library?
-    DEFINES += LIB_STATIC_LIBRARY
-    message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
-}
+#Qt is static by mingw32 building?
+#ios{
+#    #on my computer, Qt library are all static library?
+#    DEFINES += LIB_STATIC_LIBRARY
+#    message(Build $${TARGET} LIB_STATIC_LIBRARY is defined. build and link)
+#}
+#
+##link and build all need this macro
+#contains(DEFINES, LIB_STATIC_LIBRARY) {
+#}
 
-#link and build all need this macro
-contains(DEFINES, LIB_STATIC_LIBRARY) {
-}
+##Multi-link对iOS的默认编译为静态，
+##add_project.pri提供add_lib_project函数，
+##add_base_manager.pri里调用这个函数，支持很完整，是真正的静态编译。
+##但是，放在这里位置不合适，移动到add_lib_project()函数里，并在add_base_manager.pri里面调用。依然是静态编译。
+##内部强制的默认动态编译步骤，和这个函数一样的意义，却会覆盖iOS的静态编译设置。所以在add_base_manager.pri，我关闭了强制动态，使用add_lib_project()。
 
 ##################C++11 Module###############################
 #if you use C++11, open this annotation. suggest: ignore
