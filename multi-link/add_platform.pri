@@ -80,16 +80,16 @@ contains(QSYS_PRIVATE, macOS) {
 } else:contains(QSYS_PRIVATE, iOS) {
     DEFINES += __UNIX__
     #embedded darwin
-    DEFINES += __EMBEDDED_DARWIN__
-    DEFINES += __EMBEDDED_DARWIN64__
+    DEFINES += __DARWIN__
+    DEFINES += __DARWIN64__
     #iOS private
     DEFINES += __IOS__
     DEFINES += __IOS64__
 } else:contains(QSYS_PRIVATE, iOSSimulator) {
     DEFINES += __UNIX__
     #embedded darwin
-    DEFINES += __EMBEDDED_DARWIN__
-    DEFINES += __EMBEDDED_DARWIN64__
+    DEFINES += __DARWIN__
+    DEFINES += __DARWIN64__
     #iOS private
     DEFINES += __IOS__
     DEFINES += __IOS64__
