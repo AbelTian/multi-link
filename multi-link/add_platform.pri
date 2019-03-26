@@ -71,41 +71,138 @@ QSYS_USERSETTING=$$(QSYS)
 #如果用户不设置，那么按照detect继续下去，依照Multi-link分辨平台。
 message(Multi-link make sure that the x-platform: $${QSYS_PRIVATE}.)
 
+#mac iOS iOSSimulator
+contains(QSYS_PRIVATE, macOS) {
+    DEFINES += __UNIX__
+    #darwin
+    DEFINES += __DARWIN__
+    DEFINES += __DARWIN64__
+} else:contains(QSYS_PRIVATE, iOS) {
+    DEFINES += __UNIX__
+    #embedded darwin
+    DEFINES += __EMBEDDED_DARWIN__
+    DEFINES += __EMBEDDED_DARWIN64__
+    #iOS private
+    DEFINES += __IOS__
+    DEFINES += __IOS64__
+} else:contains(QSYS_PRIVATE, iOSSimulator) {
+    DEFINES += __UNIX__
+    #embedded darwin
+    DEFINES += __EMBEDDED_DARWIN__
+    DEFINES += __EMBEDDED_DARWIN64__
+    #iOS private
+    DEFINES += __IOS__
+    DEFINES += __IOS64__
+    #TODO:no qcustomplot word printer process
+
 #e-linux linux
-contains(QSYS_PRIVATE, Embedded) {
-    #embedded common macro
-    DEFINES += __EMBEDDED_LINUX__
-} else:contains(QSYS_PRIVATE, Arm32) {
-    DEFINES += __EMBEDDED_LINUX__
-    #arm32 private
-    DEFINES += __ARM_LINUX__
-} else:contains(QSYS_PRIVATE, Armhf32) {
-    DEFINES += __EMBEDDED_LINUX__
-    #arm32 private
-    DEFINES += __ARM_LINUX__
-    #armhf32 private
-    DEFINES += __ARMHF_LINUX__
-} else:contains(QSYS_PRIVATE, Mips32) {
-    DEFINES += __EMBEDDED_LINUX__
-    #mips32 private
-    DEFINES += __MIPS_LINUX__
 } else:contains(QSYS_PRIVATE, Linux) {
+    DEFINES += __UNIX__
+    #linux private
     DEFINES += __LINUX__
+    #linux 32bit private
     DEFINES += __LINUX32__
 } else:contains(QSYS_PRIVATE, Linux64) {
+    DEFINES += __UNIX__
+    #linux private
     DEFINES += __LINUX__
+    #linux 64bit private
     DEFINES += __LINUX64__
+} else:contains(QSYS_PRIVATE, Embedded32|Embedded) {
+    DEFINES += __UNIX__
+    DEFINES += __LINUX__
+    DEFINES += __LINUX32__
+    #embedded common macro
+    DEFINES += __EMBEDDED_LINUX__
+    #embedded 32bit common macro
+    DEFINES += __EMBEDDED_LINUX32__
+} else:contains(QSYS_PRIVATE, Arm32|Arm) {
+    DEFINES += __UNIX__
+    DEFINES += __LINUX__
+    DEFINES += __LINUX32__
+    DEFINES += __EMBEDDED_LINUX__
+    DEFINES += __EMBEDDED_LINUX32__
+    #arm private
+    DEFINES += __ARM_LINUX__
+    #arm 32bit private
+    DEFINES += __ARM_LINUX32__
+} else:contains(QSYS_PRIVATE, Armhf32|Armhf) {
+    DEFINES += __UNIX__
+    DEFINES += __LINUX__
+    DEFINES += __LINUX32__
+    DEFINES += __EMBEDDED_LINUX__
+    DEFINES += __EMBEDDED_LINUX32__
+    #arm private
+    DEFINES += __ARM_LINUX__
+    #arm 32bit private
+    DEFINES += __ARM_LINUX32__
+    #armhf private
+    DEFINES += __ARMHF_LINUX__
+    #armhf 32bit private
+    DEFINES += __ARMHF_LINUX32__
+} else:contains(QSYS_PRIVATE, Mips32|Mips) {
+    DEFINES += __UNIX__
+    DEFINES += __LINUX__
+    DEFINES += __LINUX32__
+    DEFINES += __EMBEDDED_LINUX__
+    DEFINES += __EMBEDDED_LINUX32__
+    #mips private
+    DEFINES += __MIPS_LINUX__
+    #mips 32bit private
+    DEFINES += __MIPS_LINUX32__
 
-#windows msvc
+#android
+} else:contains(QSYS_PRIVATE, Android) {
+    #Android系统对应主要CPU指令集架构为armeabi-v7a
+    DEFINES += __UNIX__
+    DEFINES += __LINUX__
+    DEFINES += __LINUX32__
+    DEFINES += __EMBEDDED_LINUX__
+    DEFINES += __EMBEDDED_LINUX32__
+    #android private
+    DEFINES += __ANDROID__
+    #android 32bit private
+    DEFINES += __ANDROID32__
+} else:contains(QSYS_PRIVATE, AndroidSimulator|Android32Simulator|AndroidX86) {
+    DEFINES += __UNIX__
+    DEFINES += __LINUX__
+    DEFINES += __LINUX32__
+    DEFINES += __EMBEDDED_LINUX__
+    DEFINES += __EMBEDDED_LINUX32__
+    #android private
+    DEFINES += __ANDROID__
+    #android 32bit private
+    DEFINES += __ANDROID32__
+    #android simulator private
+    DEFINES += __ANDROIDX86__
+
+#windows msvc winRT
 } else:contains(QSYS_PRIVATE, Win32|Windows) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
 } else:contains(QSYS_PRIVATE, Win64) {
     DEFINES += __WIN__
     DEFINES += __WIN64__
-} else:contains(QSYS_PRIVATE, WinRT) {
+} else:contains(QSYS_PRIVATE, WinRT32|WinRT) {
     DEFINES += __WIN__
+    DEFINES += __WIN32__
     DEFINES += __WINRT__
+    DEFINES += __WINRT32__
+} else:contains(QSYS_PRIVATE, WinRT32Simulator|WinRTSimulator) {
+    DEFINES += __WIN__
+    DEFINES += __WIN32__
+    DEFINES += __WINRT__
+    DEFINES += __WINRT32__
+} else:contains(QSYS_PRIVATE, WinRT64) {
+    DEFINES += __WIN__
+    DEFINES += __WIN64__
+    DEFINES += __WINRT__
+    DEFINES += __WINRT64__
+} else:contains(QSYS_PRIVATE, WinRT64Simulator) {
+    DEFINES += __WIN__
+    DEFINES += __WIN64__
+    DEFINES += __WINRT__
+    DEFINES += __WINRT64__
 } else:contains(QSYS_PRIVATE, MSVC32|MSVC) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
@@ -116,24 +213,8 @@ contains(QSYS_PRIVATE, Embedded) {
     DEFINES += __WIN64__
     DEFINES += __MSVC__
     DEFINES += __MSVC64__
-
-#ios mac
-} else:contains(QSYS_PRIVATE, macOS) {
-    DEFINES += __DARWIN__
-} else:contains(QSYS_PRIVATE, iOS) {
-    DEFINES += __IOS__
-} else:contains(QSYS_PRIVATE, iOSSimulator) {
-    DEFINES += __IOS__
-    #TODO:no qcustomplot word printer process
-
-#android
-} else:contains(QSYS_PRIVATE, Android) {
-    #Android系统对应主要CPU指令集架构为armeabi-v7a
-    DEFINES += __ANDROID__
-} else:contains(QSYS_PRIVATE, AndroidX86) {
-    DEFINES += __ANDROID__
-    DEFINES += __ANDROIDX86__
 }
+
 
 defineReplace(get_base_name){
     isEmpty(1):error("get_base_name(absolute_file_path) need one argument.")
@@ -190,14 +271,14 @@ message(Build $${TARGET} in $${OUT_PWD})
 isEmpty(QSYS_PRIVATE) : message(Build $${TARGET} Qt Kit page FileSystem Name \(optionaled\) is decided by env variable QSYS. Please set it. )
 
 isEmpty(QSYS_PRIVATE) {
-    message(env variable QSYS is required! pleace check add_platform.pri)
+    warning(env variable QSYS is required! pleace check add_platform.pri)
     error(error occured! please check build output panel.)
 }
 
 isEmpty(QSYS_PRIVATE) {
-    message(1. I suggest you change creator default build directory!)
-    message(2. env variable QSYS is required!)
-    message(pleace check add_platform.pri)
+    warning(1. I suggest you change creator default build directory!)
+    warning(2. env variable QSYS is required!)
+    warning(pleace check add_platform.pri)
     error("error occured, please check build output panel.")
 }
 
