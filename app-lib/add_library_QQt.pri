@@ -142,7 +142,7 @@ defineTest(add_defines_QQt){
         #/exec... -> /utf-8 -> /source... 这是引发关系顺序
 
         #指定/mp编译选项，编译器将使用并行编译，同时起多个编译进程并行编译不同的cpp
-        msvc:MSVC_CCFLAGS += /MP
+        #msvc:MSVC_CCFLAGS += /MP
         #指出：这个FLAG只能用于MSVC
         #指出：DLL导入错误，是因为环境变量设置错误不是这里引起的。修改设置，重新编译还是错误，build目录clean不干净，手动删除干净。如果还是不行，对源代码进行touch，无法区分import和export的dll，是编译器的错误。
 
@@ -173,15 +173,21 @@ defineTest(add_defines_QQt){
     #link QQt static library in some occation on windows
     #when link QQt    static library, if no this macro, headers can't be linked on windows.
     #Qt is static by mingw32 building ?
-    ios{
-        #on my computer, Qt library are all static library?
-        DEFINES += QQT_STATIC_LIBRARY
-        message(Build $${TARGET} QQT_STATIC_LIBRARY is defined. build and link)
-    }
-
-    #link and build all need this macro
-    #现在Multi-link v2里面，已经有LIB_STATIC_LIBRARY，这个宏多余了，可是由于内部逻辑复杂，更改也不简单，所以留着了。用户静态编译LibQQt，记得定义QQT_STATIC_LIBRARY，build and link。
-    contains(DEFINES, QQT_STATIC_LIBRARY) {
+    #ios{
+    #    #on my computer, Qt library are all static library?
+    #    DEFINES += QQT_STATIC_LIBRARY
+    #    message(Build $${TARGET} QQT_STATIC_LIBRARY is defined. build and link)
+    #}
+    #
+    ##link and build all need this macro
+    ##现在Multi-link v2里面，已经有LIB_STATIC_LIBRARY，这个宏多余了，可是由于内部逻辑复杂，更改也不简单，所以留着了。用户静态编译LibQQt，记得定义QQT_STATIC_LIBRARY，build and link。
+    ##这个宏并不多余，是链接库的必要自有宏。
+    contains (DEFINES, QQT_LIBRARY) {
+        #build QQt
+    } else : contains(DEFINES, QQT_STATIC_LIBRARY) {
+        #build and link static QQt
+    } else {
+        #link QQt
     }
 
     ################################################################
@@ -241,10 +247,13 @@ defineTest(add_defines_QQt){
         DEFINES -= __PLUGINSUPPORT__
     }
     contains (DEFINES, __PLUGINSUPPORT__) {
-        contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
-            contains (DEFINES, QQT_STATIC_LIBRARY) {
+        #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+        win32 {
+            contains (DEFINES, QQT_LIBRARY) {
+                DEFINES += BUILD_QDEVICEWATCHER_LIB
+            } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
                 DEFINES += BUILD_QDEVICEWATCHER_STATIC
-            }
+            } else { }
         }
     }
 
@@ -288,10 +297,12 @@ defineTest(add_defines_QQt){
         DEFINES += __CUSTOMPLOT__
         contains (DEFINES, __CUSTOMPLOT__) {
             win32 {
-                contains (DEFINES, QQT_STATIC_LIBRARY) {
+                contains (DEFINES, QQT_LIBRARY) {
+                    DEFINES += QCUSTOMPLOT_COMPILE_LIBRARY
+                } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
                     #build static library - qcustomplot
                     DEFINES += QCUSTOMPLOT_STATIC_LIBRARY
-                }
+                } else { }
             }
         }
     }
@@ -377,9 +388,11 @@ defineTest(add_defines_QQt){
         DEFINES += __WEBSERVICESUPPORT__
         contains (DEFINES, __WEBSERVICESUPPORT__) {
             win32 {
-                contains (DEFINES, QQT_STATIC_LIBRARY) {
+                contains (DEFINES, QQT_LIBRARY) {
+                    DEFINES += QT_QTSOAP_LIBRARY
+                } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
                     DEFINES += QT_QTSOAP_STATIC_LIBRARY
-                }
+                } else { }
             }
         }
 
@@ -424,9 +437,11 @@ defineTest(add_defines_QQt){
             #Gumbo need std support, c99...
             QMAKE_CFLAGS += -std=c99
             win32 {
-                contains (DEFINES, QQT_STATIC_LIBRARY) {
+                contains (DEFINES, QQT_LIBRARY) {
+                    DEFINES += QT_GUMBO_LIBRARY
+                } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
                     DEFINES += QT_GUMBO_STATIC_LIBRARY
-                }
+                } else { }
             }
         }
 
@@ -452,11 +467,14 @@ defineTest(add_defines_QQt){
         contains(DEFINES, __QRDECODE__) {
             #lessThan(QT_MAJOR_VERSION, 5): QT += declarative
             greaterThan(QT_MAJOR_VERSION, 4): QT += quick
-            contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+            #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+            win32 {
                 #ignore: QZXing has no need to export
-                contains (DEFINES, QQT_STATIC_LIBRARY) {
+                contains (DEFINES, QQT_LIBRARY) {
+                    DEFINES += QZXING_LIBRARY
+                } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
                     DEFINES += QZXING_STATIC_LIBRARY
-                }
+                } else { }
             }
         }
 
@@ -475,10 +493,13 @@ defineTest(add_defines_QQt){
         ##################Mathes Module###############################
         DEFINES += __MATHWIDGETSUPPORT__
         contains (DEFINES, __MATHWIDGETSUPPORT__) {
-            contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
-                contains (DEFINES, QQT_STATIC_LIBRARY) {
+            #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+            win32 {
+                contains (DEFINES, QQT_LIBRARY) {
+                    DEFINES += QT_QTMMLWIDGET_LIBRARY
+                } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
                     DEFINES += QT_QTMMLWIDGET_STATIC_LIBRARY
-                }
+                } else { }
             }
         }
 
@@ -591,18 +612,6 @@ defineTest(add_defines_QQt){
     export(LIBS)
     export(QT)
 
-    return (1)
-}
-
-#留意
-defineTest(add_static_defines_QQt){
-    #如果链接静态库，那么开启。编译也开启。
-    DEFINES += QQT_STATIC_LIBRARY
-    
-    #如果用户更改链接类型，请在编译时更改编译类型。
-    add_defines_QQt()
-
-    export(DEFINES)
     return (1)
 }
 

@@ -61,17 +61,6 @@ defineTest(add_defines_QQtCrashReport){
 }
 
 #留意
-defineTest(add_static_defines_QQtCrashReport){
-    #如果链接静态库，那么开启。编译也开启。
-    DEFINES += QQTCRASHREPORT_STATIC_LIBRARY
-
-    add_defines_QQtCrashReport()
-
-    export(DEFINES)
-    return (1)
-}
-
-#留意
 defineTest(add_library_QQtCrashReport){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
