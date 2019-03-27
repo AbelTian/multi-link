@@ -197,6 +197,10 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __DESKTOP_WIN__
     #win desktop 32bit private
     DEFINES += __DESKTOP_WIN32__
+    #mingw private
+    DEFINES += __MINGW__
+    #mingw 32bit private
+    DEFINES += __MINGW32__
 } else:contains(QSYS_PRIVATE, Win64) {
     DEFINES += __WIN__
     #win 64bit private
@@ -204,6 +208,9 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __DESKTOP_WIN__
     #win desktop 64bit private
     DEFINES += __DESKTOP_WIN64__
+    DEFINES += __MINGW__
+    #mingw 64bit private
+    DEFINES += __MINGW64__
 } else:contains(QSYS_PRIVATE, MSVC32|MSVC) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
