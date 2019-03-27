@@ -87,9 +87,9 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __UNIX__
     DEFINES += __DARWIN__
     DEFINES += __DARWIN64__
-    #embedded darwin private
+    #darwin embedded private
     DEFINES += __EMBEDDED_DARWIN__
-    #embedded darwin  64bit private
+    #darwin embedded 64bit private
     DEFINES += __EMBEDDED_DARWIN64__
     #iOS private
     DEFINES += __IOS__
@@ -204,34 +204,11 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __DESKTOP_WIN__
     #win desktop 64bit private
     DEFINES += __DESKTOP_WIN64__
-} else:contains(QSYS_PRIVATE, WinRT32|WinRT) {
-    DEFINES += __WIN__
-    DEFINES += __WIN32__
-    #winrt private
-    DEFINES += __WINRT__
-    #winrt 32bit private
-    DEFINES += __WINRT32__
-} else:contains(QSYS_PRIVATE, WinRT32Simulator|WinRTSimulator) {
-    DEFINES += __WIN__
-    DEFINES += __WIN32__
-    DEFINES += __WINRT__
-    DEFINES += __WINRT32__
-    #winrt simulator private = winrt
-} else:contains(QSYS_PRIVATE, WinRT64) {
-    DEFINES += __WIN__
-    DEFINES += __WIN64__
-    DEFINES += __WINRT__
-    #winrt 64bit private
-    DEFINES += __WINRT64__
-} else:contains(QSYS_PRIVATE, WinRT64Simulator) {
-    DEFINES += __WIN__
-    DEFINES += __WIN64__
-    DEFINES += __WINRT__
-    DEFINES += __WINRT64__
-    #winrt 64bit simulator private = winrt
 } else:contains(QSYS_PRIVATE, MSVC32|MSVC) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
+    DEFINES += __DESKTOP_WIN__
+    DEFINES += __DESKTOP_WIN32__
     #msvc private
     DEFINES += __MSVC__
     #msvc 32bit private
@@ -239,12 +216,49 @@ contains(QSYS_PRIVATE, macOS) {
 } else:contains(QSYS_PRIVATE, MSVC64) {
     DEFINES += __WIN__
     DEFINES += __WIN64__
+    DEFINES += __DESKTOP_WIN__
+    DEFINES += __DESKTOP_WIN64__
     DEFINES += __MSVC__
     #msvc 64bit private
     DEFINES += __MSVC64__
+} else:contains(QSYS_PRIVATE, WinRT32|WinRT) {
+    DEFINES += __WIN__
+    DEFINES += __WIN32__
+    #win embedded private
+    DEFINES += __EMBEDDED_WIN__
+    #win embedded 32bit private
+    DEFINES += __EMBEDDED_WIN32__
+    #winrt private
+    DEFINES += __WINRT__
+    #winrt 32bit private
+    DEFINES += __WINRT32__
+} else:contains(QSYS_PRIVATE, WinRT32Simulator|WinRTSimulator) {
+    DEFINES += __WIN__
+    DEFINES += __WIN32__
+    DEFINES += __EMBEDDED_WIN__
+    DEFINES += __EMBEDDED_WIN32__
+    DEFINES += __WINRT__
+    DEFINES += __WINRT32__
+    #winrt simulator private = winrt
+} else:contains(QSYS_PRIVATE, WinRT64) {
+    DEFINES += __WIN__
+    DEFINES += __WIN64__
+    DEFINES += __EMBEDDED_WIN__
+    DEFINES += __EMBEDDED_WIN32__
+    DEFINES += __WINRT__
+    #winrt 64bit private
+    DEFINES += __WINRT64__
+} else:contains(QSYS_PRIVATE, WinRT64Simulator) {
+    DEFINES += __WIN__
+    DEFINES += __WIN64__
+    DEFINES += __EMBEDDED_WIN__
+    DEFINES += __EMBEDDED_WIN32__
+    DEFINES += __WINRT__
+    DEFINES += __WINRT64__
+    #winrt 64bit simulator private = winrt
 }
 
-
+#获取绝对路径的末尾
 defineReplace(get_base_name){
     isEmpty(1):error("get_base_name(absolute_file_path) need one argument.")
     absolute_file_path = $$1
@@ -255,6 +269,7 @@ defineReplace(get_base_name){
     return ($${base_name})
 }
 
+#获取绝对路径的路径
 defineReplace(get_file_path){
     isEmpty(1):error("get_file_path(absolute_file_path) need one argument.")
     file_path = $$1
