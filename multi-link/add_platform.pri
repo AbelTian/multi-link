@@ -73,27 +73,36 @@ message(Multi-link make sure that the x-platform: $${QSYS_PRIVATE}.)
 
 #mac iOS iOSSimulator
 contains(QSYS_PRIVATE, macOS) {
+    #unix private
     DEFINES += __UNIX__
-    #darwin
+    #darwin private
     DEFINES += __DARWIN__
+    #darwin 64bit private
     DEFINES += __DARWIN64__
+    #darwin desktop private
+    DEFINES += __DESKTOP_DARWIN__
+    #darwin desktop 64bit private
+    DEFINES += __DESKTOP_DARWIN64__
 } else:contains(QSYS_PRIVATE, iOS) {
     DEFINES += __UNIX__
-    #embedded darwin
     DEFINES += __DARWIN__
     DEFINES += __DARWIN64__
+    #embedded darwin private
+    DEFINES += __EMBEDDED_DARWIN__
+    #embedded darwin  64bit private
+    DEFINES += __EMBEDDED_DARWIN64__
     #iOS private
     DEFINES += __IOS__
     DEFINES += __IOS64__
 } else:contains(QSYS_PRIVATE, iOSSimulator) {
     DEFINES += __UNIX__
-    #embedded darwin
     DEFINES += __DARWIN__
     DEFINES += __DARWIN64__
-    #iOS private
+    DEFINES += __EMBEDDED_DARWIN__
+    DEFINES += __EMBEDDED_DARWIN64__
+    #iOS Simulator private = iOS
     DEFINES += __IOS__
     DEFINES += __IOS64__
-    #TODO:no qcustomplot word printer process
 
 #e-linux linux
 } else:contains(QSYS_PRIVATE, Linux) {
@@ -102,12 +111,18 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __LINUX__
     #linux 32bit private
     DEFINES += __LINUX32__
+    #linux desktop private
+    DEFINES += __DESKTOP_LINUX__
+    #linux desktop 32bit private
+    DEFINES += __DESKTOP_LINUX32__
 } else:contains(QSYS_PRIVATE, Linux64) {
     DEFINES += __UNIX__
-    #linux private
     DEFINES += __LINUX__
     #linux 64bit private
     DEFINES += __LINUX64__
+    DEFINES += __DESKTOP_LINUX__
+    #linux desktop 64bit private
+    DEFINES += __DESKTOP_LINUX64__
 } else:contains(QSYS_PRIVATE, Embedded32|Embedded) {
     DEFINES += __UNIX__
     DEFINES += __LINUX__
@@ -132,9 +147,7 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __LINUX32__
     DEFINES += __EMBEDDED_LINUX__
     DEFINES += __EMBEDDED_LINUX32__
-    #arm private
     DEFINES += __ARM_LINUX__
-    #arm 32bit private
     DEFINES += __ARM_LINUX32__
     #armhf private
     DEFINES += __ARMHF_LINUX__
@@ -169,49 +182,65 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __LINUX32__
     DEFINES += __EMBEDDED_LINUX__
     DEFINES += __EMBEDDED_LINUX32__
-    #android private
     DEFINES += __ANDROID__
-    #android 32bit private
     DEFINES += __ANDROID32__
     #android simulator private
     DEFINES += __ANDROIDX86__
 
 #windows msvc winRT
 } else:contains(QSYS_PRIVATE, Win32|Windows) {
+    #win private
     DEFINES += __WIN__
+    #win 32bit private
     DEFINES += __WIN32__
+    #win desktop private
+    DEFINES += __DESKTOP_WIN__
+    #win desktop 32bit private
+    DEFINES += __DESKTOP_WIN32__
 } else:contains(QSYS_PRIVATE, Win64) {
     DEFINES += __WIN__
+    #win 64bit private
     DEFINES += __WIN64__
+    DEFINES += __DESKTOP_WIN__
+    #win desktop 64bit private
+    DEFINES += __DESKTOP_WIN64__
 } else:contains(QSYS_PRIVATE, WinRT32|WinRT) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
+    #winrt private
     DEFINES += __WINRT__
+    #winrt 32bit private
     DEFINES += __WINRT32__
 } else:contains(QSYS_PRIVATE, WinRT32Simulator|WinRTSimulator) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
     DEFINES += __WINRT__
     DEFINES += __WINRT32__
+    #winrt simulator private = winrt
 } else:contains(QSYS_PRIVATE, WinRT64) {
     DEFINES += __WIN__
     DEFINES += __WIN64__
     DEFINES += __WINRT__
+    #winrt 64bit private
     DEFINES += __WINRT64__
 } else:contains(QSYS_PRIVATE, WinRT64Simulator) {
     DEFINES += __WIN__
     DEFINES += __WIN64__
     DEFINES += __WINRT__
     DEFINES += __WINRT64__
+    #winrt 64bit simulator private = winrt
 } else:contains(QSYS_PRIVATE, MSVC32|MSVC) {
     DEFINES += __WIN__
     DEFINES += __WIN32__
+    #msvc private
     DEFINES += __MSVC__
+    #msvc 32bit private
     DEFINES += __MSVC32__
 } else:contains(QSYS_PRIVATE, MSVC64) {
     DEFINES += __WIN__
     DEFINES += __WIN64__
     DEFINES += __MSVC__
+    #msvc 64bit private
     DEFINES += __MSVC64__
 }
 
