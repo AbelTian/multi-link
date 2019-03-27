@@ -459,7 +459,7 @@ defineTest(add_lib_project) {
     ##define macro before header.
     #专门为lib工程设置
     contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
-        #Qt is static by mingw32 building
+        #Qt is static by mingw32 building? NO!
         mingw {
             #on my computer , Qt library are all static library?
             #create static lib (important, only occured at builder pro)

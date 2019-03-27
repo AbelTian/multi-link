@@ -104,7 +104,7 @@ contains(QSYS_PRIVATE, macOS) {
     DEFINES += __IOS__
     DEFINES += __IOS64__
 
-#e-linux linux
+#linux e-linux
 } else:contains(QSYS_PRIVATE, Linux) {
     DEFINES += __UNIX__
     #linux private
@@ -164,7 +164,7 @@ contains(QSYS_PRIVATE, macOS) {
     #mips 32bit private
     DEFINES += __MIPS_LINUX32__
 
-#android
+#android (e-linux的一种)
 } else:contains(QSYS_PRIVATE, Android) {
     #Android系统对应主要CPU指令集架构为armeabi-v7a
     DEFINES += __UNIX__
