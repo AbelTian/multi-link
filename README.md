@@ -65,8 +65,9 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
         - 在static defines函数里添加DEFINES+=TEMPLATESHARED_EXPORT=
         - 这样，没有global.h，也可以为源代码提供符号导出宏，并且能够任意在动态、静态之间转换。
     - 链接库时，add_defines_Template 还有一个作用。
-        - add_defines_Template 添加 DEFINES+=TEMPLATESHARED_EXPORT=Q_DECL_IMPORT
-        - add_static_defines_Template 添加 DEFINES+=TEMPLATESHARED_EXPORT=
+        - add_defines_Template 添加 contains(DEFINES, TEMPLATE_LIBRARY):DEFINES+=TEMPLATESHARED_EXPORT=Q_DECL_EXPORT
+        - add_defines_Template 添加 else:contains(DEFINES, TEMPLATE_STATIC_LIBRARY):DEFINES+=TEMPLATESHARED_EXPORT=
+        - add_defines_Template 添加 else:!contains(DEFINES, TEMPLATE_LIBRARY):DEFINES+=TEMPLATESHARED_EXPORT=Q_DECL_IMPORT
         - 这样便可以兼容没有global文件的库工程的动态、静态链接
     - unix，全部定义为空即可。 
     - 这个步骤太麻烦，我提供一个函数，输入动态宏、静态宏、API宏，API宏在代码里就可以用了。

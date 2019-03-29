@@ -64,7 +64,7 @@ include ($${PWD}/add_sdk.pri)
 #include ($${PWD}/add_plugin.pri)
 
 #lib发布依赖所需要的函数
-#include ($${PWD}/add_sdk_3rdparty.pri)
+#include ($${PWD}/add_deploy_library2.pri)
 
 #program version
 include ($${PWD}/add_version.pri)
@@ -156,7 +156,8 @@ contains(TEMPLATE, app) {
 
 #Multi-link v2.4 对此处的默认编译逻辑进行了更改
 #链接库自有CONFIG、链接库自有宏完全由用户手动调用函数实现，此函数仅仅影响内部状态CONFIG、宏。
-contains(TEMPLATE, lib):add_default_library_project()
+#我纠正了add_lib_project()的功能，和这个函数意义相同。所以，此处关闭。
+#!ios:contains(TEMPLATE, lib):add_default_library_project()
 
 #################################################################
 #公共的基础header.pri，这个的作用在于不需要区分app和lib的设置都在这里面。

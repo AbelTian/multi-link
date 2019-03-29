@@ -11,6 +11,7 @@
 #------------------------------------------------------------------------------------------------
 #2019-03-19 15:59:29
 #发布LIB库的依赖。类似于app工程add_deploy_library的功能，其实只有macOS下有用。
+#这个是对LIB工程 add_dependent_manager() 调用后的补充，用于追加处理依赖库，用户自主调用。
 #add_sdk_3rdparty
 #add_sdk_3rdparty_bundle
 
@@ -60,7 +61,7 @@ defineReplace(get_add_sdk_3rdparty_on_mac) {
     } else {
         command += chmod +x $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh &&
         command += . $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh \
-            $${LIB_LIB_PWD} $${libname} $${librealname} yes no \
+            $${LIB_LIB_PWD} $${libname} $${librealname} no no \
             $${APP_BUILD_PWD}/lib$${TARGET}.dylib &&
     }
 
@@ -76,7 +77,7 @@ defineReplace(get_add_sdk_3rdparty_on_mac) {
         #OK?
         command += chmod +x $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh &&
         command += . $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh \
-            $${LIB_LIB_PWD} $${libname} $${librealname} yes no \
+            $${LIB_LIB_PWD} $${libname} $${librealname} no no \
             $${APP_DEPLOY_PWD}/lib$${TARGET}.dylib &&
     }
 
@@ -125,7 +126,7 @@ defineReplace(get_add_sdk_3rdparty_bundle_on_mac) {
     } else {
         command += chmod +x $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh &&
         command += . $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh \
-            $${LIB_LIB_PWD} $${libname} $${librealname} yes yes \
+            $${LIB_LIB_PWD} $${libname} $${librealname} no yes \
             $${APP_BUILD_PWD}/lib$${TARGET}.dylib &&
     }
 
@@ -140,7 +141,7 @@ defineReplace(get_add_sdk_3rdparty_bundle_on_mac) {
         #OK?
         command += chmod +x $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh &&
         command += . $${ADD_SDK_3RDPARTY_PRI_PWD}/mac_install_name_tool2.sh \
-            $${LIB_LIB_PWD} $${libname} $${librealname} yes yes \
+            $${LIB_LIB_PWD} $${libname} $${librealname} no yes \
             $${APP_DEPLOY_PWD}/lib$${TARGET}.dylib &&
     }
 

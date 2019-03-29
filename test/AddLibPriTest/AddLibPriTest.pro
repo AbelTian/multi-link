@@ -134,6 +134,49 @@ add_dependent_manager(QQt)
 #normal
 add_dependent_manager(zlib)
 
-message(...... $$CONFIG)
-message(...... $$DEFINES)
-message(...... $$QT_VERSION)
+message(CONFIG ...... $$CONFIG)
+message(DEFINES ...... $$DEFINES)
+message(QT_VERSION ...... $$QT_VERSION)
+message(QMAKE_CC ...... $$QMAKE_CC)
+message(QMAKE_CXX ...... $$QMAKE_CXX)
+message(QMAKE_CFLAGS ...... $$QMAKE_CFLAGS)
+message(QMAKE_CXXFLAGS ...... $$QMAKE_CXXFLAGS)
+message(QMAKESPEC ...... $$QMAKESPEC)
+QMAKEXSPEC2 = $$[QMAKE_XSPEC]
+message(QMAKEXSPEC ...... $$QMAKE_XSPEC)
+message(QMAKEXSPEC ...... $$QMAKEXSPEC2)
+message(MAKEFILE_GENERATOR ...... $$MAKEFILE_GENERATOR)
+QMAKE2 = $$[QMAKE]
+message(QMAKE ...... $$QMAKE2)
+message(QMAKE ...... $$QMAKE_QMAKE)
+message(QMAKE_LFLAGS ...... $$QMAKE_LFLAGS)
+
+message(QMAKE_HOST ...... $$QMAKE_HOST.arch)
+message(QMAKE_HOST ...... $$QMAKE_HOST.os)
+message(QMAKE_HOST ...... $$QMAKE_HOST.cpu_count)
+message(QMAKE_HOST ...... $$QMAKE_HOST.name)
+message(QMAKE_HOST ...... $$QMAKE_HOST.version)
+message(QMAKE_HOST ...... $$QMAKE_HOST.version_string)
+
+QMAKE_LIBDIR2 = $$[QMAKE_LIBDIR]
+message(QMAKE_LIBDIR ...... $$QMAKE_LIBDIR2)
+QMAKE_LIBS2 = $$[QMAKE_LIBS]
+message(QMAKE_LIBS ...... $$QMAKE_LIBS2)
+message(TARGET_EXT ...... $$TARGET_EXT)
+
+#麻大烦了，我在Multi-link里面大规模使用了这种多宏判断。
+#MinGW64不支持 || and |
+#奇葩。
+contains(DEFINES, __WIN__ || __WIN64__ ){
+    warning(Come here"," MinGW64 support ||)
+} else {
+    warning(Come here"," MinGW64 does not support ||)
+}
+
+contains(DEFINES, __WIN__ | __WIN64__ ){
+    warning(Come here"," MinGW64 support |)
+} else {
+    warning(Come here"," MinGW64 does not support |)
+}
+
+contains(DEFINES, __WIN64__):warning(MinGW64 is Coming)
