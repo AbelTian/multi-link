@@ -46,7 +46,7 @@ defineReplace(get_add_library_bundle) {
     }
 
     LINK =
-    contains(DEFINES, __DARWIN__) {
+    contains(DEFINES, __DESKTOP_DARWIN__) {
         LINK += -F$${CUR_LIB_PWD}
         LINK += -framework $${libname}
     } else {
@@ -101,7 +101,7 @@ defineReplace(get_add_include_bundle) {
     isEmpty(libname): libname = $${libgroupname}
 
     CUR_INC_PWD =
-    contains(DEFINES, __DARWIN__) {
+    contains(DEFINES, __DESKTOP_DARWIN__) {
         CUR_INC_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/lib/$${libname}.framework/Headers
         !isEmpty(libincsubpath):CUR_INC_PWD=$${CUR_INC_PWD}/$${libincsubpath}
     } else {
@@ -252,7 +252,7 @@ defineTest(add_library_path) {
     librarypath = $$get_add_library_path($${libgroupname})
 
     command =
-    contains(DEFINES, __DARWIN__) {
+    contains(DEFINES, __DESKTOP_DARWIN__) {
         command += -F$${librarypath}
     }
     command += -L$${librarypath}

@@ -17,7 +17,7 @@
 defineTest(add_icons){
     #调用处$${PWD}，不是这个pri的位置。
     !exists("$${PWD}/logo"):mkdir("$${PWD}/logo")
-    contains(DEFINES, __DARWIN__){
+    contains(DEFINES, __DESKTOP_DARWIN__){
         #macOS
         !exists("$${PWD}/logo/logo.iconset"):mkdir("$${PWD}/logo/logo.iconset")
         filepath = $${PWD}/logo/logo.icns
