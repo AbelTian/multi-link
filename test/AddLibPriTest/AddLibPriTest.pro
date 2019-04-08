@@ -121,6 +121,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(treefrog)
     add_dependent_manager(mylittleclib)
     add_dependent_manager(soui)
+    add_dependent_manager(Qtitan)
 }
 
 #在当前目录创建成功。

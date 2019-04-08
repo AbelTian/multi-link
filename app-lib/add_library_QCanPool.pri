@@ -1,32 +1,32 @@
 #----------------------------------------------------------------
-#add_library_QtitanRibbon.pri
-#这是给用户提供的方便pri
-#这个比较common，允许拷贝到用户工程中更改。
+#add_library_QCanPool.pri
+#链接QCanPool组
+#这是给用户提供的方便pri，这个pri比较common，允许拷贝到用户工程中更改。
 #----------------------------------------------------------------
 #_bundle的取舍，在于macOS系统下，使用的library为bundle形式，还是dylib形式。
 
 #######################################################################################
 #初始化设置
 #######################################################################################
-#Qtitan官方提供的SDK安装包。
+
 
 #######################################################################################
 #定义函数
 #######################################################################################
 #修改
-defineTest(add_include_QtitanRibbon){
+defineTest(add_include_QCanPool){
     #不为空，肯定是源码里的路径。 用于导出头文件
     #header_path = $$1
     #如果参数1为空，那么是用SDK里的路径 用于链接时包含头文件
     #此处_bundle代表 mac下头文件在bundle里。 留意
-    #isEmpty(1):header_path=$$get_add_include(QtitanRibbon, QtitanRibbon)
+    #isEmpty(1):header_path=$$get_add_include(QCanPool, QCanPool)
 
     command =
     #basic
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    header_path=$$get_add_include(QtitanRibbon, QtitanRibbon)
+    header_path=$$get_add_include_bundle(QCanPool, qcanpool)
     command += $${header_path}
 
     INCLUDEPATH += $$command
@@ -35,40 +35,37 @@ defineTest(add_include_QtitanRibbon){
 }
 
 #修改
-defineTest(add_defines_QtitanRibbon){
-    #添加这个SDK里的defines
+defineTest(add_defines_QCanPool){
     #add_defines()
+    #添加这个SDK里的 defines
 
     #--------------------------------------------
-    #留意 QtitanRibbon 使用的控制宏
-    #--------------------------------------------
-
-    #--------------------------------------------
-    #Multi-link 提供 QtitanRibbon 的自有控制宏，
-    #留意 QtitanRibbon 使用的控制宏
+    #Multi-link 提供 QCanPool 的自有控制宏，
+    #留意 QCanPool 使用的控制宏
     #--------------------------------------------
 
     #--------------------------------------------
-    #根据 QtitanRibbon 使用的控制宏，修改 QtitanRibbon 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
+    #根据 QCanPool 使用的控制宏，修改 QCanPool 编译时、链接时的不同的宏配置。编译时，修改前两个判断分支；链接时，修改后两个判断分支。
     #可以用于转换使用不同宏、两套宏控制的链接库。
     #--------------------------------------------
-    #QtitanRibbon 动态编译时
-    contains(DEFINES, QTITANRIBBON_LIBRARY){
-        message($${TARGET} build QtitanRibbon dynamic library)
+    #QCanPool 动态编译时
+    contains(DEFINES, QCANPOOL_LIBRARY){
+        message($${TARGET} build QCanPool dynamic library)
     }
-    #QtitanRibbon 静态编译、链接时
-    else:contains(DEFINES, QTITANRIBBON_STATIC_LIBRARY){
-        message($${TARGET} build-link QtitanRibbon static library)
+    #QCanPool 静态编译、链接时
+    else:contains(DEFINES, QCANPOOL_STATIC_LIBRARY){
+        message($${TARGET} build-link QCanPool static library)
     }
-    #QtitanRibbon 动态链接时
-    else:!contains(DEFINES, QTITANRIBBON_LIBRARY){
-        message($${TARGET} link QtitanRibbon dynamic library)
+    #QCanPool 动态链接时
+    else:!contains(DEFINES, QCANPOOL_LIBRARY){
+        message($${TARGET} link QCanPool dynamic library)
     }
 
     #--------------------------------------------
     #添加库的宏配置信息，编译时、链接时通用，需要注意区分不同宏控制
     #建议先写动态编译、链接时的通用配置，然后增加对动态编译、链接，对静态编译、链接时的兼容处理。处理多个子模块时特别好用。
     #--------------------------------------------
+
 
     export(QT)
     export(DEFINES)
@@ -77,24 +74,23 @@ defineTest(add_defines_QtitanRibbon){
 }
 
 #留意
-defineTest(add_library_QtitanRibbon){
+defineTest(add_library_QCanPool){
     #这个地方add_library_bundle代表 macOS下，lib在bundle里。 留意
     #添加这个SDK里的library
-    #add_library(QtitanRibbon, QtitanRibbon)
-    add_library(QtitanRibbon, qtnribbon4)
+    #add_library(QCanPool, QCanPool)
+    add_library_bundle(QCanPool, qcanpool)
 
     return (1)
 }
 
-
 #发布依赖library
 #注意Android也需要这个函数，使用这个函数Android才会发布Library到运行时。上边的只是链接作用。
-#修改
-defineTest(add_deploy_library_QtitanRibbon) {
+#留意
+defineTest(add_deploy_library_QCanPool) {
     #这个地方add_deploy_library_bundle代表macOS下发布的是bundle格式。
-    #add_deploy_libraryes(QtitanRibbon)
-    #add_deploy_library(QtitanRibbon, QtitanRibbon)
-    add_deploy_library(QtitanRibbon, qtnribbon4)
+    #add_deploy_libraryes(QCanPool)
+    #add_deploy_library(QCanPool, QCanPool)
+    add_deploy_library_bundle(QCanPool, qcanpool)
 
     return (1)
 }
