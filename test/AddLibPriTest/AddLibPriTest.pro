@@ -122,6 +122,7 @@ contains(CONFIG, link_some_libraries) {
     add_dependent_manager(mylittleclib)
     add_dependent_manager(soui)
     add_dependent_manager(Qtitan)
+    add_dependent_manager(QCanPool)
 }
 
 #在当前目录创建成功。

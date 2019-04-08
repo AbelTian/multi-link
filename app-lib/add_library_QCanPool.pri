@@ -51,10 +51,12 @@ defineTest(add_defines_QCanPool){
     #QCanPool 动态编译时
     contains(DEFINES, QCANPOOL_LIBRARY){
         message($${TARGET} build QCanPool dynamic library)
+        #DEFINES += QCANPOOL_LIBRARY
     }
     #QCanPool 静态编译、链接时
     else:contains(DEFINES, QCANPOOL_STATIC_LIBRARY){
         message($${TARGET} build-link QCanPool static library)
+        #DEFINES += QCANPOOL_STATIC_LIBRARY
     }
     #QCanPool 动态链接时
     else:!contains(DEFINES, QCANPOOL_LIBRARY){
