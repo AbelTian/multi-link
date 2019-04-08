@@ -1,0 +1,21 @@
+LUA
+linux ok, windows ok, macOS ok, ...
+
+QtLUA
+no ok,
+
+cocos2d-x
+no ok,
+
+DuiLib
+Windows only,
+
+SOUI
+Windows only,
+
+LevelDB
+Linux only,
+
+LibQQtœµ¡–
+Windows MSVC/MinGW32/MinGW64 ok, macOS ok, Linux 32/64 ok, Android ok, iOS ok, WinRT exclude.
+

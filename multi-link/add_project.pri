@@ -19,12 +19,19 @@
 #add_create_dependent_manager()
 #add_custom_dependent_manager()
 #add_custom_dependent_manager2()
+#add_custom_dependent_manager_from_sdk() = add_custom_dependent_manager2()
 
 #v2.4
 #add_static_dependent_manager()
+#add_static_create_dependent_manager()
+#add_static_custom_dependent_manager()
+#add_static_custom_dependent_manager2()
+#add_static_custom_dependent_manager_from_sdk() = add_static_custom_dependent_manager2()
+
 #add_create_static_dependent_manager()
 #add_custom_static_dependent_manager()
 #add_custom_static_dependent_manager2()
+
 
 #兼容 v2.3 的链接环
 #add_static_dependent_manager_v23()
@@ -191,6 +198,17 @@ defineTest(add_custom_dependent_manager2){
     add_create_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
 
+#add_custom_dependent_manager2的wrapper
+defineTest(add_custom_dependent_manager_from_sdk){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
+    add_create_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
 #以上函数，存在以下问题。
 #应用链接动态库，没问题。
 #应用链接静态库，有问题。
@@ -279,7 +297,7 @@ defineTest(add_static_dependent_manager){
 }
 
 #如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
-defineTest(add_create_static_dependent_manager){
+defineTest(add_static_create_dependent_manager){
     libgroupname = $$1
     libname = $$2
     pripath = $$3
@@ -310,6 +328,72 @@ defineTest(add_create_static_dependent_manager){
 
 #如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
 #参数3 为空则为当前路径 $$PWD 调用处
+defineTest(add_static_custom_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${PWD}
+    add_static_create_dependent_manager($$libgroupname, $$libname, $$pripath)
+    return(1)
+}
+
+#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
+#默认路径是SDK ROOT下app-lib
+defineTest(add_static_custom_dependent_manager2){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
+    add_static_create_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+#add_static_custom_dependent_manager2的wrapper
+defineTest(add_static_custom_dependent_manager_from_sdk){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $$libgroupname
+    isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
+    add_static_create_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+#add_static_create_dependent_manager的wrapper
+defineTest(add_create_static_dependent_manager){
+    libgroupname = $$1
+    libname = $$2
+    pripath = $$3
+    #这里出现了一个bug，如果输入为空，本来设置为Template的，可是竟然不为空，Template pri也会加入。现在返回就又好了。
+    isEmpty(libgroupname):return(0)
+    isEmpty(libname):libname = $${libgroupname}
+    isEmpty(pripath):pripath = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib
+
+    equals(libname, Template):error("User cannot create add_library_Template.pri anywhere.")
+
+    !exists($${pripath}/add_library_$${libgroupname}.pri) {
+        srcFile = $${ADD_BASE_MANAGER_PRI_PWD}/../app-lib/add_library_Template.pri
+        dstFile = $${pripath}/add_library_$${libgroupname}.pri
+        contains(QMAKE_HOST.os, Windows) {
+            srcFile = $$add_host_path($$srcFile)
+            dstFile = $$add_host_path($$dstFile)
+        }
+
+        system_errcode($$COPY $${srcFile} $${dstFile}){
+            message(create $$dstFile success.)
+        }
+
+        #添加自动替换的功能
+    }
+
+    add_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+}
+
+#add_static_custom_dependent_manager的wrapper
 defineTest(add_custom_static_dependent_manager){
     libgroupname = $$1
     libname = $$2
@@ -318,12 +402,11 @@ defineTest(add_custom_static_dependent_manager){
     isEmpty(libgroupname):return(0)
     isEmpty(libname):libname = $${libgroupname}
     isEmpty(pripath):pripath = $${PWD}
-    add_create_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+    add_static_create_dependent_manager($$libgroupname, $$libname, $$pripath)
     return(1)
 }
 
-#如果不存在，自动创建一个模板样式的add_library_$${libgroupname}.pri
-#默认路径是SDK ROOT下app-lib
+#add_static_custom_dependent_manager2的wrapper
 defineTest(add_custom_static_dependent_manager2){
     libgroupname = $$1
     libname = $$2
@@ -331,7 +414,7 @@ defineTest(add_custom_static_dependent_manager2){
     isEmpty(libgroupname):return(0)
     isEmpty(libname):libname = $$libgroupname
     isEmpty(pripath):pripath = $${LIB_SDK_ROOT}/app-lib
-    add_create_static_dependent_manager($$libgroupname, $$libname, $$pripath)
+    add_static_create_dependent_manager($$libgroupname, $$libname, $$pripath)
 }
 
 #这个函数解决全部静态链接库
