@@ -73,10 +73,12 @@ defineTest(add_defines_soui){
     #soui 动态编译时
     contains(DEFINES, SOUI_LIBRARY){
         message($${TARGET} build soui dynamic library)
+        DEFINES += SOUI_EXPORTS
     }
     #soui 静态编译、链接时
     else:contains(DEFINES, SOUI_STATIC_LIBRARY){
         message($${TARGET} build-link soui static library)
+        DEFINES += SOUI_STATIC_EXPORTS
     }
     #soui 动态链接时
     else:!contains(DEFINES, SOUI_LIBRARY){
