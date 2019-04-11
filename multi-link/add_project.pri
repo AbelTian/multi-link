@@ -727,7 +727,7 @@ defineTest(add_dynamic_library_project) {
     }
     CONFIG -= $${DY0CONFIG}
     CONFIG += $${DYCONFIG}
-    message(Build $${TARGET} $${DYCONFIG} is configed. build)
+    message(Build $${TARGET} $${DYCONFIG} is configed. build.)
 
     #链接库自有宏的改变
     DY0DEF =
@@ -747,7 +747,7 @@ defineTest(add_dynamic_library_project) {
     DEFINES -= $${DY0DEF}
     #contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
         DEFINES += $${DYDEF}
-        message(Build $${TARGET} $${DYDEF} is defined. build)
+        message(Build $${TARGET} $${DYDEF} is defined. build.)
     #}
 
     export(CONFIG)
@@ -792,15 +792,18 @@ defineTest(add_static_library_project) {
     ST0CONFIG =
     STCONFIG =
     ST0CONFIG += build_$${libgroupname}
-    STCONFIG += build_static_$${libgroupname} build_link_$${libgroupname}
+    ST1CONFIG += build_static_$${libgroupname}
+    STCONFIG += build_link_$${libgroupname}
     #TARGET
     !equals(libname, $${libgroupname}){
         ST0CONFIG += build_$${libname}
-        STCONFIG += build_static_$${libname} build_link_$${libname}
+        ST1CONFIG += build_static_$${libname}
+        STCONFIG += build_link_$${libname}
     }
     CONFIG -= $${ST0CONFIG}
-    CONFIG += $${STCONFIG}
-    message(Build $${TARGET} $${STCONFIG} is configed. build and link)
+    CONFIG += $${ST1CONFIG} $${STCONFIG}
+    #message(Build $${TARGET} $${ST1CONFIG} is configed. build"," $${STCONFIG} is configed. build and link)
+    message(Build $${TARGET} $${STCONFIG} is configed. build and link. $${ST1CONFIG} is configed. build)
 
     #链接库自有宏的改变
     #组
@@ -821,7 +824,7 @@ defineTest(add_static_library_project) {
     }
     DEFINES -= $${ST0DEF}
     DEFINES += $${STDEF}
-    message(Build $${TARGET} $${STDEF} is defined. build and link)
+    message(Build $${TARGET} $${STDEF} is defined. build and link.)
 
     export(CONFIG)
     export(DEFINES)

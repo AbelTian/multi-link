@@ -63,12 +63,3 @@ SUBDIRS += demo/qqtliveplayer
 #need ffmpeg library
 #SUBDIRS += test/qqtffmpegplayer
 
-
-########################################################################################
-#macOS Windows linux
-
-########################################################################################
-#test project
-#SUBDIRS += test/nonQtProjTest
-SUBDIRS += test/AddLibPriTest
-SUBDIRS += test/AddAppIconTest
