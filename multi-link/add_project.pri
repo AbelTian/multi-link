@@ -727,7 +727,7 @@ defineTest(add_dynamic_library_project) {
     }
     CONFIG -= $${DY0CONFIG}
     CONFIG += $${DYCONFIG}
-    message(Build $${TARGET} $${DYCONFIG} is configed. build and link)
+    message(Build $${TARGET} $${DYCONFIG} is configed. build)
 
     #链接库自有宏的改变
     DY0DEF =
