@@ -854,7 +854,7 @@ defineTest(add_static_library_project) {
 #参数3 动态宏名称 控制1 可选 [TARGET_NAME]_LIBRARY
 #参数4 静态宏名称 控制2 可选 [TARGET_NAME]_STATIC_LIBRARY
 defineTest(add_library_export_macro) {
-    #isEmpty(1): error("add_library_export_macro(libgroupname, dymacro, stmacro, apimacro) requires at least one argument")
+    #isEmpty(1): error("add_library_export_macro(libgroupname, apimacro, dymacro, stmacro) requires at least one argument")
 
     #库组的名
     libgroupname = $$TARGET_NAME
