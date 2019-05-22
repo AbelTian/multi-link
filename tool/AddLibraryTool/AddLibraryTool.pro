@@ -33,6 +33,12 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
+DEFINES += DOCOPT_HEADER_ONLY
+INCLUDEPATH += docopt.cpp
+#SOURCES += docopt.cpp/docopt.cpp
+HEADERS += docopt.cpp/docopt.h
+CONFIG += c++11
+
 #这个工具会遍历SDK目录（选择一个SDK），把SDK生成为add_library_XXX.pri生成到app-lib下。
 include(../../multi-link/add_base_manager.pri)
 add_version(1,0,0,0)

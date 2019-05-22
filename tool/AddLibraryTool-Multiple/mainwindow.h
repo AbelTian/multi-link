@@ -20,6 +20,8 @@ public:
     //void calculateLib ( QQtDictionary& dict, QString path );
     void outputWrokflow ( QString sdkName );
 
+    void setOutputPath ( QString path );
+
 signals:
     void clickBtn();
 

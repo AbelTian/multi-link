@@ -96,6 +96,11 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::setOutputPath ( QString path )
+{
+    ui->lineEdit_2->setText ( path );
+}
+
 void MainWindow::textChanged ( QString str )
 {
     ui->lineEdit_2->setText ( QString ( "%1/app-lib" ).arg ( str ) );

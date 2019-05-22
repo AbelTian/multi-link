@@ -33,6 +33,13 @@ HEADERS += \
 FORMS += \
         mainwindow.ui
 
+
+DEFINES += DOCOPT_HEADER_ONLY
+INCLUDEPATH += docopt.cpp
+#SOURCES += docopt.cpp/docopt.cpp
+HEADERS += docopt.cpp/docopt.h
+CONFIG += c++11
+
 include(../../multi-link/add_base_manager.pri)
 add_version(1,0,0,0)
 add_deploy()

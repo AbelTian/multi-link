@@ -19,6 +19,8 @@ public:
     void calculate ( QQtDictionary& dict, QString path );
     //void calculateLib ( QQtDictionary& dict, QString path );
 
+    void setOutputPath ( QString path );
+
 signals:
     void clickBtn();
 

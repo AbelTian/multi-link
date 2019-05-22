@@ -134,6 +134,11 @@ void MainWindow::calculate ( QQtDictionary& dict, QString path )
     }
 }
 
+void MainWindow::setOutputPath ( QString path )
+{
+    ui->lineEdit_3->setText ( path );
+}
+
 void MainWindow::textChanged ( QString str )
 {
     ui->tabWidget->setTabText ( 3, QString ( "add_library_%1.pri" ).arg ( str ) );
