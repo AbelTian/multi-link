@@ -73,3 +73,19 @@ defineTest(add_setting_build){
     export(LIB_BUILD_TARGET_NAME)
     return(true)
 }
+
+##########################################
+#app/lib对依赖Qt的过程的设置命令
+#这个函数会影响add_deploy系列功能函数，迫使add_deploy函数群不启动对Qt的windeployqt发布操作。
+##########################################
+MULTI_LINK_WITH_QT=true
+#默认开启
+#参数1 true：开启Qt过程，false：关闭Qt过程
+defineTest(add_setting_with_qt){
+    isEmpty(1): error("add_setting_with_qt(switch) requires one argument")
+    !isEmpty(2): error("add_setting_with_qt(switch) requires one argument")
+    MULTI_LINK_WITH_QT = $$1
+    !equals(MULTI_LINK_WITH_QT, true):MULTI_LINK_WITH_QT=false
+    export(MULTI_LINK_WITH_QT)
+    return(true)
+}

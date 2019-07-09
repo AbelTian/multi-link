@@ -215,10 +215,12 @@ defineReplace(get_add_mac_sdk){
     command += $$LN $$LIB_BUNDLE_CUR_INC_DIR  $${LIB_BUNDLE_INC_LINK} $$CMD_SEP
     command += $$LN $$LIB_BUNDLE_CUR_RES_DIR  $${LIB_BUNDLE_RES_LINK} $$CMD_SEP
     command += $$LN $$LIB_BUNDLE_CUR_EXE_FILE $${LIB_BUNDLE_EXE_LINK}
-    lessThan(QT_MAJOR_VERSION, 5){
-        command += $$CMD_SEP
-        command += chmod +x $${ADD_SDK_PRI_PWD}/mac_deploy_qt4.sh $$CMD_SEP
-        command += $${ADD_SDK_PRI_PWD}/mac_deploy_qt4.sh $${LIB_BUNDLE_VER_DIR}/$${libname}
+    equals(MULTI_LINK_WITH_QT, true) {
+        lessThan(QT_MAJOR_VERSION, 5){
+            command += $$CMD_SEP
+            command += chmod +x $${ADD_SDK_PRI_PWD}/mac_deploy_qt4.sh $$CMD_SEP
+            command += $${ADD_SDK_PRI_PWD}/mac_deploy_qt4.sh $${LIB_BUNDLE_VER_DIR}/$${libname}
+        }
     }
     return ($$command)
 }

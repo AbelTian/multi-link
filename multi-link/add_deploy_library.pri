@@ -260,9 +260,10 @@ defineReplace(get_add_deploy_library_on_windows) {
     command += $$COPY_DIR $${LIB_BIN_PWD}\\*$${librealname}.* $${APP_DEPLOY_PWD} $$CMD_SEP
 
     #经过调试发现，如果DLL引用了Qt库，App却没有引用，windeployqt不会发布那些库，在这里发布。
-    command += windeployqt $${APP_DEPLOY_PWD}\\$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
-    command += windeployqt $${APP_DEPLOY_PWD}\\lib$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
-
+    equals(MULTI_LINK_WITH_QT, true) {
+        command += windeployqt $${APP_DEPLOY_PWD}\\$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
+        command += windeployqt $${APP_DEPLOY_PWD}\\lib$${librealname}.dll $${DEPLOYTYPE} -verbose=1 $$CMD_SEP
+    }
     command += echo . #app deploy library $$librealname progressed.
 
     #message($$command)

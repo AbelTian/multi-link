@@ -34,8 +34,12 @@ FORMS += \
         mainwindow.ui
 
 include(../../multi-link/add_base_manager.pri)
+#add_setting_with_qt(false)
 add_version(1,0,0,0)
 add_deploy()
 add_dependent_manager(QQt)
 system(touch main.cpp)
 add_icons()
+
+message($$QMAKE_PRE_LINK)
+message($$QMAKE_POST_LINK)
