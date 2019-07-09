@@ -47,6 +47,7 @@ defineTest(add_include_QQt){
     #multimedia
     command += $${header_path}/multimedia
     command += $${header_path}/multimedia/dmmu
+    command += $${header_path}/multimedia/libqwav
 
     #charts
     command += $${header_path}/charts
@@ -233,6 +234,22 @@ defineTest(add_defines_QQt){
     contains (DEFINES, __MULTIMEDIA__) {
         QT += multimedia
 
+        #AUDIO MODULE
+        #depend on libqwav
+        DEFINES += __QQTAUDIOSUPPORT__
+        contains(DEFINES, __QQTAUDIOSUPPORT__) {
+            win32 {
+                contains (DEFINES, QQT_LIBRARY) {
+                    DEFINES += LIBQWAV_LIBRARY
+                } else:contains (DEFINES, QQT_STATIC_LIBRARY) {
+                    DEFINES += LIBQWAV_STATIC_LIBRARY
+                } else { }
+            }
+        }
+
+        #VIDEO MODULE
+        DEFINES += __QQTVIDEOSUPPORT__
+
         #LOGIC CAMERA PREVIEW
         #depend on dmmu
         DEFINES += __LOGICCAMERAMODULE__
@@ -255,6 +272,18 @@ defineTest(add_defines_QQt){
                 DEFINES += BUILD_QDEVICEWATCHER_STATIC
             } else { }
         }
+    }
+
+
+    ##################Process Module###############################
+    #后台进程支持。
+    #ios\winRT 不支持。
+    #可以添加QQtProcess适配，正常平台使用QProcess继承下来，iOS下使用fork封装。
+    DEFINES += __PROCESSSUPPORT__
+    #ios has no backend process
+    #ios doesn't support contains(||)? 支持，但是只能在一层pri以内。
+    contains(DEFINES, __IOS__||__WINRT__) {
+        DEFINES -= __PROCESSSUPPORT__
     }
 
     ##################PrintSupport Module###############################
@@ -334,8 +363,11 @@ defineTest(add_defines_QQt){
         #if you use qextserialport, open the annotation
         #suggest: Qt5 using factory-packed, Qt4 using from Qt5, extra using this.
         #DEFINES += __QEXTSERIALPORT__
+
         #if compiler QtSerialPort module manual, note this line is a good idea. default: qt4 qextserialport
         lessThan(QT_MAJOR_VERSION, 5): DEFINES += __QEXTSERIALPORT__
+        #to winRT, ues qextserialport
+        contains (DEFINES, __WINRT__): DEFINES += __QEXTSERIALPORT__
         #to ios, use qextserialport
         contains (DEFINES, __IOS__): DEFINES += __QEXTSERIALPORT__
         #android qt5 has QtSerialport?
@@ -445,7 +477,17 @@ defineTest(add_defines_QQt){
             }
         }
 
+        ##################Ethenet Manager Module###############################
+        #用于管理嵌入式设备的网络控制，WiFi列表，有线无线自动切换。
+        #默认关闭，一般使用系统自带的管理器。如果用LibQQt开发一套e-linux操作系统，这个就是默认管理器。
+        DEFINES -= QQT_ETHENET_MANAGER
+        #arm mips
+        #TODO: +wince +android +ios +macOS? +win? +linux?
+        contains(QSYS_PRIVATE, Arm32|Armhf32 || Mips32 || Embedded) {
+            DEFINES += QQT_ETHENET_MANAGER
+        }
     }
+
 
     #---------------------------------------------------------------------------
     #LibQQt系列提供独立的QQtExquisite库，作为LibQQt的平级功能扩展，支援大规模的、多样的精美控件。
