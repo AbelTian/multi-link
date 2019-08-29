@@ -319,3 +319,40 @@ defineTest(add_support_msvc_parallel){
 
     return (1)
 }
+
+#支持mac bundle
+#默认开启
+#CONFIG += app_bundle lib_bundle
+defineTest(add_support_mac_bundle){
+    contains(TEMPLATE, app) {
+        contains(QSYS_PRIVATE, macOS){
+            CONFIG += app_bundle
+        }
+    } else: contains(TEMPLATE, lib) {
+        contains(QSYS_PRIVATE, macOS) {
+            CONFIG += lib_bundle
+        }
+    }
+
+    export(CONFIG)
+
+    return (1)
+}
+
+#不支持mac bundle
+#CONFIG -= app_bundle lib_bundle
+defineTest(add_support_no_mac_bundle){
+    contains(TEMPLATE, app) {
+        contains(QSYS_PRIVATE, macOS){
+            CONFIG -= app_bundle
+        }
+    } else: contains(TEMPLATE, lib) {
+        contains(QSYS_PRIVATE, macOS) {
+            CONFIG -= lib_bundle
+        }
+    }
+
+    export(CONFIG)
+
+    return (1)
+}
