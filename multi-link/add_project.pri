@@ -704,6 +704,7 @@ defineTest(add_dynamic_library_project) {
     CONFIG -= static staticlib
     #添加动态设置
     CONFIG += dll
+    contains(QSYS_PRIVATE, macOS):CONFIG += lib_bundle
 
     #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
     DEFINES -= LIB_STATIC_LIBRARY
@@ -776,6 +777,7 @@ defineTest(add_static_library_project) {
 
     #Multi-link 的内部决定CONFIG
     #删除动态设置
+    contains(QSYS_PRIVATE, macOS):CONFIG -= lib_bundle
     CONFIG -= dll
     #添加静态设置
     CONFIG += static staticlib

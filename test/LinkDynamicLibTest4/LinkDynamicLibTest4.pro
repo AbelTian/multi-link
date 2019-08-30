@@ -6,7 +6,7 @@
 
 QT       += widgets
 
-TARGET = AddStaticLibTest
+TARGET = LinkDynamicLibTest4
 TEMPLATE = lib
 
 CONFIG += debug_and_release
@@ -30,15 +30,9 @@ include($${PWD}/../../multi-link/add_base_manager.pri)
 
 #本工程默认编译为动态库。
 #此处更改工程编译状态，为用户提供自有状态CONFIG、宏，用户自主选择。
-#add_dynamic_library_project()
-add_static_library_project()
-
-#上述函数，
-#dynamic，mac下开启了dll，开启了lib_bundle。用户不需要后者，需要手动关闭。
-#static，mac下关闭了dll，关闭了lib_bundle。用户开启也没有用。
-
-#静态库没有lib_bundle!
-#mac:CONFIG -= lib_bundle
+add_dynamic_library_project()
+#add_static_library_project()
+mac:CONFIG -= lib_bundle
 
 #-------------------------------------------------
 #用户工程配置
@@ -47,20 +41,21 @@ add_version(1,0,0,0)
 
 #本库依赖QQt
 add_dependent_manager(QQt)
+add_custom_dependent_manager(AddDynamicLibTest2)
 
 #本库导出SDK到LIB_SDK_ROOT
-add_sdk(AddStaticLibTest, $$add_target_name())
-#add_sdk_header_no_postfix(AddStaticLibTest, $$add_target_name(), AddStaticLibTest)
+add_sdk($$add_target_name(), $$add_target_name())
+#add_sdk_header_no_postfix(LinkDynamicLibTest, $$add_target_name(), LinkDynamicLibTest)
 
 #-------------------------------------------------
 #用户工程配置
 #-------------------------------------------------
-include($${PWD}/addstaticlibtest_header.pri)
-include($${PWD}/addstaticlibtest_source.pri)
+include($${PWD}/linkdynamiclibtest_header.pri)
+include($${PWD}/linkdynamiclibtest_source.pri)
 
 CONFIG += continue_build
 contains(CONFIG, continue_build){
-    system("touch $${PWD}/addstaticlibtest.cpp")
+    system("touch $${PWD}/linkdynamiclibtest.cpp")
 }
 
 message($${TARGET} build obj dir $$add_host_path($${OUT_PWD}) $$OBJECTS_DIR)

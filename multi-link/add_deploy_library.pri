@@ -176,7 +176,7 @@ defineReplace(get_add_deploy_library_bundle_on_mac) {
         command += chmod +x $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
         command += . $${ADD_DEPLOY_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
             $${LIB_LIB_PWD} $${libname} $${librealname} no \
-             $${APP_BUILD_PWD}/$${TARGET} &&
+            $${APP_BUILD_PWD}/$${TARGET} &&
         #command += install_name_tool -change $${libname}.framework/Versions/$${libmajorver}/$${libname} \
         #     @executable_path/$${libname}.framework/Versions/$${libmajorver}/$${librealname} \
         #     $${APP_BUILD_PWD}/$${TARGET} &&

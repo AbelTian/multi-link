@@ -299,7 +299,7 @@ defineReplace(get_add_sdk_work_flow){
     liblowername = $$lower($${librealname})
 
     command =
-    contains(QSYS_PRIVATE, macOS):contains(CONFIG, lib_bundle) {
+    contains(QSYS_PRIVATE, macOS):contains(CONFIG, dll):contains(CONFIG, lib_bundle) {
         #在编译路径里，创作一次sdk，完成framework链接等的修复工作
         command += $$get_add_mac_sdk_fix_building_framework($${librealname}, $${librealname}) $$CMD_SEP
         #command += echo $$libname fix framework success. $$CMD_SEP
@@ -318,7 +318,7 @@ defineReplace(get_add_sdk_work_flow){
         contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}\\*.prl lib $$CMD_SEP
     } else {
         #macOS lib_bundle make sdk
-        contains(QSYS_PRIVATE, macOS):contains(CONFIG, lib_bundle) {
+        contains(QSYS_PRIVATE, macOS):contains(CONFIG, dll):contains(CONFIG, lib_bundle) {
             #message(create lib mac bundle framework)
             command += $$MK_DIR lib/$${libname}.framework $$CMD_SEP
             command += $$CD lib/$${libname}.framework $$CMD_SEP
@@ -1067,3 +1067,4 @@ defineTest(add_build_dir){
     export(APP_BUILD_DESTDIR)
     return (1)
 }
+

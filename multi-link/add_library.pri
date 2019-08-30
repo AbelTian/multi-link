@@ -25,6 +25,104 @@
 #内部用函数
 #获取命令
 ################################################################################
+ADD_LIBRARY_PRI_PWD = $${PWD}
+
+##----------------------------------------------------------------------------
+#dynamic lib project
+#fix macos install_name_tool
+##----------------------------------------------------------------------------
+#这个是有情况的
+#不能放在add_library里，因为后来的add_sdk对build有一次fix，在那次fix之前的操作都无效，
+#不能放在add_dependent_manager里，原因同上，
+#放在add_sdk之前，就是不行的，必须放在fix之后，
+#放在add_sdk之后，那么链接了哪个库就fix哪个库，而且必须fix build和sdk两个位置。
+#这样，用户需要add_dependent_manager之后，add_sdk之后，再调用add_fix_dependent_on_mac(xxxlibgroupname, xxxlib, xxxlibrealname)
+#话说，fix都是一些拷贝工作，不会影响前边的install_name_tool工作。
+#所以，放在add_library里，
+#在苹果系统上，用户也只需要add_dependent_manager就能成功链接上第三方库，并且当前库给别的应用当依赖也不会有错误。
+
+#link none bundle library.
+defineReplace(get_add_library_fix_macos_install_name_tool) {
+    isEmpty(1): error("get_add_library_fix_macos_install_name_tool(libgroupname, libname, librealname) requires at least one argument")
+    !isEmpty(4): error("get_add_library_fix_macos_install_name_tool(libgroupname, libname, librealname) requires at most three argument")
+
+    libgroupname = $$1
+    libname = $$2
+    librealname = $$3
+
+    isEmpty(libname): libname = $${libgroupname}
+    #建议使用默认值
+    isEmpty(librealname): librealname = $$add_decorate_target_name($$libname)
+
+    LIB_PROJ_BUILD_PWD=$${DESTDIR}
+    isEmpty(LIB_PROJ_BUILD_PWD):LIB_PROJ_BUILD_PWD=.
+
+    LIBRARY_STD_DIR =
+    LIBRARY_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+    LIBRARY_SDK_PWD = $${LIB_SDK_ROOT}/$${LIBRARY_STD_DIR}
+    LIBRARY_LIB_PWD = $${LIBRARY_SDK_PWD}/lib
+
+    command =
+
+    #有错误，此处链接的dylib带有主版本号 librealname.1.dylib，无奈中...
+    contains(CONFIG, lib_bundle) {
+        command += install_name_tool -change lib$${librealname}.dylib \
+             @rpath/lib$${librealname}.dylib \
+             $${LIB_PROJ_BUILD_PWD}/$${TARGET}.framework/Versions/$${APP_MAJOR_VERSION}/$${TARGET} &&
+    } else {
+        command += install_name_tool -change lib$${librealname}.dylib \
+             @rpath/lib$${librealname}.dylib \
+             $${LIB_PROJ_BUILD_PWD}/lib$${TARGET}.dylib &&
+    }
+
+    command += echo $${TARGET} warning... maybe not fixed. &&
+    command += echo $${TARGET} fix dependent location from lib$${librealname}.dylib to @rpath/lib$${librealname}.dylib
+
+    return ($${command})
+
+}
+
+#link bundle library.
+defineReplace(get_add_library_bundle_fix_macos_install_name_tool) {
+    isEmpty(1): error("get_add_library_bundle_fix_macos_install_name_tool(libgroupname, libname, librealname) requires at least one argument")
+    !isEmpty(4): error("get_add_library_bundle_fix_macos_install_name_tool(libgroupname, libname, librealname) requires at most three argument")
+
+    libgroupname = $$1
+    libname = $$2
+    librealname = $$3
+
+    isEmpty(libname): libname = $${libgroupname}
+    #建议使用默认值
+    isEmpty(librealname): librealname = $$add_decorate_target_name($$libname)
+
+    LIB_PROJ_BUILD_PWD=$${DESTDIR}
+    isEmpty(LIB_PROJ_BUILD_PWD):LIB_PROJ_BUILD_PWD=.
+
+    LIBRARY_STD_DIR =
+    LIBRARY_STD_DIR = $${libgroupname}/$${QSYS_STD_DIR}
+    LIBRARY_SDK_PWD = $${LIB_SDK_ROOT}/$${LIBRARY_STD_DIR}
+    LIBRARY_LIB_PWD = $${LIBRARY_SDK_PWD}/lib
+
+    command =
+
+    #更改lib bundle链接Lib的位置。
+    contains(CONFIG, lib_bundle) {
+        command += chmod +x $${ADD_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
+        command += . $${ADD_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
+            $${LIBRARY_LIB_PWD} $${libname} $${librealname} yes \
+            $${LIB_PROJ_BUILD_PWD}/$${TARGET}.framework/Versions/$${APP_MAJOR_VERSION}/$${TARGET} &&
+    } else {
+        command += chmod +x $${ADD_LIBRARY_PRI_PWD}/mac_install_name_tool.sh &&
+        command += . $${ADD_LIBRARY_PRI_PWD}/mac_install_name_tool.sh \
+            $${LIBRARY_LIB_PWD} $${libname} $${librealname} yes \
+            $${LIB_PROJ_BUILD_PWD}/lib$${TARGET}.dylib &&
+    }
+
+    command += echo $${TARGET} fix dependent location from $${libname}.framework to @rpath/$${libname}.framework
+
+    return ($${command})
+}
+
 #链接库的命令
 #从LIB_SDK_ROOT按照标准路径QSYS_STD_DIR链接
 #mac下使用bundle
@@ -185,6 +283,13 @@ defineTest(add_library) {
     export(LIBS)
     #message (LIBS += $$command)
 
+    contains(QSYS_PRIVATE, macOS) : contains(TEMPLATE, lib) : contains(CONFIG, dll) {
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
+        QMAKE_POST_LINK += $$get_add_library_fix_macos_install_name_tool($${libgroupname}, $${libname}, $${librealname})
+        export(QMAKE_POST_LINK)
+    }
+
+
     return (1)
 }
 
@@ -205,6 +310,12 @@ defineTest(add_library_bundle) {
     LIBS += $${command}
     export(LIBS)
     #message (LIBS += $$command)
+
+    contains(QSYS_PRIVATE, macOS) : contains(TEMPLATE, lib) : contains(CONFIG, dll) {
+        !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
+        QMAKE_POST_LINK += $$get_add_library_bundle_fix_macos_install_name_tool($${libgroupname}, $${libname}, $${librealname})
+        export(QMAKE_POST_LINK)
+    }
 
     return (1)
 }
