@@ -6,7 +6,7 @@
 
 QT       += widgets
 
-TARGET = LinkStaticLibTest
+TARGET = LinkStaticLibTest2
 TEMPLATE = lib
 
 CONFIG += debug_and_release
@@ -30,8 +30,8 @@ include($${PWD}/../../multi-link/add_base_manager.pri)
 
 #本工程默认编译为动态库。
 #此处更改工程编译状态，为用户提供自有状态CONFIG、宏，用户自主选择。
-#add_dynamic_library_project()
-add_static_library_project()
+add_dynamic_library_project()
+#add_static_library_project()
 
 #-------------------------------------------------
 #用户工程配置
@@ -43,7 +43,7 @@ add_dependent_manager(QQt)
 add_custom_static_dependent_manager(AddStaticLibTest)
 
 #本库导出SDK到LIB_SDK_ROOT
-add_sdk(LinkStaticLibTest, $$add_target_name())
+add_sdk($$add_target_name(), $$add_target_name())
 #add_sdk_header_no_postfix(LinkStaticLibTest, $$add_target_name(), LinkStaticLibTest)
 
 #-------------------------------------------------

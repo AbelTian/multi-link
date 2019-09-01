@@ -6,7 +6,7 @@
 
 QT       += widgets
 
-TARGET = LinkStaticLibTest
+TARGET = LinkDynamicLibTest5
 TEMPLATE = lib
 
 CONFIG += debug_and_release
@@ -33,6 +33,12 @@ include($${PWD}/../../multi-link/add_base_manager.pri)
 #add_dynamic_library_project()
 add_static_library_project()
 
+#静态库的的确确没有bundle
+#mac:CONFIG += lib_bundle
+
+#Multi-link在动态库里自动加上lib_bundle.如果用户觉得多余，请自行减去。
+#Multi-link在静态库里自动减去lib_bundle.加上是不对的。
+
 #-------------------------------------------------
 #用户工程配置
 #-------------------------------------------------
@@ -40,21 +46,21 @@ add_version(1,0,0,0)
 
 #本库依赖QQt
 add_dependent_manager(QQt)
-add_custom_static_dependent_manager(AddStaticLibTest)
+add_custom_dependent_manager(AddDynamicLibTest)
 
 #本库导出SDK到LIB_SDK_ROOT
-add_sdk(LinkStaticLibTest, $$add_target_name())
-#add_sdk_header_no_postfix(LinkStaticLibTest, $$add_target_name(), LinkStaticLibTest)
+add_sdk($$add_target_name(), $$add_target_name())
+#add_sdk_header_no_postfix(LinkDynamicLibTest, $$add_target_name(), LinkDynamicLibTest)
 
 #-------------------------------------------------
 #用户工程配置
 #-------------------------------------------------
-include($${PWD}/linkstaticlibtest_header.pri)
-include($${PWD}/linkstaticlibtest_source.pri)
+include($${PWD}/linkdynamiclibtest_header.pri)
+include($${PWD}/linkdynamiclibtest_source.pri)
 
 CONFIG += continue_build
 contains(CONFIG, continue_build){
-    system("touch $${PWD}/linkstaticlibtest.cpp")
+    system("touch $${PWD}/linkdynamiclibtest.cpp")
 }
 
 message($${TARGET} build obj dir $$add_host_path($${OUT_PWD}) $$OBJECTS_DIR)
