@@ -75,8 +75,9 @@ defineReplace(get_add_library_fix_macos_install_name_tool) {
              $${LIB_PROJ_BUILD_PWD}/lib$${TARGET}.dylib &&
     }
 
-    command += echo $${TARGET} warning... maybe not fixed. &&
-    command += echo $${TARGET} fix dependent location from lib$${librealname}.dylib to @rpath/lib$${librealname}.dylib
+    #command += echo $${TARGET} warning... maybe not fixed. &&
+    #command += echo $${TARGET} fix dependent location from lib$${librealname}.dylib to @rpath/lib$${librealname}.dylib
+    command += echo .
 
     return ($${command})
 
@@ -118,7 +119,8 @@ defineReplace(get_add_library_bundle_fix_macos_install_name_tool) {
             $${LIB_PROJ_BUILD_PWD}/lib$${TARGET}.dylib &&
     }
 
-    command += echo $${TARGET} fix dependent location from $${libname}.framework to @rpath/$${libname}.framework
+    #command += echo $${TARGET} fix dependent location from $${libname}.framework to @rpath/$${libname}.framework
+    command += echo .
 
     return ($${command})
 }
