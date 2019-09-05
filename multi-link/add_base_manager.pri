@@ -63,7 +63,7 @@ include ($${PWD}/add_sdk.pri)
 #lib发布Qt Desinger plugins所需要的函数 [集成在add_sdk.pri里]
 #include ($${PWD}/add_plugin.pri)
 
-#lib发布依赖所需要的函数
+#lib发布依赖所需要的函数 [废弃]
 #include ($${PWD}/add_deploy_library2.pri)
 
 #program version
@@ -75,7 +75,7 @@ include ($${PWD}/add_language.pri)
 #program icons (app only)
 include ($${PWD}/add_icons.pri)
 
-#support 3rdparty tool
+#support 3rdparty tool [autotool, macOS some case, MSVC some case, ...]
 include ($${PWD}/add_support.pri)
 
 ####################################################################################
@@ -109,6 +109,7 @@ defineTest(add_authority){
 
 #在Windows MSVC下经常使用，GCC也能用。用户自主选择
 #precompiled header
+#参数1：pch头文件
 defineTest(add_pch){
     header_file = $$1
     isEmpty(1):error("add_pch(header_file) need one argument.")

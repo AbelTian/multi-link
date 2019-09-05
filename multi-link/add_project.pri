@@ -529,7 +529,8 @@ defineTest(add_app_project) {
     return (1)
 }
 
-#开启lib工程 默认过程 DLL
+#开启lib工程 默认工程为动态工程 默认过程 DLL
+#这个函数是个内部函数，包含一个例外，iOS工程默认为静态工程。
 defineTest(add_lib_project) {
     ##base manager 对lib的处理很重要
     ##区分了在不同目标下Qt library的不同形态，其实就是要求lib工程和Qt library保持一样的状态。
@@ -614,8 +615,9 @@ defineTest(add_lib_project) {
 
 #默认编译为动态库 （Only lib project）
 #仅仅内部状态CONFIG、宏改变，不影响链接库自有CONFIG、宏。
-#=add_dynamic_library_project
-#~add_lib_project，都增加了对类Unix系统的编译宏支持，和Windows的一样。是兼容的，思路一样。
+#~add_lib_project，都增加了对类Unix系统的编译宏支持，和Windows的一样。是兼容的，思路一样。但是这个函数不理会iOS工程。
+#~add_dynamic_library_project，此处没有控制链接库自有宏。
+#这是个内部函数，用户不要调用。
 defineTest(add_default_library_project) {
     #isEmpty(1): error("add_default_library_project(libgroupname) requires one argument")
 
@@ -631,6 +633,7 @@ defineTest(add_default_library_project) {
     CONFIG -= static staticlib
     #添加动态设置
     CONFIG += dll
+    contains(QSYS_PRIVATE, macOS):CONFIG += lib_bundle
 
     #内部状态宏的改变 这一组宏仅仅在Multi-link默认的编译过程中使用，对外部不再建议使用，建议外部使用链接库自有宏。
     DEFINES -= LIB_STATIC_LIBRARY
@@ -682,6 +685,8 @@ defineTest(add_default_library_project) {
 #建议使用库CONFIG、库宏，库组CONFIG、库组宏也可以使用。
 
 #强制更换为动态库 （Only lib project）
+#此处不同于默认的动态工程步骤，此函数没有任何例外，全是动态工程。默认的动态步骤包含对iOS静态工程的适配。
+#这个函数提供了链接库自有CONFIG、链接库自有宏，一般用户会用到。但是请注意，自行过滤iOS工程，碰到iOS默认需要使用static工程。
 #参数1 libgroupname 发布到的组库名称 指导一个链接库自有宏
 #参数2 libname 没有修饰的 TARGET_NAME 指导一个链接库常用自有宏
 defineTest(add_dynamic_library_project) {
@@ -753,6 +758,10 @@ defineTest(add_dynamic_library_project) {
 
     export(CONFIG)
     export(DEFINES)
+
+    #此处是否应当帮助用户添加iOS静态代码？ios:add_static_library_project()
+    #否定
+
     return(1)
 }
 
