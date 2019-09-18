@@ -73,6 +73,7 @@ defineTest(add_include_QQt){
 
     #exquisite widgets
     command += $${header_path}/exquisite
+    command += $${header_path}/exquisite/irregularwidgets
     command += $${header_path}/exquisite/clicksoundwidgets
     command += $${header_path}/exquisite/clickwidgets
     command += $${header_path}/exquisite/svgwidgets
@@ -563,6 +564,9 @@ defineTest(add_defines_QQt){
 
         #on screen display widget
         DEFINES += __OSDWIDGETS__
+
+        #irregular widgets
+        DEFINES += __IRREGULARWIDGETS__
     }
 
     #---------------------------------------------------------------------------
