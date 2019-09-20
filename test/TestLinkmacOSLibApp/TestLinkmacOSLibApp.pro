@@ -54,9 +54,12 @@ add_custom_dependent_manager(LinkDynamicLibTest)
 #此处注意，6号静态库，依赖了2号动态库，用户必须依赖2号库来启动发布拷贝2号的过程，否则，运行时6号找不到2号，运行失败。
 #而且，由于6号是静态库，App报错的时候，不会报6号依赖2号，而是报app依赖2号，奇葩的，需要注意。
 #此处有个bug，对2号库的install_name_tool无法正确实现。
-#add_custom_dependent_manager(AddDynamicLibTest2)
-#add_custom_dependent_manager(LinkDynamicLibTest3)
-#add_custom_dependent_manager(LinkDynamicLibTest6)
+#已经解决。Multi-linkv2.4把add_default_install_name()加入到了默认步骤，用户不需要为库们设置name了。
+#另外，内部增加了-Wl,-rpath支持，如果那些查找路径还不够用，用户可以调用add_load_library_path()自行补充查找路径。
+#注意：用户输入的是，安装前缀、查找路径前缀，最后必须带/
+add_custom_dependent_manager(AddDynamicLibTest2)
+add_custom_dependent_manager(LinkDynamicLibTest3)
+add_custom_dependent_manager(LinkDynamicLibTest6)
 
 system(touch main.cpp)
 

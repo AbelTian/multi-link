@@ -65,6 +65,7 @@ defineReplace(get_add_library_fix_macos_install_name_tool) {
     command =
 
     #有错误，此处链接的dylib带有主版本号 librealname.1.dylib，无奈中...
+    #在链接libxxx.1.dylib的时候无法获得其版本号，通过add_default_install_name()函数，已经解决，此处操作无效，但是@rpath已经有了。
     contains(CONFIG, lib_bundle) {
         command += install_name_tool -change lib$${librealname}.dylib \
              @rpath/lib$${librealname}.dylib \

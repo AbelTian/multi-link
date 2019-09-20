@@ -50,6 +50,7 @@
 #add_lib_project()
 #add_default_library_project() #dynamic
 
+#外部函数
 #add_decorate_target_name()
 #add_target_name()
 #add_target()
@@ -69,6 +70,13 @@
 
 #get_app_deploy_path()
 #clean_target()
+
+#对macOS编译过程的特别支持。这个部分可以内置，可以外置，默认为在base manager里内部调用。与用户的设置不会冲突
+#add_default_install_name()
+#add_default_load_library_path()
+
+#add_install_name()
+#add_load_library_path()
 
 #################################################################
 #这是一个强大的函数
@@ -1176,5 +1184,90 @@ defineTest(add_file){
     file_name = $$1
     exists($${file_name}):return(0)
     empty_file($${file_name})
+    return(1)
+}
+
+#对macOS系统，dll，bundle工程，添加@rpath安装前缀 编译时添加，运行时使用
+#不会影响其他系统。
+#Multi-link2.4以前，没有这个默认步骤。
+##这样在app那边，就不用使用install_name_tool了，多余。need rebuild
+##其实就是链接库之间，互相引用时使用的名字，必须是个带@rpath的才容易找到。
+defineTest(add_default_install_name){
+    contains(TEMPLATE, lib) {
+        contains(QSYS_PRIVATE, macOS):contains(CONFIG, dll):contains(CONFIG, lib_bundle){
+            QMAKE_LFLAGS_SONAME = -Wl,-install_name,@rpath/
+        }
+    }
+    export(QMAKE_LFLAGS_SONAME)
+    return(1)
+}
+
+#对macOS系统，添加-Wl,-rpath支持，增加app、lib查找运行依赖库的路径，扩充rpath的内涵。编译时添加，运行时使用
+#适用于app所有工程，lib所有工程
+#不会影响其他系统
+#Multi-link2.4以前，没有这个默认步骤。
+#@rpath = @executable_path(运行程序文件路径) + @loader_path(启动程序的路径) + 其他相对的路径
+##这样在app目标里，只需要拷贝那些依赖库过去就行了，拷贝到我们比较认可的位置，这里提供一些这种位置。need rebuild
+##其实就是运行时，app、lib会查找的文件夹，查找自己的依赖库！
+##find, load, search, research, required, requested -> load_library_path
+defineTest(add_default_load_library_path){
+    #common rpath
+    contains(QSYS_PRIVATE, macOS){
+        QMAKE_LFLAGS += -Wl,-rpath,@executable_path/
+        QMAKE_LFLAGS += -Wl,-rpath,@loader_path/
+    }
+
+    contains(TEMPLATE, app) {
+        contains(QSYS_PRIVATE, macOS) {
+            contains(CONFIG, app_bundle){
+                QMAKE_LFLAGS += -Wl,-rpath,@executable_path/Frameworks/,-rpath,@executable_path/../Frameworks/
+                QMAKE_LFLAGS += -Wl,-rpath,@loader_path/Frameworks/
+            } else {
+                QMAKE_LFLAGS += -Wl,-rpath,@executable_path/Frameworks/
+                QMAKE_LFLAGS += -Wl,-rpath,@loader_path/Frameworks/
+            }
+        }
+    } else: contains(TEMPLATE, lib) {
+        contains(QSYS_PRIVATE, macOS) {
+            contains(CONFIG, dll) {
+                #dynamic
+                contains(CONFIG, lib_bundle){
+                    QMAKE_LFLAGS += -Wl,-rpath,@executable_path/Frameworks/,-rpath,@executable_path/../Frameworks/
+                    QMAKE_LFLAGS += -Wl,-rpath,@loader_path/Frameworks/
+                } else {
+                    QMAKE_LFLAGS += -Wl,-rpath,@executable_path/Frameworks/,-rpath,@executable_path/../Frameworks/
+                    QMAKE_LFLAGS += -Wl,-rpath,@loader_path/Frameworks/
+                }
+            } else {
+                #static 没有bundle
+                #观点1：不需要设置 .a编译时能找到lib就行，运行时已经被编译进app，依靠的是app的查找目录。那么.a的依赖在哪里？必须手动拷贝到app的查找目录里。
+                #观点2：需要设置 .a编译进app的时候，扩充了它的查找目录，app会到所有的查找目录里查找。.a的依赖需要手动拷贝。
+                #这里我设置上进行测试，测试结果：观点1是对的。
+                #QMAKE_LFLAGS += -Wl,-rpath,@executable_path/Frameworks/,-rpath,@executable_path/../Frameworks/
+                #QMAKE_LFLAGS += -Wl,-rpath,@loader_path/Frameworks/
+                #TEST ITEM
+                #QMAKE_LFLAGS += -Wl,-rpath,@loader_path/ForTest/
+            }
+        }
+    }
+    export(QMAKE_LFLAGS)
+    return(1)
+}
+
+#根据以上两个函数，提供两个方便函数
+#Multi-linkv2.4把add_default_install_name()加入到了默认步骤，用户不需要为库们设置name了，如果用户需要自定义这个前缀，那么可以调用这个函数。跨平台的。
+defineTest(add_install_name){
+    installname = $$1
+    QMAKE_LFLAGS_SONAME = -Wl,-install_name,$${installname}
+    export(QMAKE_LFLAGS_SONAME)
+    return (1)
+}
+
+#内部增加了-Wl,-rpath支持，如果那些查找路径还不够用，用户可以调用add_load_library_path()自行补充查找路径。
+#注意：用户输入的是，安装前缀、查找路径前缀，最后必须带/
+defineTest(add_load_library_path){
+    loadlibrarypath = $$1
+    QMAKE_LFLAGS = -Wl,-rpath,$${loadlibrarypath}
+    export(QMAKE_LFLAGS)
     return(1)
 }

@@ -64,3 +64,6 @@ message($${TARGET} build dst dir $$add_host_path($${OUT_PWD}) $$DESTDIR)
 message ($${TARGET} QT $${QT})
 message ($${TARGET} config $${CONFIG})
 message ($${TARGET} DEFINE $${DEFINES})
+
+message ($${TARGET} QMAKE_LFLAGS $${QMAKE_LFLAGS})
+message ($${TARGET} QMAKE_LFLAGS_SONAME $${QMAKE_LFLAGS_SONAME})

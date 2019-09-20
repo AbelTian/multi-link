@@ -160,6 +160,12 @@ contains(TEMPLATE, app) {
 #我纠正了add_lib_project()的功能，和这个函数意义相同。所以，此处关闭。
 #!ios:contains(TEMPLATE, lib):add_default_library_project()
 
+#Multi-link v2.4 添加对macOS install_name_tool相关问题的支持
+#install_name_tool其实是设置各个库之间互相引用时的名称
+#@rpath的内容，要足够丰富，app才知道去哪些目录去查找依赖库。这里指的是运行时。编译时是另一套设置，在上边的dependent那里。
+add_default_install_name()
+add_default_load_library_path()
+
 #################################################################
 #公共的基础header.pri，这个的作用在于不需要区分app和lib的设置都在这里面。
 #包含基本的编译设置
