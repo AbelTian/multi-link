@@ -1198,11 +1198,12 @@ defineTest(add_file){
 
 #create class file
 defineTest(add_class){
-    classname = $$1
+    isEmpty(1): error("add_class(classname, workpath) requires at last one argument")
+    classname=$$1
     isEmpty(1):return(0)
 
-    workpath = $$2
-    isEmpty(2):workpath=$${PWD}
+    workpath=$${PWD}
+    !isEmpty(2):workpath=$$2
 
     filename = $$lower($${classname})
     bigname = $$upper($${classname})
@@ -1218,25 +1219,31 @@ defineTest(add_class){
 
     equals(QMAKE_HOST.os, Windows) {
     } else {
-        system_errcode(chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh)
-        system_errcode($${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh $${classname} $${workpath})
+        ret = $$system("chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh")
+        ret = $$system("$${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh $${classname} $${workpath}")
     }
+
+    message($$TARGET create class $${classname})
+    message($$TARGET create $${FILE_HPP})
+    message($$TARGET create $${FILE_CPP})
 
     return (1)
 }
 
 #create class file based on QObject
 defineTest(add_object_class){
-    classname = $$1
+    isEmpty(1): error("add_object_class(classname, workpath) requires at last one argument")
+    classname=$$1
     isEmpty(1):return(0)
 
-    workpath = $$2
-    isEmpty(2):workpath=$${PWD}
+    workpath=$${PWD}
+    !isEmpty(2):workpath=$$2
 
     filename = $$lower($${classname})
     bigname = $$upper($${classname})
     FILE_HPP = $${workpath}/$${filename}.h
     FILE_CPP = $${workpath}/$${filename}.cpp
+
     equals(QMAKE_HOST.os, Windows) {
         FILE_HPP~=s,/,\\,g
         FILE_CPP~=s,/,\\,g
@@ -1247,20 +1254,25 @@ defineTest(add_object_class){
 
     equals(QMAKE_HOST.os, Windows) {
     } else {
-        system_errcode(chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh)
-        system_errcode($${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh $${classname} $${workpath})
+        ret = $$system("chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh")
+        ret = $$system("$${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh $${classname} $${workpath}")
     }
+
+    message($$TARGET create class $${classname})
+    message($$TARGET create $${FILE_HPP})
+    message($$TARGET create $${FILE_CPP})
 
     return (1)
 }
 
 #create class file based on QWidget
 defineTest(add_widget_class){
-    classname = $$1
+    isEmpty(1): error("add_widget_class(classname, workpath) requires at last one argument")
+    classname=$$1
     isEmpty(1):return(0)
 
-    workpath = $$2
-    isEmpty(2):workpath=$${PWD}
+    workpath=$${PWD}
+    !isEmpty(2):workpath=$$2
 
     filename = $$lower($${classname})
     bigname = $$upper($${classname})
@@ -1276,9 +1288,13 @@ defineTest(add_widget_class){
 
     equals(QMAKE_HOST.os, Windows) {
     } else {
-        system_errcode(chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh)
-        system_errcode($${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh $${classname} $${workpath})
+        ret = $$system("chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh")
+        ret = $$system("$${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh $${classname} $${workpath}")
     }
+
+    message($$TARGET create class $${classname})
+    message($$TARGET create $${FILE_HPP})
+    message($$TARGET create $${FILE_CPP})
 
     return (1)
 }
