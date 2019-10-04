@@ -67,6 +67,9 @@
 #add_host_name()
 #add_xplatform_name()
 #add_file()
+#add_class()
+#add_object_class()
+#add_widget_class()
 
 #get_app_deploy_path()
 #clean_target()
@@ -77,6 +80,12 @@
 
 #add_install_name()
 #add_load_library_path()
+
+################################################################################
+#内部用函数
+#获取命令
+################################################################################
+ADD_PROJECT_PRI_PWD = $${PWD}
 
 #################################################################
 #这是一个强大的函数
@@ -1186,6 +1195,94 @@ defineTest(add_file){
     empty_file($${file_name})
     return(1)
 }
+
+#create class file
+defineTest(add_class){
+    classname = $$1
+    isEmpty(1):return(0)
+
+    workpath = $$2
+    isEmpty(2):workpath=$${PWD}
+
+    filename = $$lower($${classname})
+    bigname = $$upper($${classname})
+    FILE_HPP = $${workpath}/$${filename}.h
+    FILE_CPP = $${workpath}/$${filename}.cpp
+    equals(QMAKE_HOST.os, Windows) {
+        FILE_HPP~=s,/,\\,g
+        FILE_CPP~=s,/,\\,g
+    }
+
+    exists($${FILE_HPP}):return(0)
+    exists($${FILE_CPP}):return(0)
+
+    equals(QMAKE_HOST.os, Windows) {
+    } else {
+        system_errcode(chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh)
+        system_errcode($${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh $${classname} $${workpath})
+    }
+
+    return (1)
+}
+
+#create class file based on QObject
+defineTest(add_object_class){
+    classname = $$1
+    isEmpty(1):return(0)
+
+    workpath = $$2
+    isEmpty(2):workpath=$${PWD}
+
+    filename = $$lower($${classname})
+    bigname = $$upper($${classname})
+    FILE_HPP = $${workpath}/$${filename}.h
+    FILE_CPP = $${workpath}/$${filename}.cpp
+    equals(QMAKE_HOST.os, Windows) {
+        FILE_HPP~=s,/,\\,g
+        FILE_CPP~=s,/,\\,g
+    }
+
+    exists($${FILE_HPP}):return(0)
+    exists($${FILE_CPP}):return(0)
+
+    equals(QMAKE_HOST.os, Windows) {
+    } else {
+        system_errcode(chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh)
+        system_errcode($${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh $${classname} $${workpath})
+    }
+
+    return (1)
+}
+
+#create class file based on QWidget
+defineTest(add_widget_class){
+    classname = $$1
+    isEmpty(1):return(0)
+
+    workpath = $$2
+    isEmpty(2):workpath=$${PWD}
+
+    filename = $$lower($${classname})
+    bigname = $$upper($${classname})
+    FILE_HPP = $${workpath}/$${filename}.h
+    FILE_CPP = $${workpath}/$${filename}.cpp
+    equals(QMAKE_HOST.os, Windows) {
+        FILE_HPP~=s,/,\\,g
+        FILE_CPP~=s,/,\\,g
+    }
+
+    exists($${FILE_HPP}):return(0)
+    exists($${FILE_CPP}):return(0)
+
+    equals(QMAKE_HOST.os, Windows) {
+    } else {
+        system_errcode(chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh)
+        system_errcode($${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh $${classname} $${workpath})
+    }
+
+    return (1)
+}
+
 
 #对macOS系统，dll，bundle工程，添加@rpath安装前缀 编译时添加，运行时使用
 #不会影响其他系统。
