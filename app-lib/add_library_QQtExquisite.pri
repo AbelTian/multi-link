@@ -29,6 +29,8 @@ defineTest(add_include_QQtExquisite){
     #header_path = $$1
     header_path=$$get_add_include_bundle(QQtExquisite, QQtExquisite)
     command += $${header_path}
+    command += $${header_path}/multipagewidget
+    command += $${header_path}/multieventfilterwidget
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
