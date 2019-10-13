@@ -51,7 +51,8 @@ echo { >> ${FILEHPP}
 echo \ \ \ \ Q_OBJECT >> ${FILEHPP}
 echo >> ${FILEHPP}
 echo public: >> ${FILEHPP}
-echo \ \ \ \ explicit ${CLASSNAME} \( QWidget* parent = 0 \) : QWidget \( parent \) {} >> ${FILEHPP}
+echo \ \ \ \ explicit ${CLASSNAME} \( QWidget* parent = 0 \) >> ${FILEHPP}
+echo \ \ \ \ \ \ \ \ : QWidget \( parent \) {} >> ${FILEHPP}
 echo \ \ \ \ virtual ~${CLASSNAME}\(\) {} >> ${FILEHPP}
 echo >> ${FILEHPP}
 echo protected: >> ${FILEHPP}

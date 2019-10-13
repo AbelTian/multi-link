@@ -51,7 +51,8 @@ echo { >> ${FILEHPP}
 echo \ \ \ \ Q_OBJECT >> ${FILEHPP}
 echo >> ${FILEHPP}
 echo public: >> ${FILEHPP}
-echo \ \ \ \ explicit ${CLASSNAME} \( QObject* parent = 0 \) : QObject \( parent \) {} >> ${FILEHPP}
+echo \ \ \ \ explicit ${CLASSNAME} \( QObject* parent = 0 \) >> ${FILEHPP}
+echo \ \ \ \ \ \ \ \ : QObject \( parent \) {} >> ${FILEHPP}
 echo \ \ \ \ virtual ~${CLASSNAME}\(\) {} >> ${FILEHPP}
 echo >> ${FILEHPP}
 echo protected: >> ${FILEHPP}
