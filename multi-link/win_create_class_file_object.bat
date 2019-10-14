@@ -1,0 +1,64 @@
+@echo off
+
+set CLASSNAMEFORQMAKE=%1
+if ""%CLASSNAMEFORQMAKE%"" == """" ( exit /b 0 )
+
+set BIGNAMEFORQMAKE=%CLASSNAMEFORQMAKE%
+for %%i in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do call set BIGNAMEFORQMAKE=%%BIGNAMEFORQMAKE:%%i=%%i%%
+
+set FILENAMEFORQMAKE=%CLASSNAMEFORQMAKE%
+for %%i in (a b c d e f g h i j k l m n o p q r s t u v w x y z) do call set FILENAMEFORQMAKE=%%FILENAMEFORQMAKE:%%i=%%i%%
+
+
+set FILEPATHFORQMAKE=%2
+if ""%FILEPATHFORQMAKE%"" == """" ( set FILEPATHFORQMAKE=%CD%)
+
+::echo %CLASSNAMEFORQMAKE%
+::echo %BIGNAMEFORQMAKE%
+::echo %FILENAMEFORQMAKE%
+::echo %FILEPATHFORQMAKE%
+
+
+set FILEHPPFORQMAKE=%FILEPATHFORQMAKE%\%FILENAMEFORQMAKE%.h
+set FILECPPFORQMAKE=%FILEPATHFORQMAKE%\%FILENAMEFORQMAKE%.cpp
+::echo %FILEHPPFORQMAKE%
+::echo %FILECPPFORQMAKE%
+
+
+if exist "%FILEHPPFORQMAKE%" ( exit /b 0 )
+if exist "%FILECPPFORQMAKE%" ( exit /b 0 )
+
+echo %FILEHPPFORQMAKE%
+echo %FILECPPFORQMAKE%
+
+echo. 2> %FILECPPFORQMAKE%
+echo. 2> %FILEHPPFORQMAKE%
+
+
+::cpp
+echo #include ^<%FILENAMEFORQMAKE%.h^>>> %FILECPPFORQMAKE%
+::echo.>> %FILECPPFORQMAKE%
+
+::hpp
+echo #ifndef %BIGNAMEFORQMAKE%_H>> %FILEHPPFORQMAKE%
+echo #define %BIGNAMEFORQMAKE%_H>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo #include ^<QObject^>>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo class %CLASSNAMEFORQMAKE% : public QObject>> %FILEHPPFORQMAKE%
+echo {>> %FILEHPPFORQMAKE%
+echo     Q_OBJECT>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo public:>> %FILEHPPFORQMAKE%
+echo     explicit %CLASSNAMEFORQMAKE% ( QObject* parent = 0 )>> %FILEHPPFORQMAKE%
+echo         : QObject ( parent ) {}>> %FILEHPPFORQMAKE%
+echo     virtual ~%CLASSNAMEFORQMAKE%() {}>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo protected:>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo private:>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo };>> %FILEHPPFORQMAKE%
+echo.>> %FILEHPPFORQMAKE%
+echo #endif // %BIGNAMEFORQMAKE%_H>> %FILEHPPFORQMAKE%
+::echo.>> %FILEHPPFORQMAKE%

@@ -70,6 +70,9 @@
 #add_class()
 #add_object_class()
 #add_widget_class()
+#add_class_to_qmake()
+#add_object_class_to_qmake()
+#add_widget_class_to_qmake()
 
 #get_app_deploy_path()
 #clean_target()
@@ -1218,6 +1221,7 @@ defineTest(add_class){
     exists($${FILE_CPP}):return(0)
 
     equals(QMAKE_HOST.os, Windows) {
+        ret = $$system("$${ADD_PROJECT_PRI_PWD}/win_create_class_file.bat $${classname} $${workpath}")
     } else {
         ret = $$system("chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh")
         ret = $$system("$${ADD_PROJECT_PRI_PWD}/unix_create_class_file.sh $${classname} $${workpath}")
@@ -1253,6 +1257,7 @@ defineTest(add_object_class){
     exists($${FILE_CPP}):return(0)
 
     equals(QMAKE_HOST.os, Windows) {
+        ret = $$system("$${ADD_PROJECT_PRI_PWD}/win_create_class_file_object.bat $${classname} $${workpath}")
     } else {
         ret = $$system("chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh")
         ret = $$system("$${ADD_PROJECT_PRI_PWD}/unix_create_class_file_object.sh $${classname} $${workpath}")
@@ -1287,6 +1292,7 @@ defineTest(add_widget_class){
     exists($${FILE_CPP}):return(0)
 
     equals(QMAKE_HOST.os, Windows) {
+        ret = $$system("$${ADD_PROJECT_PRI_PWD}/win_create_class_file_widget.bat $${classname} $${workpath}")
     } else {
         ret = $$system("chmod +x $${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh")
         ret = $$system("$${ADD_PROJECT_PRI_PWD}/unix_create_class_file_widget.sh $${classname} $${workpath}")

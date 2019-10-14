@@ -78,7 +78,7 @@ defineReplace(get_empty_file) {
     }
     command =
     equals(QMAKE_HOST.os, Windows) {
-        command = echo . 2> $${filename}
+        command = echo. 2> $${filename}
     } else {
         command = echo 2> $${filename}
     }
