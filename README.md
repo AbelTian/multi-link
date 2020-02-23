@@ -106,12 +106,16 @@ Multi-link1.0绑定QQt，也不会继续开发与QQt脱离的纯粹使用pri的�
 ## 总结  
 看起来挺巨大的？工程量的确不小。  
 初学者注意看：  
-1. 第一次使用，拿到Multi-link技术的仓库，使用Multi-link.pro编译Multi-linkConfigTool，配置三个主要路径。
-    - 在这台电脑上，Multi-link Technology（qmake）开始臣服于你。  
+1. 第一次使用，拿到Multi-link技术的仓库，使用Multi-link.pro编译Multi-linkConfigTool。
+    - 配置三个主要路径，BUILDROOT是optional，SDKROOT、PRODUCTROOT是必要配置。
+    - 在这台电脑上，Multi-link Technology（qmake）开始正常使用。  
 2. 顺便配置好Qt Creator吧，这两步只需要配置一次，这一步还是optional，配置下比较美观，反正就一次。  
     - 菜单栏-工具-选项-构建和运行
         - 概要，设置你喜欢的，我建议的默认编译路径。
-        - 构建套件，对每个Kit设置你喜欢，我建议的File system name。SDK路径、Deploy路径下面，肯定是使用我的建议的File system name。  
+        - 构建套件，对每个Kit设置你喜欢，我建议的File system name。SDK路径、Deploy路径下面，肯定是使用我的建议的File system name。
+    - 项目-Build&Run-构建设置
+        - Multi-link可以自动判定多个目标环境。
+        - 不常用环境无法预测，在这里设置，QSYS=目标环境名称  
         
 初学者，可以拿依赖Multi-link技术的LIB工程和APP工程。  
 1. 用Qt Creator打开工程.pro。

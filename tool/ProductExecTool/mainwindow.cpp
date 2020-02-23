@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qqtcore.h"
 #include "qqtframe.h"
@@ -60,9 +60,9 @@ MainWindow::MainWindow ( QWidget* parent ) :
 #endif
 
     if ( STR ( Q_BUILD_TYPE ) == "Debug" )
-        setWindowTitle ( "App Product Exectuable - Debug" );
+        setWindowTitle ( "Multi-link App Product Exectuable - Debug" );
     else
-        setWindowTitle ( "App Product Exectuable" );
+        setWindowTitle ( "Multi-link App Product Exectuable" );
 
     setMinimumSize ( 1024, 600 );
 
