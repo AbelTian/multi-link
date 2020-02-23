@@ -26,11 +26,24 @@ defineTest(add_include_VLCQt){
     #command += $${header_path}
     #这里添加$${path}下的子文件夹
     #...
-    header_path=$$get_add_include_bundle(VLCQt, VLCQt)
+    header_path=$$get_add_include_bundle(VLCQt, VLCQtCore)
     command += $${header_path}
-    command += $${header_path}/VLCQtCore
-    command += $${header_path}/VLCQtQml
-    command += $${header_path}/VLCQtWidgets
+
+    header_path=$$get_add_include_bundle(VLCQt, VLCQtQml)
+    command += $${header_path}
+
+    header_path=$$get_add_include_bundle(VLCQt, VLCQtWidgets)
+    command += $${header_path}
+
+    header_path=$$get_add_include(VLCQt, VLCQtCore)
+    command += $${header_path}
+    command += $${header_path}/..
+
+    header_path=$$get_add_include(VLCQt, VLCQtQml)
+    command += $${header_path}
+
+    header_path=$$get_add_include(VLCQt, VLCQtWidgets)
+    command += $${header_path}
 
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
