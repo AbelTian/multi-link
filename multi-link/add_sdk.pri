@@ -326,7 +326,7 @@ defineReplace(get_add_sdk_work_flow){
             command += $$CD ../../ $$CMD_SEP
             #create prl
             contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}/$${librealname}.framework/$${librealname}.prl lib/$${libname}.framework/$${librealname}.prl $$CMD_SEP
-        } else:contains(QSYS_PRIVATE, macOS):[contains(CONFIG, static)|contains(CONFIG, staticlib)] {
+        } else:contains(QSYS_PRIVATE, macOS):contains(CONFIG, static|staticlib) {
             command += $$get_add_linux_sdk() $$CMD_SEP
             #无论如何，macOS下.a是没有lib_bundle的。
             #此处为何添加ranlib -s？为什么会出现这个现象？因为ranlib -s命令，Qt Creator在编译POSTLINK后才执行的，
@@ -334,7 +334,7 @@ defineReplace(get_add_sdk_work_flow){
             #在这里，增加ranlib命令。SDK ROOT里的macOS .a可以用了。
             command += ranlib -s $${LIB_LIB_DIR}/lib$${librealname}.a $$CMD_SEP
             contains(CONFIG, create_prl):command += $$COPY $${LIB_BUILD_PWD}/*.prl lib $$CMD_SEP
-        } else:contains(QSYS_PRIVATE, iOS|iOSSimulator):[contains(CONFIG, static)|contains(CONFIG, staticlib)] {
+        } else:contains(QSYS_PRIVATE, iOS|iOSSimulator):contains(CONFIG, static|staticlib) {
             #iOS的.a文件，需要ranlib -s。
             #macOS .a 都需要吗? dylib似乎不需要。framework似乎也不需要。bundle似乎也不需要。app似乎也不需要。
             #经过查询，ranlib = ar -s，是所有类Unix系统都需要的。
