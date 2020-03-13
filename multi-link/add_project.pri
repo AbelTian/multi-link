@@ -63,6 +63,8 @@
 #add_headers_path()
 #add_include_path() = (add_headers_path)
 #add_project_name()
+#add_unix_path()
+#add_windows_path()
 #add_host_path()
 #add_host_name()
 #add_xplatform_name()
@@ -73,6 +75,7 @@
 #add_class_to_qmake()
 #add_object_class_to_qmake()
 #add_widget_class_to_qmake()
+#add_debug()
 
 #get_app_deploy_path()
 #clean_target()
@@ -1166,6 +1169,20 @@ defineReplace(add_host_path){
     return ($$path)
 }
 
+#获取windows路径 \
+defineReplace(add_windows_path){
+    path = $$1
+    path~=s,/,\\,g
+    return ($$path)
+}
+
+#获取unix路径 /
+defineReplace(add_unix_path){
+    path = $$1
+    path~=s,\\\\,/,g
+    return ($$path)
+}
+
 #获取开发平台的名称
 defineReplace(add_host_name){
     #Windows Darwin Linux
@@ -1388,5 +1405,20 @@ defineTest(add_load_library_path){
     loadlibrarypath = $$1
     QMAKE_LFLAGS = -Wl,-rpath,$${loadlibrarypath}
     export(QMAKE_LFLAGS)
+    return(1)
+}
+
+#添加打印
+defineTest(add_debug){
+    message ($${TARGET} prelink $${QMAKE_PRE_LINK})
+    message ($${TARGET} postlink $${QMAKE_POST_LINK})
+    message ($${TARGET} build OUT_PWD $$add_host_path($${OUT_PWD}) OBJECTS_DIR $$OBJECTS_DIR)
+    message ($${TARGET} build OUT_PWD $$add_host_path($${OUT_PWD}) MOC_DIR $$MOC_DIR)
+    message ($${TARGET} build OUT_PWD $$add_host_path($${OUT_PWD}) UI_DIR $$UI_DIR)
+    message ($${TARGET} build OUT_PWD $$add_host_path($${OUT_PWD}) RCC_DIR $$RCC_DIR)
+    message ($${TARGET} build OUT_PWD $$add_host_path($${OUT_PWD}) DESTDIR $$DESTDIR)
+    message ($${TARGET} QT $${QT})
+    message ($${TARGET} config $${CONFIG})
+    message ($${TARGET} define $${DEFINES})
     return(1)
 }

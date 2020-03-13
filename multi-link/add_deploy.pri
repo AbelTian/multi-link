@@ -10,6 +10,12 @@
 #-------------------------------------------------------------
 #Multi-link技术 add_deploy部分只能应用于Qt5，Qt4没有windeployqt程序，如果用户为Qt4编译了windeployqt那么也可以用于Qt4。
 
+#get_add_deploy_path()
+#get_add_deploy_path_bundle()
+#get_add_build_path()
+#get_add_build_path_bundle()
+#add_deploy()
+
 ################################################################################
 #内部用函数
 #获取命令
@@ -179,6 +185,258 @@ defineReplace(get_add_deploy_on_android) {
     return ($$command)
 }
 
+#获取发布路径
+defineReplace(get_add_deploy_path) {
+    !isEmpty(4): error("get_add_deploy_path(appgroupname, appname, apprealname) requires at most three argument")
+
+    #LIB_SDK_ROOT下
+
+    #主目录名
+    appgroupname = $$TARGET_NAME
+    !isEmpty(1):appgroupname=$$1
+
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
+    appname = $$TARGET_NAME
+    !isEmpty(2): appname = $$2
+
+    #建议使用默认值
+    #这个会影响app名的后缀，_debug d或者用户定的_xxx
+    #如果用户对_debug d等修饰名不满意，那么用这个参数改变。
+    #如果用户对自动修饰的名字不满意，那么用这个参数设定经过修饰的名字，自定义的
+    #通过这个参数，可以强制不修饰目标名 非标准 这样会影响链接时候的名字，用户链接的时候需要注意链接名
+    #依赖appname
+    apprealname = $$add_decorate_target_name($$appname)
+    !isEmpty(3): apprealname = $$3
+
+    #applowername依赖apprealname
+    applowername = $$lower($${apprealname})
+
+    #源代码目录
+    APP_SRC_PWD=$${APP_SOURCE_PWD}
+    isEmpty(APP_SRC_PWD):APP_SRC_PWD=$$PWD
+
+    #编译目标位置
+    APP_DST_DIR=$${APP_BUILD_DESTDIR}
+    isEmpty(APP_DST_DIR):APP_DST_DIR = $$DESTDIR
+
+    APP_BUILD_PWD=$${OUT_PWD}
+    !isEmpty(APP_DST_DIR):APP_BUILD_PWD=$${APP_BUILD_PWD}/$${APP_DST_DIR}
+
+    #发布位置
+    APP_STD_DIR = $${appgroupname}/$${QAPP_STD_DIR}
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
+    #不仅仅发布目标为Windows的时候，才需要改变路径
+    #开发机为Windows就必须改变。
+    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_SRC_PWD~=s,/,\\,g
+
+        APP_DST_DIR~=s,/,\\,g
+        APP_BUILD_PWD~=s,/,\\,g
+
+        APP_STD_DIR~=s,/,\\,g
+        APP_DEPLOY_PWD~=s,/,\\,g
+    }
+
+    return ($${APP_DEPLOY_PWD})
+}
+
+#获取发布路径 _bundle
+defineReplace(get_add_deploy_path_bundle) {
+    !isEmpty(4): error("get_add_deploy_path_bundle(appgroupname, appname, apprealname) requires at most three argument")
+
+    #LIB_SDK_ROOT下
+
+    #主目录名
+    appgroupname = $$TARGET_NAME
+    !isEmpty(1):appgroupname=$$1
+
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
+    appname = $$TARGET_NAME
+    !isEmpty(2): appname = $$2
+
+    #建议使用默认值
+    #这个会影响app名的后缀，_debug d或者用户定的_xxx
+    #如果用户对_debug d等修饰名不满意，那么用这个参数改变。
+    #如果用户对自动修饰的名字不满意，那么用这个参数设定经过修饰的名字，自定义的
+    #通过这个参数，可以强制不修饰目标名 非标准 这样会影响链接时候的名字，用户链接的时候需要注意链接名
+    #依赖appname
+    apprealname = $$add_decorate_target_name($$appname)
+    !isEmpty(3): apprealname = $$3
+
+    #applowername依赖apprealname
+    applowername = $$lower($${apprealname})
+
+    #源代码目录
+    APP_SRC_PWD=$${APP_SOURCE_PWD}
+    isEmpty(APP_SRC_PWD):APP_SRC_PWD=$$PWD
+
+    #编译目标位置
+    APP_DST_DIR=$${APP_BUILD_DESTDIR}
+    isEmpty(APP_DST_DIR):APP_DST_DIR = $$DESTDIR
+
+    APP_BUILD_PWD=$${OUT_PWD}
+    !isEmpty(APP_DST_DIR):APP_BUILD_PWD=$${APP_BUILD_PWD}/$${APP_DST_DIR}
+
+    #发布位置
+    APP_STD_DIR = $${appgroupname}/$${QAPP_STD_DIR}
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
+
+    APP_DEPLOY_PWD2 = $${APP_DEPLOY_PWD}
+    mac:APP_DEPLOY_PWD2 = $${APP_DEPLOY_PWD}/$${apprealname}.app/Contents/MacOS
+
+    #不仅仅发布目标为Windows的时候，才需要改变路径
+    #开发机为Windows就必须改变。
+    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_SRC_PWD~=s,/,\\,g
+
+        APP_DST_DIR~=s,/,\\,g
+        APP_BUILD_PWD~=s,/,\\,g
+
+        APP_STD_DIR~=s,/,\\,g
+        APP_DEPLOY_PWD~=s,/,\\,g
+        APP_DEPLOY_PWD2~=s,/,\\,g
+    }
+
+    return ($${APP_DEPLOY_PWD2})
+}
+
+#获取编译路径
+defineReplace(get_add_build_path) {
+    !isEmpty(4): error("get_add_build_path(appgroupname, appname, apprealname) requires at most three argument")
+
+    #LIB_SDK_ROOT下
+
+    #主目录名
+    appgroupname = $$TARGET_NAME
+    !isEmpty(1):appgroupname=$$1
+
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
+    appname = $$TARGET_NAME
+    !isEmpty(2): appname = $$2
+
+    #建议使用默认值
+    #这个会影响app名的后缀，_debug d或者用户定的_xxx
+    #如果用户对_debug d等修饰名不满意，那么用这个参数改变。
+    #如果用户对自动修饰的名字不满意，那么用这个参数设定经过修饰的名字，自定义的
+    #通过这个参数，可以强制不修饰目标名 非标准 这样会影响链接时候的名字，用户链接的时候需要注意链接名
+    #依赖appname
+    apprealname = $$add_decorate_target_name($$appname)
+    !isEmpty(3): apprealname = $$3
+
+    #applowername依赖apprealname
+    applowername = $$lower($${apprealname})
+
+    #源代码目录
+    APP_SRC_PWD=$${APP_SOURCE_PWD}
+    isEmpty(APP_SRC_PWD):APP_SRC_PWD=$$PWD
+
+    #编译目标位置
+    APP_DST_DIR=$${APP_BUILD_DESTDIR}
+    isEmpty(APP_DST_DIR):APP_DST_DIR = $$DESTDIR
+
+    APP_BUILD_PWD=$${OUT_PWD}
+    !isEmpty(APP_DST_DIR):APP_BUILD_PWD=$${APP_BUILD_PWD}/$${APP_DST_DIR}
+
+    #发布位置
+    APP_STD_DIR = $${appgroupname}/$${QAPP_STD_DIR}
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
+    #不仅仅发布目标为Windows的时候，才需要改变路径
+    #开发机为Windows就必须改变。
+    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_SRC_PWD~=s,/,\\,g
+
+        APP_DST_DIR~=s,/,\\,g
+        APP_BUILD_PWD~=s,/,\\,g
+
+        APP_STD_DIR~=s,/,\\,g
+        APP_DEPLOY_PWD~=s,/,\\,g
+    }
+
+    return ($${APP_BUILD_PWD})
+}
+
+#获取编译路径 _bundle
+defineReplace(get_add_build_path_bundle) {
+    !isEmpty(4): error("get_add_build_path_bundle(appgroupname, appname, apprealname) requires at most three argument")
+
+    #LIB_SDK_ROOT下
+
+    #主目录名
+    appgroupname = $$TARGET_NAME
+    !isEmpty(1):appgroupname=$$1
+
+    #如果设置了ADD_DEPLOY_TARGET_NAME，那么服从ADD_DEPLOY_TARGET_NAME。
+    !equals(APP_DEPLOY_TARGET_NAME, $${TARGET_NAME}):appgroupname=$${APP_DEPLOY_TARGET_NAME}
+
+    appname = $$TARGET_NAME
+    !isEmpty(2): appname = $$2
+
+    #建议使用默认值
+    #这个会影响app名的后缀，_debug d或者用户定的_xxx
+    #如果用户对_debug d等修饰名不满意，那么用这个参数改变。
+    #如果用户对自动修饰的名字不满意，那么用这个参数设定经过修饰的名字，自定义的
+    #通过这个参数，可以强制不修饰目标名 非标准 这样会影响链接时候的名字，用户链接的时候需要注意链接名
+    #依赖appname
+    apprealname = $$add_decorate_target_name($$appname)
+    !isEmpty(3): apprealname = $$3
+
+    #applowername依赖apprealname
+    applowername = $$lower($${apprealname})
+
+    #源代码目录
+    APP_SRC_PWD=$${APP_SOURCE_PWD}
+    isEmpty(APP_SRC_PWD):APP_SRC_PWD=$$PWD
+
+    #编译目标位置
+    APP_DST_DIR=$${APP_BUILD_DESTDIR}
+    isEmpty(APP_DST_DIR):APP_DST_DIR = $$DESTDIR
+
+    APP_BUILD_PWD=$${OUT_PWD}
+    !isEmpty(APP_DST_DIR):APP_BUILD_PWD=$${APP_BUILD_PWD}/$${APP_DST_DIR}
+
+    APP_BUILD_PWD2 = $${APP_BUILD_PWD}
+    mac:APP_BUILD_PWD2 = $${APP_BUILD_PWD}/$${apprealname}.app/Contents/MacOS
+
+    #发布位置
+    APP_STD_DIR = $${appgroupname}/$${QAPP_STD_DIR}
+
+    #set app deploy pwd
+    #APP_DEPLOY_PWD is here.
+    APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
+    #不仅仅发布目标为Windows的时候，才需要改变路径
+    #开发机为Windows就必须改变。
+    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    equals(QMAKE_HOST.os, Windows) {
+        APP_SRC_PWD~=s,/,\\,g
+
+        APP_DST_DIR~=s,/,\\,g
+        APP_BUILD_PWD~=s,/,\\,g
+        APP_BUILD_PWD2~=s,/,\\,g
+
+        APP_STD_DIR~=s,/,\\,g
+        APP_DEPLOY_PWD~=s,/,\\,g
+    }
+
+    return ($${APP_BUILD_PWD2})
+}
 
 ################################################################################
 #外部用函数

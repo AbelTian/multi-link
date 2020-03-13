@@ -18,6 +18,7 @@
 #add_header_path
 #add_binary_path
 #add_libexec_path
+#add_plugins_path
 
 #固定SDK结构！请参照add_sdk.pri
 
@@ -257,10 +258,82 @@ defineReplace(get_add_library_path) {
     LIBRARYPATH =
     LIBRARYPATH += $${CUR_LIB_PWD}
 
-    message($${TARGET} add library path $${LIBRARYPATH})
+    message($${TARGET} get add library path $${LIBRARYPATH})
 
     return ($${LIBRARYPATH})
 }
+
+#添加libexec路径 Only 路径
+defineReplace(get_add_libexec_path) {
+    isEmpty(1)|!isEmpty(2): error("get_add_libexec_path(libgroupname) requires one argument")
+
+    libgroupname = $$1
+    CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/libexec
+    equals(QMAKE_HOST.os, Windows) {
+        CUR_LIB_PWD~=s,/,\\,g
+    }
+
+    LIBRARYPATH =
+    LIBRARYPATH += $${CUR_LIB_PWD}
+
+    message($${TARGET} get add libexec path $${LIBRARYPATH})
+
+    return ($${LIBRARYPATH})
+}
+
+#添加 binary 路径 Only 路径
+defineReplace(get_add_binary_path) {
+    isEmpty(1)|!isEmpty(2): error("get_add_binary_path(libgroupname) requires one argument")
+
+    libgroupname = $$1
+    CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/bin
+    equals(QMAKE_HOST.os, Windows) {
+        CUR_LIB_PWD~=s,/,\\,g
+    }
+
+    LIBRARYPATH =
+    LIBRARYPATH += $${CUR_LIB_PWD}
+
+    message($${TARGET} get add binary path $${LIBRARYPATH})
+
+    return ($${LIBRARYPATH})
+}
+
+#添加 plugins 路径 Only 路径
+defineReplace(get_add_plugins_path) {
+    isEmpty(1)|!isEmpty(2): error("get_add_plugins_path(libgroupname) requires one argument")
+
+    libgroupname = $$1
+    CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/plugins
+    equals(QMAKE_HOST.os, Windows) {
+        CUR_LIB_PWD~=s,/,\\,g
+    }
+
+    LIBRARYPATH =
+    LIBRARYPATH += $${CUR_LIB_PWD}
+
+    message($${TARGET} get add plugins path $${LIBRARYPATH})
+
+    return ($${LIBRARYPATH})
+}
+
+#添加 header 路径 Only 路径
+#defineReplace(get_add_header_path) {
+#    isEmpty(1)|!isEmpty(2): error("get_add_header_path(libgroupname) requires one argument")
+#
+#    libgroupname = $$1
+#    CUR_LIB_PWD = $${LIB_SDK_ROOT}/$${libgroupname}/$${QSYS_STD_DIR}/include
+#    equals(QMAKE_HOST.os, Windows) {
+#        CUR_LIB_PWD~=s,/,\\,g
+#    }
+#
+#    LIBRARYPATH =
+#    LIBRARYPATH += $${CUR_LIB_PWD}
+#
+#    message($${TARGET} get add header path $${LIBRARYPATH})
+#
+#    return ($${LIBRARYPATH})
+#}
 
 ################################################################################
 #公开给外部用函数
