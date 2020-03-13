@@ -698,6 +698,7 @@ defineTest(add_sdk_header){
     message($${TARGET} copy headers $${HEADER_FILE} to sdk header path $${LIB_INC_PWD})
 
     command =
+    command += $$MK_DIR $${LIB_INC_PWD} $$CMD_SEP
     equals(QMAKE_HOST.os, Windows) {
         command += $${COPY_DIR} $${HEADER_PWD}\\*.h* $${LIB_INC_PWD}
     } else {
@@ -780,6 +781,7 @@ defineTest(add_sdk_header_all){
     message($${TARGET} copy headers $${HEADER_FILE} to sdk header path $${LIB_INC_PWD})
 
     command =
+    command += $$MK_DIR $${LIB_INC_PWD} $$CMD_SEP
     equals(QMAKE_HOST.os, Windows) {
         command += $${COPY_DIR} $${HEADER_PWD}\\* $${LIB_INC_PWD}
     } else {
@@ -867,6 +869,7 @@ defineTest(add_sdk_header_ex){
     message($${TARGET} copy headers $${HEADER_FILE} to sdk header path $${LIB_INC_PWD})
 
     command =
+    command += $$MK_DIR $${LIB_INC_PWD} $$CMD_SEP
     equals(QMAKE_HOST.os, Windows) {
         command += $${COPY_DIR} $${HEADER_PWD}\\$${headerpostfix} $${LIB_INC_PWD}
     } else {
