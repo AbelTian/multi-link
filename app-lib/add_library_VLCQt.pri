@@ -35,16 +35,6 @@ defineTest(add_include_VLCQt){
     header_path=$$get_add_include_bundle(VLCQt, VLCQtWidgets)
     command += $${header_path}
 
-    header_path=$$get_add_include(VLCQt, VLCQtCore)
-    command += $${header_path}
-    command += $${header_path}/..
-
-    header_path=$$get_add_include(VLCQt, VLCQtQml)
-    command += $${header_path}
-
-    header_path=$$get_add_include(VLCQt, VLCQtWidgets)
-    command += $${header_path}
-
     INCLUDEPATH += $$command
     export(INCLUDEPATH)
     return (1)
