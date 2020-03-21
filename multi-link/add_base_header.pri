@@ -123,7 +123,7 @@ win32 {
 #link Lib static library in some occation on windows
 #when link Lib    static library, if no this macro, headers can't be linked on windows.
 #在这里添加了LIB_STATIC_LIBRARY 用户可以使用 还有LIB_LIBRARY
-#contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64 || iOS|iOSSimulator)
+#contains(QSYS_PRIVATE, Win32|Windows|Win64|MSVC32|MSVC|MSVC64|iOS|iOSSimulator)
 #header里不再使用平台进行判定，而是使用工程当中定义的CONFIG static[lib] 和 dll进行判定。
 #理论上mingw编译的Qt library不应该是静态的啊...
 #Qt is static by mingw32 building?

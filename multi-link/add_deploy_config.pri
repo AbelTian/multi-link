@@ -76,13 +76,15 @@ defineTest(add_deploy_config) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${appgroupname}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_DEPLOY_PWD~=s,/,\\,g
     }
 
     #如果 TARGET 没有配置 APP_CONFIG_PWD 那么返回，不拷贝任何配置
-    #qmake 或逻辑为 | 或者 ||
+    #qmake 或逻辑为 | 或者 ||？
+    #||代表中间有个空白Item，而这个空白在Mingw64/Win64上不被支持，在第三层pri里发现。
+    #|前后不能带空格，带空格不识别，Mingw64/Win64发现。
     isEmpty(APP_CONFIG_PWD):isEmpty(APP_DEPLOY_PWD) {
         message("$${TARGET} hasn't deployed any config files")
         return(0)
@@ -94,10 +96,10 @@ defineTest(add_deploy_config) {
         message("$${TARGET} has deployed some config files")
     }
 
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64|MSVC32|MSVC|MSVC64) {
         !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*")
-    } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+    } else: contains(QSYS_PRIVATE, Android|AndroidX86) {
         #分为Host为Windows和类Unix两种情况。
         #Android下使用qrc，无法发布配置文件。
         equals(QMAKE_HOST.os, Windows){
@@ -140,13 +142,15 @@ defineTest(add_deploy_config_to) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${appgroupname}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_DEPLOY_PWD~=s,/,\\,g
     }
 
     #如果 TARGET 没有配置 APP_CONFIG_PWD 那么返回，不拷贝任何配置
-    #qmake 或逻辑为 | 或者 ||
+    #qmake 或逻辑为 | 或者 ||？
+    #||代表中间有个空白Item，而这个空白在Mingw64/Win64上不被支持，在第三层pri里发现。
+    #|前后不能带空格，带空格不识别，Mingw64/Win64发现。
     isEmpty(APP_CONFIG_PWD):isEmpty(APP_DEPLOY_PWD) {
         message("$${TARGET} hasn't deployed any config files")
         return(0)
@@ -158,10 +162,10 @@ defineTest(add_deploy_config_to) {
         message("$${TARGET} has deployed some config files")
     }
 
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64|MSVC32|MSVC|MSVC64) {
         !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*", $${APP_TARGET_PWD})
-    } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+    } else: contains(QSYS_PRIVATE, Android|AndroidX86) {
         #分为Host为Windows和类Unix两种情况。
         #Android下使用qrc，无法发布配置文件。
         equals(QMAKE_HOST.os, Windows){
@@ -205,13 +209,15 @@ defineTest(add_deploy_config_to_group) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${appgroupname}/$${QAPP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_DEPLOY_PWD~=s,/,\\,g
     }
 
     #如果 TARGET 没有配置 APP_CONFIG_PWD 那么返回，不拷贝任何配置
-    #qmake 或逻辑为 | 或者 ||
+    #qmake 或逻辑为 | 或者 ||？
+    #||代表中间有个空白Item，而这个空白在Mingw64/Win64上不被支持，在第三层pri里发现。
+    #|前后不能带空格，带空格不识别，Mingw64/Win64发现。
     isEmpty(APP_CONFIG_PWD):isEmpty(APP_DEPLOY_PWD) {
         message("$${TARGET} hasn't deployed any config files")
         return(0)
@@ -223,10 +229,10 @@ defineTest(add_deploy_config_to_group) {
         message("$${TARGET} has deployed some config files")
     }
 
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    contains(QSYS_PRIVATE, Win32|Windows|Win64|MSVC32|MSVC|MSVC64) {
         !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_config("$${APP_CONFIG_PWD}\\*")
-    } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+    } else: contains(QSYS_PRIVATE, Android|AndroidX86) {
         #分为Host为Windows和类Unix两种情况。
         #Android下使用qrc，无法发布配置文件。
         equals(QMAKE_HOST.os, Windows){

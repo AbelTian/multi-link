@@ -232,7 +232,7 @@ defineReplace(get_add_deploy_path) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_SRC_PWD~=s,/,\\,g
 
@@ -297,7 +297,7 @@ defineReplace(get_add_deploy_path_bundle) {
 
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_SRC_PWD~=s,/,\\,g
 
@@ -359,7 +359,7 @@ defineReplace(get_add_build_path) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_SRC_PWD~=s,/,\\,g
 
@@ -423,7 +423,7 @@ defineReplace(get_add_build_path_bundle) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_SRC_PWD~=s,/,\\,g
 
@@ -508,7 +508,7 @@ defineTest(add_deploy) {
     APP_DEPLOY_PWD = $${APP_DEPLOY_ROOT}/$${APP_STD_DIR}
     #不仅仅发布目标为Windows的时候，才需要改变路径
     #开发机为Windows就必须改变。
-    #contains(QKIT_PRIVATE, WIN32||WIN64) {
+    #contains(QKIT_PRIVATE, WIN32|WIN64) {
     equals(QMAKE_HOST.os, Windows) {
         APP_SRC_PWD~=s,/,\\,g
 
@@ -534,7 +534,10 @@ defineTest(add_deploy) {
         message("$${TARGET} has deployed some app files")
     }
 
-    contains(QSYS_PRIVATE, Win32|Windows|Win64 || MSVC32|MSVC|MSVC64) {
+    #qmake 或逻辑为 |
+    #||代表中间有个空白Item，而这个空白在Mingw64/Win64上不被支持，在第三层pri里发现。
+    #|前后不能带空格，带空格不识别，Mingw64/Win64发现。
+    contains(QSYS_PRIVATE, Win32|Windows|Win64|MSVC32|MSVC|MSVC64) {
         #发布windows版本
         !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_on_windows()
@@ -542,7 +545,7 @@ defineTest(add_deploy) {
         #发布苹果版本，iOS版本也是这个？
         !isEmpty(QMAKE_POST_LINK):QMAKE_POST_LINK += $$CMD_SEP
         QMAKE_POST_LINK += $$get_add_deploy_on_mac()
-    } else: contains(QSYS_PRIVATE, Android||AndroidX86) {
+    } else: contains(QSYS_PRIVATE, Android|AndroidX86) {
         #Qt做了。Qt自动生成apk，自动拷贝添加依赖库到apk
         #启动链接和拷贝依赖库步骤的代码在add_deploy_library.pri里，不再这里。
         #这个命令启动了链接依赖库
