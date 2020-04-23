@@ -29,18 +29,28 @@ ADD_DEPLOY_PRI_PWD = $${PWD}
 #实用价值不高，所以在app_base_manager里面，我默认开启了app_bundle.
 #如果不发布app，build位置的app也不能运行。单独给build一个fix吗？还是算了吧。
 defineReplace(get_add_deploy_on_mac) {    
+    addqmlpwd=$$[QT_INSTALL_QML]
+
     #fix app in build pwd
     equals(MULTI_LINK_WITH_QT, true) {
         contains(CONFIG, app_bundle) {
             #这里或许需要加macdeployqt? build pwd 需要
-            command += macdeployqt $${APP_BUILD_PWD}/$${TARGET}.app -verbose=1 $$CMD_SEP
+            equals(MULTI_LINK_WITH_QML, false) {
+                command += macdeployqt $${APP_BUILD_PWD}/$${TARGET}.app -verbose=1 $$CMD_SEP
+            } else {
+                command += macdeployqt $${APP_BUILD_PWD}/$${TARGET}.app -verbose=1 -qmldir=$${addqmlpwd} $$CMD_SEP
+            }
             lessThan(QT_MAJOR_VERSION, 5){
                 command += chmod +x $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $$CMD_SEP
                 command += $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $${APP_BUILD_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} $$CMD_SEP
             }
         } else {
             #这里或许需要加macdeployqt? build pwd 不需要
-            command += macdeployqt $${APP_BUILD_PWD}/$${TARGET} -verbose=1 $$CMD_SEP
+            equals(MULTI_LINK_WITH_QML, false) {
+                command += macdeployqt $${APP_BUILD_PWD}/$${TARGET} -verbose=1 $$CMD_SEP
+            } else {
+                command += macdeployqt $${APP_BUILD_PWD}/$${TARGET} -verbose=1 -qmldir=$${addqmlpwd} $$CMD_SEP
+            }
             lessThan(QT_MAJOR_VERSION, 5){
                 command += chmod +x $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $$CMD_SEP
                 command += $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $${APP_BUILD_PWD}/$${TARGET} $$CMD_SEP
@@ -56,7 +66,11 @@ defineReplace(get_add_deploy_on_mac) {
 
         #这里或许需要加macdeployqt? deploy pwd 需要
         equals(MULTI_LINK_WITH_QT, true) {
-            command += macdeployqt $${APP_DEPLOY_PWD}/$${TARGET}.app -verbose=1 $$CMD_SEP
+            equals(MULTI_LINK_WITH_QML, false) {
+                command += macdeployqt $${APP_DEPLOY_PWD}/$${TARGET}.app -verbose=1 $$CMD_SEP
+            } else {
+                command += macdeployqt $${APP_DEPLOY_PWD}/$${TARGET}.app -verbose=1 -qmldir=$${addqmlpwd} $$CMD_SEP
+            }
             lessThan(QT_MAJOR_VERSION, 5){
                 command += chmod +x $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $$CMD_SEP
                 command += $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $${APP_DEPLOY_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} $$CMD_SEP
@@ -68,7 +82,11 @@ defineReplace(get_add_deploy_on_mac) {
 
         #这里或许需要加macdeployqt? deploy pwd 需要
         equals(MULTI_LINK_WITH_QT, true) {
-            command += macdeployqt $${APP_DEPLOY_PWD}/$${TARGET} -verbose=1 $$CMD_SEP
+            equals(MULTI_LINK_WITH_QML, false) {
+                command += macdeployqt $${APP_DEPLOY_PWD}/$${TARGET} -verbose=1 $$CMD_SEP
+            } else {
+                command += macdeployqt $${APP_DEPLOY_PWD}/$${TARGET} -verbose=1 -qmldir=$${addqmlpwd} $$CMD_SEP
+            }
             lessThan(QT_MAJOR_VERSION, 5){
                 command += chmod +x $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $$CMD_SEP
                 command += $${ADD_DEPLOY_PRI_PWD}/mac_deploy_qt4.sh $${APP_DEPLOY_PWD}/$${TARGET} $$CMD_SEP
@@ -90,6 +108,7 @@ defineReplace(get_add_deploy_on_windows) {
     #msvc 在deploy lib上有点区别，mingw不发布依赖lib，在编译区也能运行，msvc却不能。
     #在运行区，都必须发布依赖lib。
     #add_deploy 仅仅发布app，不管依赖的lib。
+    addqmlpwd=$$[QT_INSTALL_QML]
 
     equals(MULTI_LINK_WITH_QT, true) {
         #all windows need deploy release version?
@@ -97,17 +116,32 @@ defineReplace(get_add_deploy_on_windows) {
             command += $$CMD_SEP
             #command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
             msvc{
-                command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
+                #command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
+                equals(MULTI_LINK_WITH_QML, false) {
+                    command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
+                } else {
+                    command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1 -qmldir=$${addqmlpwd}
+                }
             } else {
                 #过去有一段时间，这里必须发布release版本，mingw的才能通过，现在debug的才能通过
                 #必须release。编译dll可以，链接不成功。静态编译后，app必须发布release。
                 #注意：链接库较多时候，windeployqt发布不全。dll用这些库，app不用，windeployqt不发布。在add_deploy_library里修复。
-                command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
+                #command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
+                equals(MULTI_LINK_WITH_QML, false) {
+                    command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1
+                } else {
+                    command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --debug -verbose=1 -qmldir=$${addqmlpwd}
+                }
             }
         } else: equals(BUILD, Release) {
             command += $$CMD_SEP
             #command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --release -verbose=1
-            command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --release -verbose=1
+            #command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --release -verbose=1
+            equals(MULTI_LINK_WITH_QML, false) {
+                command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --release -verbose=1
+            } else {
+                command += windeployqt $${APP_DEPLOY_PWD}\\$${TARGET}.exe --release -verbose=1 -qmldir=$${addqmlpwd}
+            }
         }
     }
     #message($$command)
