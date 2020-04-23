@@ -1195,13 +1195,14 @@ defineReplace(add_xplatform_name){
     return ($${QSYS_PRIVATE})
 }
 
+#未实现
 defineTest(clean_target) {
     LIB_DST_DIR = $$DESTDIR
     LIB_BUILD_PWD = $${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
     LIB_BUILD_TARGETS = $${LIB_BUILD_PWD}/*$${TARGET}*
     LIB_BUILD_TARGETS = $$add_host_path($$LIB_BUILD_TARGETS)
-    add_pre_link($$RM $$LIB_BUILD_TARGETS)
+    add_pre_link($$RM_DIR $$LIB_BUILD_TARGETS)
     message(clean target: $${LIB_BUILD_TARGETS})
     return (1)
 }
