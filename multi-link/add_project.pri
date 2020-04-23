@@ -1195,15 +1195,14 @@ defineReplace(add_xplatform_name){
     return ($${QSYS_PRIVATE})
 }
 
-#未实现。
 defineTest(clean_target) {
-    LIB_DST_DIR=$${APP_BUILD_DESTDIR}
-    isEmpty(LIB_DST_DIR):LIB_DST_DIR = $$DESTDIR
-    LIB_BUILD_PWD=$${OUT_PWD}
+    LIB_DST_DIR = $$DESTDIR
+    LIB_BUILD_PWD = $${OUT_PWD}
     !isEmpty(LIB_DST_DIR):LIB_BUILD_PWD=$${LIB_BUILD_PWD}/$${LIB_DST_DIR}
-    LIB_BUILD_TARGETS = $${LIB_BUILD_PWD}/*$${TARGET}.*
+    LIB_BUILD_TARGETS = $${LIB_BUILD_PWD}/*$${TARGET}*
     LIB_BUILD_TARGETS = $$add_host_path($$LIB_BUILD_TARGETS)
     add_pre_link($$RM $$LIB_BUILD_TARGETS)
+    message(clean target: $${LIB_BUILD_TARGETS})
     return (1)
 }
 
@@ -1406,6 +1405,18 @@ defineTest(add_load_library_path){
     QMAKE_LFLAGS = -Wl,-rpath,$${loadlibrarypath}
     export(QMAKE_LFLAGS)
     return(1)
+}
+
+#在苹果系统下，qtwebengineprocess.app的rpath有故障，需要手动修复，
+#用户手动调用一次即可，对所有Qt App有效。
+defineTest(add_fix_qt_webengine){
+    #common rpath
+    contains(QSYS_PRIVATE, macOS){
+        QT_WEBENGINEPROCESS_PWD = $$[QT_INSTALL_LIBS]/QtWebEngineCore.framework/Helpers/QtWebEngineProcess.app/Contents/MacOS/QtWebEngineProcess
+        add_pre_link(install_name_tool -add_rpath @executable_path/../../../../../../../ $${QT_WEBENGINEPROCESS_PWD})
+        add_pre_link(install_name_tool -add_rpath @executable_path/../../../../../ $${QT_WEBENGINEPROCESS_PWD})
+        message(fix qt webengine framework: $${QT_WEBENGINEPROCESS_PWD})
+    }
 }
 
 #添加打印
